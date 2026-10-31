@@ -6,16 +6,16 @@ import type { eventOverview } from "@/lib/derive";
 
 type Overview = NonNullable<ReturnType<typeof eventOverview>>;
 type Seat = Overview["seats"][number];
-type Guest = Overview["unseated"][number];
+type Guest = Omit<Extract<Seat, { name: string }>, "n">;
 
 const seatBadge = { Confirmed: "inverted", Pending: "amber", Open: "outline" } as const;
 
-// The seat grid. Swap Seats lets the team drag a guest onto another seat (or click one, then the other) to swap them;
-// an open seat lists accepted guests without a seat. Changes stay in the browser: the prototype has no write path to Salesforce.
+// The seat grid. Edit Seats lets the team drag a guest onto another seat (or click one, then the other) to swap them,
+// or remove a guest with ×; an open seat lists guests without a seat, including anyone removed. Changes stay in the browser: the prototype has no write path to Salesforce.
 export default function Seats({ initialSeats, initialUnseated }: { initialSeats: Seat[]; initialUnseated: Guest[] }) {
   const [seats, setSeats] = useState(initialSeats);
   const [unseated, setUnseated] = useState(initialUnseated);
-  const [swapping, setSwapping] = useState(false);
+  const [editing, setEditing] = useState(false);
   const [picked, setPicked] = useState<number | null>(null);
   const [adding, setAdding] = useState<number | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
@@ -32,8 +32,14 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
     else if (picked === i) setPicked(null);
     else swap(picked, i);
   };
+  const remove = (i: number) => {
+    const { n, ...guest } = seats[i] as Extract<Seat, { name: string }>;
+    setSeats(seats.map((s) => (s.n === n ? { n, status: "Open" as const } : s)));
+    setUnseated([...unseated, guest]);
+    setPicked(null);
+  };
   const seat = (guest: Guest) => {
-    setSeats(seats.map((s, i) => (i === adding ? { ...guest, n: i + 1, status: "Confirmed" as const } : s)));
+    setSeats(seats.map((s, i) => (i === adding ? { ...guest, n: i + 1 } : s)));
     setUnseated(unseated.filter((g) => g.id !== guest.id));
     dialog.current!.close();
   };
@@ -41,14 +47,14 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
   return (
     <Section
       title="Seats"
-      description={swapping ? "Drag a guest onto another seat, or click one guest and then another seat, to swap them." : undefined}
-      aside={<Button variant={swapping ? "primary" : "secondary"} onClick={() => { setSwapping(!swapping); setPicked(null); }}>{swapping ? "Done" : "Swap Seats"}</Button>}
+      description={editing ? "Drag a guest onto another seat, or click one guest and then another seat, to swap them. × removes a guest from their seat." : undefined}
+      aside={<Button variant={editing ? "primary" : "secondary"} onClick={() => { setEditing(!editing); setPicked(null); }}>{editing ? "Done" : "Edit Seats"}</Button>}
     >
       <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {seats.map((s, i) => (
           <div
             key={s.n}
-            {...(swapping && {
+            {...(editing && {
               role: "button",
               tabIndex: 0,
               "aria-pressed": picked === i,
@@ -59,8 +65,19 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
               onDragOver: (e: DragEvent) => e.preventDefault(),
               onDrop: () => picked !== null && picked !== i && swap(picked, i),
             })}
-            className={`min-w-0 space-y-3 p-4 ${s.status === "Open" ? "rounded-xl border border-dashed border-gray-alpha-500 bg-background-200" : "material-small"} ${swapping ? "cursor-grab" : ""} ${picked === i ? "ring-2 ring-blue-700" : ""}`}
+            className={`relative min-w-0 space-y-3 p-4 ${s.status === "Open" ? "rounded-xl border border-dashed border-gray-alpha-500 bg-background-200" : "material-small"} ${editing ? "cursor-grab" : ""} ${picked === i ? "ring-2 ring-blue-700" : ""}`}
           >
+            {editing && s.status !== "Open" && (
+              <button
+                type="button"
+                aria-label={`Remove ${s.name} from Seat ${s.n}`}
+                onClick={(e) => { e.stopPropagation(); remove(i); }}
+                onKeyDown={(e) => e.stopPropagation()}
+                className="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-background-100 text-gray-900 shadow-border hover:bg-gray-100 hover:text-gray-1000"
+              >
+                <svg aria-hidden viewBox="0 0 16 16" className="size-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M4 4l8 8M12 4l-8 8" /></svg>
+              </button>
+            )}
             <div className="flex items-center justify-between">
               <span className="text-label-12 text-gray-900">Seat {s.n}</span>
               <Badge variant={seatBadge[s.status]}>{s.status}</Badge>
@@ -68,7 +85,7 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
             {s.status === "Open" ? (
               <button
                 type="button"
-                disabled={swapping}
+                disabled={editing}
                 onClick={() => { setAdding(i); dialog.current!.showModal(); }}
                 className="flex w-full items-center gap-3 rounded-lg text-left enabled:hover:text-gray-1000 disabled:pointer-events-none"
               >
@@ -100,16 +117,17 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
         <h3 className="text-heading-20">Fill Seat {adding === null ? "" : adding + 1}</h3>
         {unseated.length ? (
           <>
-            <p className="mt-1 text-copy-14 text-gray-900">Accepted, but not seated yet.</p>
+            <p className="mt-1 text-copy-14 text-gray-900">Not seated yet.</p>
             <ul className="mt-4 space-y-2">
               {unseated.map((g) => (
                 <li key={g.id}>
                   <button type="button" onClick={() => seat(g)} className="flex w-full items-center gap-3 rounded-lg p-2 text-left shadow-border hover:bg-gray-100">
-                    <Avatar name={g.name} tone="dark" />
-                    <span className="min-w-0">
+                    <Avatar name={g.name} tone={g.status === "Confirmed" ? "dark" : "blue"} />
+                    <span className="min-w-0 flex-1">
                       <span className="block text-label-14 font-medium">{g.name}</span>
                       <span className="block text-copy-13 text-gray-900">{g.title} · {g.company}</span>
                     </span>
+                    {g.status === "Pending" && <Badge variant="amber">Pending</Badge>}
                   </button>
                 </li>
               ))}

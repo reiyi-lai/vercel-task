@@ -301,7 +301,7 @@ export function eventOverview(s: Snapshot, slug: string) {
     },
     seats,
     // Accepted, but not placed yet: who can fill an open seat.
-    unseated: parts.filter((p) => p.invite_status === "Confirmed" && !p.seat).map((p) => person(p.contact_id)),
+    unseated: parts.filter((p) => p.invite_status === "Confirmed" && !p.seat).map((p) => ({ status: "Confirmed" as const, ...person(p.contact_id) })),
     candidates: candidates.length,
     pipeline: [
       { title: "Plan Ready", dot: "gray" as const, cards: candidates },
