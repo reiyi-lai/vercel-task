@@ -1,0 +1,29 @@
+Id,FirstName,LastName,Email,Title,AccountId,OwnerId,LinkedIn_URL__c,Intro_Program__c,Employment_Status__c
+003Sb0000090001AAA,Owen,Fischer,owen.fischer@alderfinch.example,Chief Information Officer,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/owen-fischer,,Current
+003Sb0000090002AAA,Grace,Liu,grace.liu@fenwickrx.example,Chief Technology Officer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/grace-liu,,Current
+003Sb0000090003AAA,Priyanka,Rao,priyanka.rao@haldenlogistics.example,Chief Technology Officer,001Sb0000070003AAA,005Sb0000050002AAA,https://linkedin.example/in/priyanka-rao,,Current
+003Sb0000090004AAA,Arjun,Mehta,arjun.mehta@granitetrust.example,Chief Information Officer,001Sb0000070004AAA,005Sb0000050001AAA,https://linkedin.example/in/arjun-mehta,,Current
+003Sb0000090005AAA,Tom,Becker,tom.becker@stonebridge.example,VP Engineering,001Sb0000070005AAA,005Sb0000050002AAA,https://linkedin.example/in/tom-becker,,Current
+003Sb0000090006AAA,Julian,Wright,julian.wright@summitmutual.example,Chief Technology Officer,001Sb0000070006AAA,005Sb0000050001AAA,https://linkedin.example/in/julian-wright,,Current
+003Sb0000090007AAA,Samuel,Okoro,samuel.okoro@orbishealth.example,Chief Information Officer,001Sb0000070007AAA,005Sb0000050002AAA,https://linkedin.example/in/samuel-okoro,,Current
+003Sb0000090008AAA,Isabel,Ortega,isabel.ortega@harborline.example,Chief Information Officer,001Sb0000070008AAA,005Sb0000050002AAA,https://linkedin.example/in/isabel-ortega,,Current
+003Sb0000090009AAA,Ethan,Cole,ethan.cole@cascadehome.example,VP Platform Engineering,001Sb0000070009AAA,005Sb0000050002AAA,https://linkedin.example/in/ethan-cole,Opted in,Current
+003Sb0000090010AAA,Leah,Morgan,leah.morgan@brightwell.example,Chief Information Officer,001Sb0000070010AAA,005Sb0000050001AAA,https://linkedin.example/in/leah-morgan,Opted in,Current
+003Sb0000090011AAA,Daniel,Brooks,daniel.brooks@halvorsen.example,Chief Technology Officer,001Sb0000070011AAA,005Sb0000050002AAA,https://linkedin.example/in/daniel-brooks,,Current
+003Sb0000090012AAA,Hannah,Park,hannah.park@orchardpine.example,Chief Technology Officer,001Sb0000070012AAA,005Sb0000050001AAA,https://linkedin.example/in/hannah-park,,Current
+003Sb0000090013AAA,Victor,Hale,victor.hale@northfield.example,SVP Engineering,001Sb0000070013AAA,005Sb0000050002AAA,https://linkedin.example/in/victor-hale,,Current
+003Sb0000090014AAA,Nadia,Rahman,nadia.rahman@pinecrest.example,Chief Technology Officer,001Sb0000070014AAA,005Sb0000050001AAA,https://linkedin.example/in/nadia-rahman,,Current
+003Sb0000090015AAA,Ravi,Menon,ravi.menon@tallis.example,Chief Information Officer,001Sb0000070015AAA,005Sb0000050002AAA,https://linkedin.example/in/ravi-menon,,Current
+003Sb0000090016AAA,Marco,Silva,marco.silva@kestrel.example,VP Engineering,001Sb0000070016AAA,005Sb0000050001AAA,https://linkedin.example/in/marco-silva,,Current
+003Sb0000090017AAA,Sofia,Marchetti,sofia.marchetti@meridian.example,Chief Technology Officer,001Sb0000070017AAA,005Sb0000050001AAA,https://linkedin.example/in/sofia-marchetti,,Current
+003Sb0000090018AAA,Amara,Okafor,amara.okafor@larkspur.example,Chief Technology Officer,001Sb0000070018AAA,005Sb0000050002AAA,https://linkedin.example/in/amara-okafor,,Current
+003Sb0000090019AAA,Sam,Ortiz,sam.ortiz@alderfinch.example,Director of Engineering,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/sam-ortiz,,Current
+003Sb0000090021AAA,Mei,Tanaka,mei.tanaka@fenwickrx.example,Senior Software Engineer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/mei-tanaka,,Current
+003Sb0000090022AAA,Rajat,Taneja,,"President, Technology",001Sb0000070019AAA,005Sb0000050001AAA,https://linkedin.example/in/rajat-taneja,,Current
+003Sb0000090023AAA,Jason,Morris,,Chief Technology and Information Officer,001Sb0000070020AAA,005Sb0000050002AAA,https://linkedin.example/in/jason-morris,,Current
+003Sb0000090024AAA,Prem,Natarajan,,"EVP, Chief Scientist and Head of Enterprise AI",001Sb0000070021AAA,005Sb0000050001AAA,https://linkedin.example/in/prem-natarajan,,Current
+003Sb0000090025AAA,Dennis,Howard,,"Chief Technology, Operations and Data Officer",001Sb0000070022AAA,005Sb0000050001AAA,https://linkedin.example/in/dennis-howard,Opted in,Current
+003Sb0000090026AAA,Srini,Venkatesan,,Chief Technology Officer,001Sb0000070023AAA,005Sb0000050001AAA,https://linkedin.example/in/srini-venkatesan,Opted in,Current
+003Sb0000090027AAA,Fiona,Tan,,Chief Technology Officer,001Sb0000070024AAA,005Sb0000050002AAA,https://linkedin.example/in/fiona-tan,Opted in,Current
+003Sb0000090028AAA,Suresh,Kumar,,"EVP, Global CTO and Chief Development Officer",001Sb0000070025AAA,005Sb0000050002AAA,https://linkedin.example/in/suresh-kumar,Opted in,Current
+003Sb0000090029AAA,June,Yang,,Board Director,001Sb0000070026AAA,005Sb0000050001AAA,https://linkedin.example/in/june-yang,Opted in,Current

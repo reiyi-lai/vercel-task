@@ -1,0 +1,52 @@
+import Link from "next/link";
+import { Avatar, Badge, Section, Status, TabLinks, Tags } from "@/components/ui";
+import type { eventOverview } from "@/lib/derive";
+
+type Columns = NonNullable<ReturnType<typeof eventOverview>>["pipeline"];
+export const slugify = (name: string) => name.toLowerCase().replaceAll(" ", "-");
+
+// One server-rendered view per AE filter; ParamSwitch picks the one in ?ae=.
+export default function Pipeline({ columns, aes, ae, basePath }: { columns: Columns; aes: string[]; ae?: string; basePath: string }) {
+  const filters = [{ label: "All AEs", href: basePath, active: !ae }, ...aes.map((name) => ({ label: name, href: `${basePath}?ae=${slugify(name)}`, active: ae === name }))];
+  return (
+    <Section title="Invitation Pipeline" aside={<TabLinks variant="segmented" items={filters} />}>
+      <div className="-mx-4 -my-1 overflow-x-auto px-4 py-1 sm:-mx-1 sm:px-1">
+        <div className="grid min-w-[1000px] grid-cols-5 items-start gap-3">
+          {columns.map((col) => {
+            const cards = col.cards.filter((c) => !ae || c.ae === ae);
+            return (
+              <div key={col.title} className="min-w-0 rounded-xl bg-gray-300 p-2">
+                <div className="flex items-center justify-between px-2 pb-3 pt-1">
+                  <h3 className="text-label-13 font-medium"><Status color={col.dot}>{col.title}</Status></h3>
+                  <span className="flex size-6 items-center justify-center rounded-full bg-gray-1000 text-label-12 font-medium text-background-100">{cards.length}</span>
+                </div>
+                <div className="space-y-2">
+                  {cards.length === 0 && <p className="rounded-xl border border-dashed border-gray-alpha-500 p-3 text-label-12 text-gray-900">No one here{ae ? " for this AE" : " yet"}.</p>}
+                  {cards.map((c) => (
+                    <div key={c.id} className="space-y-2.5 rounded-xl bg-background-100 p-3 shadow-border">
+                      <div>
+                        <p className="break-words text-label-14 font-medium">{c.name}</p>
+                        <p className="text-copy-13 text-gray-900">{c.title} · {c.company}</p>
+                      </div>
+                      <Tags vertical={c.vertical} horizontals={c.horizontals} />
+                      {c.route && <Badge variant="inverted">{c.route}</Badge>}
+                      <div className="flex items-center gap-1.5 border-t border-gray-alpha-400 pt-2.5 text-label-12">
+                        <Avatar name={c.ae} size="sm" />
+                        <span className="shrink-0 whitespace-nowrap">{c.ae}</span>
+                        {c.href ? (
+                          <Link href={c.href} className="-my-1 ml-auto shrink-0 whitespace-nowrap py-1 font-medium text-blue-900 hover:underline">Open Plan →</Link>
+                        ) : (
+                          <span className="ml-auto truncate text-gray-900">{c.detail}</span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </Section>
+  );
+}

@@ -1,0 +1,11 @@
+Team ID,Team Name,Account ID,Plan,Active Users 30d,Monthly Spend USD,Key Contact Email,Key Contact Name,Key Contact Title
+team_af_storefront,alderfinch-storefront,001Sb0000070001AAA,Pro,6,480,sam.ortiz@alderfinch.example,Sam Ortiz,Director of Engineering
+team_af_digital,alderfinch-digital,001Sb0000070001AAA,Pro,2,160,jo.huang@alderfinch.example,Jo Huang,Senior Frontend Engineer
+team_af_marketing,alderfinch-marketing-site,001Sb0000070001AAA,Pro,1,20,lena.park@alderfinch.example,Lena Park,Marketing Operations Manager
+team_fw_web,fenwick-web,001Sb0000070002AAA,Pro,7,560,mei.tanaka@fenwickrx.example,Mei Tanaka,Senior Software Engineer
+team_fw_digital,fenwick-digital-product,001Sb0000070002AAA,Pro,4,320,rosa.diaz@fenwickrx.example,Rosa Diaz,VP Digital Product
+team_fw_rx,fenwick-rx-portal,001Sb0000070002AAA,Pro,2,160,omar.reed@fenwickrx.example,Omar Reed,Engineering Manager
+team_fw_labs,fenwick-labs,001Sb0000070002AAA,Pro,1,20,ana.ito@fenwickrx.example,Ana Ito,Software Engineer
+team_hd_tools,halden-internal-tools,001Sb0000070003AAA,Pro,2,160,kai.berg@haldenlogistics.example,Kai Berg,Staff Engineer
+team_sb_store,stonebridge-storefront,001Sb0000070005AAA,Pro,4,320,lucy.adams@stonebridge.example,Lucy Adams,Lead Frontend Engineer
+team_sb_blog,stonebridge-journal,001Sb0000070005AAA,Pro,1,20,lucy.adams@stonebridge.example,Lucy Adams,Lead Frontend Engineer

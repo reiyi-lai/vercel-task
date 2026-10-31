@@ -1,0 +1,27 @@
+Id,Name,Website,Industry,NumberOfEmployees,Type,OwnerId,Target_Account__c,ICP_Tier__c,Vertical__c,Horizontal_Themes__c,Est_First_Year_Value__c
+001Sb0000070001AAA,Alder & Finch Department Stores,alderfinch.example,Retail,34000,Prospect,005Sb0000050001AAA,true,Tier 1,Retail,Apps & agents;Software factory,300000
+001Sb0000070002AAA,Fenwick Pharmacy,fenwickrx.example,Retail,22000,Prospect,005Sb0000050002AAA,true,Tier 1,Retail,Apps & agents,150000
+001Sb0000070003AAA,Halden Logistics,haldenlogistics.example,Transportation/Trucking/Railroad,9500,Prospect,005Sb0000050002AAA,true,Tier 1,Other,Apps & agents,120000
+001Sb0000070004AAA,Granite Trust,granitetrust.example,Financial Services,18000,Prospect,005Sb0000050001AAA,true,Tier 1,FSI,Software factory,320000
+001Sb0000070005AAA,Stonebridge Outdoor,stonebridge.example,Retail,6800,Prospect,005Sb0000050002AAA,true,Tier 2,Retail,Software factory,60000
+001Sb0000070006AAA,Summit Mutual,summitmutual.example,Insurance,12000,Prospect,005Sb0000050001AAA,true,Tier 1,FSI,Software factory,140000
+001Sb0000070007AAA,Orbis Health,orbishealth.example,Hospital & Health Care,26000,Prospect,005Sb0000050002AAA,true,Tier 1,Other,Apps & agents;Software factory,280000
+001Sb0000070008AAA,Harborline Grocers,harborline.example,Retail,15000,Prospect,005Sb0000050002AAA,true,Tier 2,Retail,Apps & agents,70000
+001Sb0000070009AAA,Cascade Home,cascadehome.example,Retail,11000,Customer,005Sb0000050002AAA,true,Tier 1,Retail,Software factory,180000
+001Sb0000070010AAA,Brightwell Financial,brightwell.example,Financial Services,21000,Customer,005Sb0000050001AAA,true,Tier 1,FSI,Apps & agents,350000
+001Sb0000070011AAA,Halvorsen Retail Group,halvorsen.example,Retail,40000,Prospect,005Sb0000050002AAA,true,Tier 1,Retail,Apps & agents,400000
+001Sb0000070012AAA,Orchard & Pine Markets,orchardpine.example,Retail,28000,Prospect,005Sb0000050001AAA,true,Tier 1,Retail,Apps & agents;Software factory,300000
+001Sb0000070013AAA,Northfield Outfitters,northfield.example,Retail,9000,Prospect,005Sb0000050002AAA,true,Tier 2,Retail,Software factory,150000
+001Sb0000070014AAA,Pinecrest Bank,pinecrest.example,Banking,8000,Prospect,005Sb0000050001AAA,true,Tier 1,FSI,Software factory;Apps & agents,160000
+001Sb0000070015AAA,Tallis Insurance,tallis.example,Insurance,7000,Prospect,005Sb0000050002AAA,true,Tier 2,FSI,Apps & agents,130000
+001Sb0000070016AAA,Kestrel Capital,kestrel.example,Financial Services,5200,Prospect,005Sb0000050001AAA,true,Tier 2,FSI,Software factory,60000
+001Sb0000070017AAA,Meridian Bancorp,meridian.example,Banking,16000,Prospect,005Sb0000050001AAA,true,Tier 1,FSI,Software factory,380000
+001Sb0000070018AAA,Larkspur Apparel,larkspur.example,Retail,5600,Prospect,005Sb0000050002AAA,true,Tier 2,Retail,Apps & agents,80000
+001Sb0000070019AAA,Visa,visa.com,Financial Services,34100,Prospect,005Sb0000050001AAA,true,Tier 1,FSI,Apps & agents;Software factory,500000
+001Sb0000070020AAA,Nordstrom,nordstrom.com,Retail,54000,Prospect,005Sb0000050002AAA,true,Tier 1,Retail,Apps & agents;Software factory,450000
+001Sb0000070021AAA,Capital One,capitalone.com,Banking,76300,Prospect,005Sb0000050001AAA,true,Tier 1,FSI,Apps & agents,500000
+001Sb0000070022AAA,Charles Schwab,schwab.com,Financial Services,32100,Customer,005Sb0000050001AAA,false,Tier 1,FSI,,
+001Sb0000070023AAA,PayPal,paypal.com,Financial Services,24400,Customer,005Sb0000050001AAA,false,Tier 1,FSI,,
+001Sb0000070024AAA,Wayfair,wayfair.com,Retail,12100,Customer,005Sb0000050002AAA,false,Tier 1,Retail,,
+001Sb0000070025AAA,Walmart,walmart.com,Retail,2100000,Customer,005Sb0000050002AAA,false,Tier 1,Retail,,
+001Sb0000070026AAA,MSCI,msci.com,Financial Services,6100,Customer,005Sb0000050001AAA,false,Tier 1,FSI,,

@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+/* Geist tokens, dark theme, values taken from vercel.com/geist's CSS. @vercel/geistcn itself isn't public. */
+@theme {
+  --color-*: initial;
+  --color-white: #fff;
+  --color-transparent: transparent;
+  --color-background-100: hsl(0 0% 4%);
+  --color-background-200: hsl(0 0% 0%);
+
+  --color-gray-100: hsl(0 0% 10%);
+  --color-gray-200: hsl(0 0% 12%);
+  --color-gray-300: hsl(0 0% 16%);
+  --color-gray-400: hsl(0 0% 18%);
+  --color-gray-500: hsl(0 0% 27%);
+  --color-gray-600: hsl(0 0% 53%);
+  --color-gray-700: hsl(0 0% 56%);
+  --color-gray-800: hsl(0 0% 49%);
+  --color-gray-900: hsl(0 0% 63%);
+  --color-gray-1000: hsl(0 0% 93%);
+  /* Lines are a step brighter than Geist dark (#ffffff24 / #ffffff3d) to read better on black. */
+  --color-gray-alpha-400: #ffffff38;
+  --color-gray-alpha-500: #ffffff52;
+
+  --color-blue-100: hsl(216 50% 12%);
+  --color-blue-200: hsl(214 59% 15%);
+  --color-blue-700: hsl(212 100% 48%);
+  --color-blue-900: hsl(210 100% 66%);
+
+  --color-red-200: hsl(357 46% 16%);
+  --color-red-700: hsl(358 75% 59%);
+  --color-red-900: hsl(358 100% 69%);
+
+  --color-amber-200: hsl(32 100% 10%);
+  --color-amber-700: hsl(39 100% 57%);
+  --color-amber-900: hsl(39 90% 50%);
+
+  --color-green-200: hsl(137 50% 12%);
+  --color-green-700: hsl(131 41% 46%);
+  --color-green-900: hsl(131 43% 57%);
+
+  /* Geist shadows (dark) */
+  --shadow-border: 0 0 0 1.5px #ffffff38;
+  --shadow-small: 0 0 0 1.5px #ffffff38, 0 1px 2px #00000029;
+  --shadow-medium: 0 0 0 1.5px #ffffff38, 0 2px 2px #00000052, 0 8px 8px -8px #00000029;
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  --text-heading-32: 32px;
+  --text-heading-32--line-height: 40px;
+  --text-heading-32--letter-spacing: -1.28px;
+  --text-heading-32--font-weight: 600;
+  --text-heading-24: 24px;
+  --text-heading-24--line-height: 32px;
+  --text-heading-24--letter-spacing: -0.96px;
+  --text-heading-24--font-weight: 600;
+  --text-heading-20: 20px;
+  --text-heading-20--line-height: 26px;
+  --text-heading-20--letter-spacing: -0.4px;
+  --text-heading-20--font-weight: 600;
+  --text-heading-16: 16px;
+  --text-heading-16--line-height: 24px;
+  --text-heading-16--letter-spacing: -0.32px;
+  --text-heading-16--font-weight: 600;
+  --text-heading-14: 14px;
+  --text-heading-14--line-height: 20px;
+  --text-heading-14--letter-spacing: -0.28px;
+  --text-heading-14--font-weight: 600;
+  --text-button-14: 14px;
+  --text-button-14--line-height: 20px;
+  --text-button-14--font-weight: 500;
+  --text-label-14: 14px;
+  --text-label-14--line-height: 20px;
+  --text-label-13: 13px;
+  --text-label-13--line-height: 16px;
+  --text-label-12: 12px;
+  --text-label-12--line-height: 16px;
+  --text-copy-14: 14px;
+  --text-copy-14--line-height: 20px;
+  --text-copy-13: 13px;
+  --text-copy-13--line-height: 18px;
+}
+
+/* Geist materials. Cards use Geist's 12px surface radius; controls and nodes use the 8px brand radius. */
+@utility material-base {
+  background-color: var(--color-background-100);
+  box-shadow: var(--shadow-border);
+  border-radius: 12px;
+}
+@utility material-small {
+  background-color: var(--color-background-100);
+  box-shadow: var(--shadow-small);
+  border-radius: 12px;
+}
+@utility material-medium {
+  background-color: var(--color-background-100);
+  box-shadow: var(--shadow-medium);
+  border-radius: 12px;
+}
+
+body {
+  background: var(--color-background-200);
+  color: var(--color-gray-1000);
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* Web Interface Guidelines (vercel.com/design/guidelines) */
+html {
+  color-scheme: dark;
+  font-variant-numeric: tabular-nums;
+  -webkit-tap-highlight-color: transparent;
+}
+a, button {
+  touch-action: manipulation;
+}
+:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-background-100), 0 0 0 4px var(--color-blue-700);
+}
+h1, h2, h3 {
+  scroll-margin-top: 24px;
+  text-wrap: balance;
+}
