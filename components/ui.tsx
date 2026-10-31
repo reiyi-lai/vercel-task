@@ -64,9 +64,9 @@ const buttonStyles = {
   secondary: "bg-background-100 shadow-border hover:bg-gray-100",
 };
 
-export function Button({ children, variant = "secondary", href, className = "" }: { children: ReactNode; variant?: keyof typeof buttonStyles; href?: string; className?: string }) {
+export function Button({ children, variant = "secondary", href, onClick, className = "" }: { children: ReactNode; variant?: keyof typeof buttonStyles; href?: string; onClick?: () => void; className?: string }) {
   const classes = `inline-flex h-8 items-center justify-center whitespace-nowrap rounded-lg px-3 text-button-14 ${buttonStyles[variant]} ${className}`;
-  return href ? <Link href={href} className={classes}>{children}</Link> : <button type="button" className={classes}>{children}</button>;
+  return href ? <Link href={href} className={classes}>{children}</Link> : <button type="button" onClick={onClick} className={classes}>{children}</button>;
 }
 
 export function Section({ title, description, aside, children }: { title: ReactNode; description?: ReactNode; aside?: ReactNode; children: ReactNode }) {

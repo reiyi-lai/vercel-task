@@ -300,6 +300,8 @@ export function eventOverview(s: Snapshot, slug: string) {
       hosts: ev.host_user_ids.map((id) => `${fullName(user.get(id)!)} (${user.get(id)!.title})`).join(", "),
     },
     seats,
+    // Accepted, but not placed yet: who can fill an open seat.
+    unseated: parts.filter((p) => p.invite_status === "Confirmed" && !p.seat).map((p) => person(p.contact_id)),
     candidates: candidates.length,
     pipeline: [
       { title: "Plan Ready", dot: "gray" as const, cards: candidates },

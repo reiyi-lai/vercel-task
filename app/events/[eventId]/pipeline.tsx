@@ -11,7 +11,8 @@ export default function Pipeline({ columns, aes, ae, basePath }: { columns: Colu
   return (
     <Section title="Invitation Pipeline" aside={<TabLinks variant="segmented" items={filters} />}>
       <div className="-mx-4 -my-1 overflow-x-auto px-4 py-1 sm:-mx-1 sm:px-1">
-        <div className="grid min-w-[1000px] grid-cols-5 items-start gap-3">
+        {/* Columns sized so four fit in the 1152px page with a sliver of the fifth showing; the board scrolls sideways. */}
+        <div className="grid auto-cols-[262px] grid-flow-col items-start gap-3">
           {columns.map((col) => {
             const cards = col.cards.filter((c) => !ae || c.ae === ae);
             return (

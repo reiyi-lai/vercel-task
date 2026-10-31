@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ParamSwitch from "@/components/param-switch";
-import { Avatar, Badge, Button, Page, PageHeader, Section, TabLinks, Tags } from "@/components/ui";
+import { Page, PageHeader, TabLinks } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventOverview } from "@/lib/derive";
 import Pipeline, { slugify } from "./pipeline";
+import Seats from "./seats";
 
 type Props = PageProps<"/events/[eventId]">;
-
-const seatBadge = { Confirmed: "inverted", Pending: "amber", Open: "outline" } as const;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { eventId } = await params;
@@ -42,36 +41,7 @@ async function EventOverview({ params }: Pick<Props, "params">) {
 
       <Page>
         <div className="material-medium p-6">
-          <Section title="Seats" aside={<Button>Swap Seats…</Button>}>
-            <div className="grid grid-cols-2 items-start gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {seats.map((seat) => (
-                <div key={seat.n} className={`min-w-0 space-y-3 p-4 ${seat.status === "Open" ? "rounded-xl border border-dashed border-gray-alpha-500 bg-background-200" : "material-small"}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-label-12 text-gray-900">Seat {seat.n}</span>
-                    <Badge variant={seatBadge[seat.status]}>{seat.status}</Badge>
-                  </div>
-                  {seat.status === "Open" ? (
-                    <div className="flex items-center gap-3">
-                      <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-full border border-gray-alpha-500 text-gray-900">+</span>
-                      <p className="text-heading-16">Open Seat</p>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-3">
-                        <Avatar name={seat.name} size="lg" tone={seat.status === "Confirmed" ? "dark" : "blue"} />
-                        <div className="min-w-0">
-                          <p className="break-words text-heading-16">{seat.name}</p>
-                          <p className="text-copy-13 text-gray-900">{seat.title}</p>
-                          <p className="text-copy-13 text-gray-900">{seat.company}</p>
-                        </div>
-                      </div>
-                      <Tags vertical={seat.vertical} horizontals={seat.horizontals} />
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          </Section>
+          <Seats initialSeats={seats} initialUnseated={o.unseated} />
         </div>
 
         <ParamSwitch
