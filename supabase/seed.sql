@@ -193,8 +193,6 @@ insert into connector_confirmations (asked_at, method, asked_to, target_contact_
   ('2026-10-28T10:00:00.000Z', 'slack_dm', 'Priya Natarajan', '003Sb0000090001AAA', 'user:005Sb0000050005AAA', 'Barely', 'Priya Natarajan', '2026-10-28T13:05:00.000Z'),
   ('2026-10-28T10:00:00.000Z', 'slack_dm', 'Priya Natarajan', '003Sb0000090007AAA', 'user:005Sb0000050005AAA', 'Barely', 'Priya Natarajan', '2026-10-28T13:06:00.000Z'),
   ('2026-10-28T10:00:00.000Z', 'slack_dm', 'Priya Natarajan', '003Sb0000090006AAA', 'user:005Sb0000050005AAA', 'Know well', 'Priya Natarajan', '2026-10-28T13:07:00.000Z'),
-  ('2026-10-29T09:00:00.000Z', 'slack_dm', 'Marcus Lee', '003Sb0000090006AAA', 'user:005Sb0000050001AAA', 'Know well', 'Marcus Lee', '2026-10-29T09:20:00.000Z'),
-  ('2026-10-29T09:00:00.000Z', 'slack_dm_customer_ae', 'Dana Ruiz', '003Sb0000090001AAA', 'contact:003Sb0000090009AAA', 'Yes, they''re close', 'Dana Ruiz', '2026-10-29T11:15:00.000Z'),
   ('2026-10-29T09:00:00.000Z', 'slack_channel', '#lvgp-2026', '003Sb0000090001AAA', 'contact:003Sb0000090011AAA', null, null, null);
 
 insert into connector_load (connector_name, connector_type, monthly_cap, used, resets) values

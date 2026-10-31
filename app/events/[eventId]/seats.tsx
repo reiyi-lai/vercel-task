@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, type DragEvent, type KeyboardEvent } from "react";
-import { Avatar, Badge, Button, Section, Tags } from "@/components/ui";
+import { Avatar, Badge, Button, Modal, Section, Tags } from "@/components/ui";
 import type { eventOverview } from "@/lib/derive";
 
 type Overview = NonNullable<ReturnType<typeof eventOverview>>;
@@ -109,12 +109,7 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
         ))}
       </div>
 
-      <dialog
-        ref={dialog}
-        onClose={() => setAdding(null)}
-        className="m-auto w-[min(440px,calc(100vw-32px))] material-medium p-6 text-gray-1000 backdrop:bg-background-200/80"
-      >
-        <h3 className="text-heading-20">Fill Seat {adding === null ? "" : adding + 1}</h3>
+      <Modal ref={dialog} onClose={() => setAdding(null)} title={`Fill Seat ${adding === null ? "" : adding + 1}`}>
         {unseated.length ? (
           <>
             <p className="mt-1 text-copy-14 text-gray-900">Not seated yet.</p>
@@ -137,7 +132,7 @@ export default function Seats({ initialSeats, initialUnseated }: { initialSeats:
           <p className="mt-2 text-copy-14 text-gray-900">Everyone who’s accepted has a seat. Invite more candidates to fill this one.</p>
         )}
         <div className="mt-6 flex justify-end"><Button onClick={() => dialog.current!.close()}>Cancel</Button></div>
-      </dialog>
+      </Modal>
     </Section>
   );
 }

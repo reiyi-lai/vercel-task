@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { ReactNode, Ref } from "react";
 
 // Small Geist-style primitives shared by every page.
 
@@ -84,8 +84,8 @@ export function Section({ title, description, aside, children }: { title: ReactN
   );
 }
 
-// Links styled as tabs or a segmented control; the active one carries aria-current.
-export function TabLinks({ items, variant = "underline" }: { items: { label: ReactNode; href?: string; active?: boolean }[]; variant?: "underline" | "segmented" }) {
+// Links styled as tabs or a segmented control; the active one carries aria-current. Items with onClick are buttons, for tabs inside a modal.
+export function TabLinks({ items, variant = "underline" }: { items: { label: ReactNode; href?: string; onClick?: () => void; active?: boolean }[]; variant?: "underline" | "segmented" }) {
   const styles = {
     underline: { wrap: "flex gap-6", item: "-mb-px border-b-2 pb-3 text-label-14", on: "border-gray-1000", off: "border-transparent text-gray-900" },
     segmented: { wrap: "flex rounded-lg bg-gray-100 p-0.5", item: "flex h-7 items-center rounded-md px-3 text-label-13", on: "bg-background-100 shadow-border font-medium", off: "text-gray-900" },
@@ -97,6 +97,10 @@ export function TabLinks({ items, variant = "underline" }: { items: { label: Rea
           <Link key={i} href={t.href} scroll={false} aria-current={t.active ? "page" : undefined} className={`${styles.item} ${t.active ? styles.on : `${styles.off} hover:text-gray-1000`}`}>
             {t.label}
           </Link>
+        ) : t.onClick ? (
+          <button key={i} type="button" onClick={t.onClick} aria-current={t.active ? "page" : undefined} className={`${styles.item} ${t.active ? styles.on : `${styles.off} hover:text-gray-1000`}`}>
+            {t.label}
+          </button>
         ) : (
           <span key={i} aria-disabled className={`${styles.item} ${styles.off} cursor-not-allowed opacity-60`}>{t.label}</span>
         )
@@ -125,6 +129,16 @@ export function PageHeader({ crumbs, children, aside, tabs }: { crumbs: { label:
         {tabs}
       </div>
     </div>
+  );
+}
+
+// Native modal dialog: open it with ref.current.showModal(); Esc closes it.
+export function Modal({ ref, title, onClose, children }: { ref: Ref<HTMLDialogElement>; title: ReactNode; onClose?: () => void; children: ReactNode }) {
+  return (
+    <dialog ref={ref} onClose={onClose} className="m-auto w-[min(560px,calc(100vw-32px))] material-medium p-6 text-gray-1000 backdrop:bg-background-200/80">
+      <h3 className="text-heading-20">{title}</h3>
+      {children}
+    </dialog>
   );
 }
 

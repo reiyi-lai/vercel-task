@@ -7,6 +7,7 @@ import { Avatar, Badge, Button, Page, PageHeader, Section, Status, Tags, type Do
 import { loadSnapshot } from "@/lib/data";
 import { accountInteractions, derivePlan, drafts, eventOverview, formatDate, vercelUsage, type Connector, type Rung } from "@/lib/derive";
 import { ROUTES, type Strength } from "@/lib/rules";
+import AskInSlack from "./ask-in-slack";
 import Drafts, { draftKey } from "./drafts";
 
 type Props = PageProps<"/events/[eventId]/candidates/[candidateId]">;
@@ -208,7 +209,9 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
                     )}
                   </div>
                   <div className="flex lg:justify-end">
-                    {"button" in step ? (
+                    {"button" in step && step.button === "Ask in Slack" ? (
+                      <AskInSlack name={c.name} primary={c === ladder[0].connector} drafts={drafts(plan, event.name, event.date, usage.activeUsers, c).filter((d) => d.tab !== "Fallback: Direct")} />
+                    ) : "button" in step ? (
                       <Button variant={c === ladder[0].connector ? "primary" : "secondary"}>{step.button}</Button>
                     ) : (
                       <span className="text-label-13 text-gray-700">{step.note}</span>
@@ -218,33 +221,6 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
               );
             })}
           </div>
-        </Section>
-
-        <Section title="Past Account Interactions">
-          {interactions.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">No past interactions with anyone else at {account.name}.</p>
-          ) : (
-            <ul className="material-base divide-y divide-gray-alpha-400 overflow-hidden">
-              {interactions.map((r) => (
-                <li key={r.contact.id} className="grid items-center gap-3 px-5 py-4 lg:grid-cols-[220px_260px_1fr] lg:gap-6">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <Avatar name={r.name} />
-                    <div className="min-w-0">
-                      <p className="text-label-14 font-medium">{r.name}</p>
-                      <p className="text-label-12 text-gray-900">{r.contact.title}</p>
-                    </div>
-                  </div>
-                  <Status color={interactionDot[r.status]}>{r.status} Employee</Status>
-                  <div className="space-y-1.5">
-                    <ul className="space-y-0.5">
-                      {r.lines.map((l) => <li key={l.text} className="text-copy-13">{l.text}</li>)}
-                    </ul>
-                    <p className="text-label-12 text-gray-900">SOURCES: {[...new Set(r.lines.map((l) => l.source))].join(" · ")}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
         </Section>
 
         <Section
@@ -289,6 +265,33 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
           name="draft"
           views={Object.fromEntries(planDrafts.map((d, i) => [draftKey(d), <Drafts key={i} drafts={planDrafts} active={i} basePath={basePath} />]))}
         />
+
+        <Section title="Past Account Interactions">
+          {interactions.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">No past interactions with anyone else at {account.name}.</p>
+          ) : (
+            <ul className="material-base divide-y divide-gray-alpha-400 overflow-hidden">
+              {interactions.map((r) => (
+                <li key={r.contact.id} className="grid items-center gap-3 px-5 py-4 lg:grid-cols-[220px_260px_1fr] lg:gap-6">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Avatar name={r.name} />
+                    <div className="min-w-0">
+                      <p className="text-label-14 font-medium">{r.name}</p>
+                      <p className="text-label-12 text-gray-900">{r.contact.title}</p>
+                    </div>
+                  </div>
+                  <Status color={interactionDot[r.status]}>{r.status} Employee</Status>
+                  <div className="space-y-1.5">
+                    <ul className="space-y-0.5">
+                      {r.lines.map((l) => <li key={l.text} className="text-copy-13">{l.text}</li>)}
+                    </ul>
+                    <p className="text-label-12 text-gray-900">SOURCES: {[...new Set(r.lines.map((l) => l.source))].join(" · ")}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
       </Page>
     </>
   );

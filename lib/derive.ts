@@ -209,19 +209,18 @@ export function derivePlan(s: Snapshot, targetId: string, campaignId: string) {
 export type Plan = ReturnType<typeof derivePlan>;
 
 // Template drafts built from the plan (no LLM yet): the ask to the connector, the blurb they forward, and the AE's direct invite.
-export function drafts(plan: Plan, eventName: string, date: string, activeUsers: number) {
+// Drafts for asking one connector; the top of the ladder by default.
+export function drafts(plan: Plan, eventName: string, date: string, activeUsers: number, c = plan.ladder[0].connector) {
   const { target, targetOwner, account, ladder } = plan;
   const ae = fullName(targetOwner);
-  const top = ladder[0];
   const direct = {
     tab: "Fallback: Direct",
     meta: `From ${ae} → ${fullName(target)}${ladder.length > 1 ? " · sent if the warm path stalls" : ""}`,
     body: `Hi ${target.first_name} — I'm ${first(ae)}, Vercel's account lead for ${account.name}.${activeUsers ? ` ${activeUsers} of your engineers already build on Vercel, so I thought you'd value the conversation.` : ""}\n\nWe're hosting a small group of technology leaders at ${eventName} on ${date}. Would you like to join us?\n\n— ${first(ae)}`,
     approve: ladder.length > 1 ? "Approve as Fallback" : "Approve & Send",
   };
-  if (top.connector.ref === `user:${targetOwner.id}`) return [{ ...direct, tab: "Direct Invite" }];
+  if (c.ref === `user:${targetOwner.id}`) return [{ ...direct, tab: "Direct Invite" }];
 
-  const c = top.connector;
   const asker = c.asker ?? ae;
   return [
     {
