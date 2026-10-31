@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { connection } from "next/server";
+import { cacheLife } from "next/cache";
 
 // Row types mirror the tables in supabase/migrations. CRM rows are Salesforce objects keyed by 18-character IDs.
 // A Snapshot is every table, loaded at once (the sample data is a few hundred rows; derivation happens in lib/derive.ts).
@@ -60,10 +60,11 @@ export const tables = [
   "teamlink_connections", "clay_enrichments", "vercel_teams", "events", "connector_confirmations", "connector_load",
 ] as const satisfies readonly (keyof Snapshot)[];
 
-// Always read at request time: the data changes as confirmations come in.
+// Cached for a minute, then refreshed in the background, so new Slack answers show within a minute.
 // Reads Supabase when it's configured; otherwise the sample CSVs through the same mapping that seeds the database.
 export async function loadSnapshot(): Promise<Snapshot> {
-  await connection();
+  "use cache";
+  cacheLife("minutes");
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return (await import("./csv")).loadSampleSnapshot();
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
   const results = await Promise.all(tables.map((t) => supabase.from(t).select("*")));
