@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition, type ReactNode } from "react";
+import { useId, useState, useTransition, type ReactNode } from "react";
 import { Button, Status, TabLinks } from "@/components/ui";
 import { CITIES, GEOGRAPHY, OBJECTIVES, OUTREACH_LEADS, SENIORITY, THEMES, TIERS, VERTICALS, outreachVolume } from "@/lib/brief";
 import type { EventBrief, SequenceStep } from "@/lib/data";
@@ -118,7 +118,7 @@ export default function BriefForm({ brief, event, events, confirmed }: Props) {
             />
           </Field>
           <Field label="Location">
-            <Radios name="geography" options={GEOGRAPHY} value={b.geography} onChange={(geography) => set({ geography })} />
+            <Radios options={GEOGRAPHY} value={b.geography} onChange={(geography) => set({ geography })} />
             {b.geography === "city" && (
               <div className="space-y-2 pt-1">
                 <select
@@ -163,7 +163,7 @@ export default function BriefForm({ brief, event, events, confirmed }: Props) {
 
         <Group n="02" title="Prioritization">
           <Field label="Primary Commercial Objective">
-            <Radios name="objective" options={OBJECTIVES} value={b.objective} onChange={(objective) => set({ objective })} />
+            <Radios options={OBJECTIVES} value={b.objective} onChange={(objective) => set({ objective })} />
           </Field>
         </Group>
 
@@ -199,7 +199,6 @@ export default function BriefForm({ brief, event, events, confirmed }: Props) {
 
         <Group n="04" title="Sequence & Copy" description="The outreach steps every candidate for this event gets, with template copy. Each candidate’s invitation page fills it in.">
           <Radios
-            name="outreach_lead"
             options={OUTREACH_LEADS}
             value={b.outreach_lead}
             // AE-led means no BDR at all, so any BDR steps move to the AE.
@@ -319,7 +318,10 @@ function Chips({ options, value, onChange, all }: { options: string[]; value: st
   );
 }
 
-function Radios<T extends string>({ name, options, value, onChange }: { name: string; options: Record<T, string | { label: string; detail: string }>; value: T; onChange: (v: T) => void }) {
+// Each group gets its own name from useId. Next keeps pages you've left mounted but hidden (Activity), so a second
+// brief can sit in the document; radios sharing a name across both would uncheck each other.
+function Radios<T extends string>({ options, value, onChange }: { options: Record<T, string | { label: string; detail: string }>; value: T; onChange: (v: T) => void }) {
+  const name = useId();
   return (
     <div className="space-y-2.5">
       {(Object.entries(options) as [T, string | { label: string; detail: string }][]).map(([v, o]) => (
