@@ -30,8 +30,9 @@ export async function startSequence(campaignId: string, contactId: string) {
   });
 }
 
-export async function markSent(campaignId: string, contactId: string, step: number) {
-  return recordSent(campaignId, contactId, step);
+// copy: what actually went out, when the sender edited the draft.
+export async function markSent(campaignId: string, contactId: string, step: number, copy?: { subject: string; body: string }) {
+  return recordSent(campaignId, contactId, step, copy);
 }
 
 const NEXT: Record<string, string> = {

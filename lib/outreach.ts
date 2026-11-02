@@ -4,7 +4,7 @@ import { z } from "zod";
 import { loadSnapshot, type Contact, type SequenceStep, type Snapshot } from "./data";
 import { eventOverview, vercelUsage } from "./derive";
 import { accountPlan, commercialState } from "./qualify";
-import { gmailDraft, render, schedule } from "./sequence";
+import { gmailDraft, render, schedule, type StepStatus } from "./sequence";
 import { notify, quote, type Block } from "./slack";
 import { expireFromRoute, ok, write } from "./write";
 
@@ -102,9 +102,9 @@ export async function recordSent(campaignId: string, contactId: string, index: n
 const siteUrl = () =>
   process.env.SITE_URL ?? (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "http://localhost:3100");
 
-// The Slack card for a step that's due: who it's for, the drafted copy, and buttons to mark it sent as drafted, edit it
-// to what actually went out, or open it to send: a Gmail draft for email steps, the invitation page otherwise (and when
-// the Gmail link would pass Slack's 3,000-character limit for button links). The buttons carry "campaignId|contactId|step".
+// The Slack card for a step that's due: who it's for, the drafted copy, and buttons to mark it sent as drafted, open a
+// Gmail draft of it (email steps, when the link fits Slack's 3,000-character limit), or edit it in Seatbook, which opens
+// that step on the invitation page. Mark Sent carries "campaignId|contactId|step".
 export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false) {
   const step = s.event_briefs.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const by = sender(s, step, c);
@@ -114,9 +114,6 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
   const value = `${campaignId}|${c.id}|${index}`;
   const copy = draftCopy(s, campaignId, c, index);
   const gmail = step.channel === "Email" ? gmailDraft(c.email, copy.subject, copy.body) : null;
-  const open = gmail && gmail.length <= 3000
-    ? { text: "Open in Gmail", url: gmail }
-    : { text: "Open in Seatbook", url: `${siteUrl()}/events/${slug}/candidates/${c.id}` };
   const text = `Step ${index + 1} (${step.channel}) to ${fullName(c)}, ${c.title} at ${account}, is ${overdue ? "overdue" : "due today"} · ${event}`;
   const blocks: Block[] = [
     { type: "section", text: { type: "mrkdwn", text: `*For ${fullName(by)}:* ${text}` } },
@@ -125,8 +122,8 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
       type: "actions",
       elements: [
         { type: "button", style: "primary", text: { type: "plain_text", text: "Mark Sent" }, action_id: "mark_sent", value },
-        { type: "button", text: { type: "plain_text", text: "Edit & Mark Sent" }, action_id: "edit_sent", value },
-        { type: "button", text: { type: "plain_text", text: open.text }, action_id: "open", url: open.url },
+        ...(gmail && gmail.length <= 3000 ? [{ type: "button", text: { type: "plain_text", text: "Open in Gmail" }, action_id: "gmail", url: gmail }] : []),
+        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/candidates/${c.id}#step-${index + 1}` },
       ],
     },
   ];
@@ -142,14 +139,15 @@ export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: num
   ];
 }
 
-// A Slack card for each step due today or overdue in the event, to its sender, sent on demand.
-export async function sendReminders(campaignId: string) {
+// A Slack card for each unsent step in the event with one of these statuses, to its sender: due or overdue on demand
+// and at 9am, due today at 4pm.
+export async function sendReminders(campaignId: string, statuses: StepStatus[] = ["Due", "Overdue"]) {
   const s = await loadSnapshot();
   const brief = s.event_briefs.find((b) => b.campaign_id === campaignId);
   if (!brief) return { error: "No such event." };
   const due = s.outreach
     .filter((o) => o.campaign_id === campaignId)
-    .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status === "Due" || x.status === "Overdue").map((x) => ({ o, x })));
+    .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status && statuses.includes(x.status)).map((x) => ({ o, x })));
   const error = await write(async (db) => {
     for (const { o, x } of due) {
       const card = stepCard(s, campaignId, s.contacts.find((c) => c.id === o.contact_id)!, x.index, x.status === "Overdue");

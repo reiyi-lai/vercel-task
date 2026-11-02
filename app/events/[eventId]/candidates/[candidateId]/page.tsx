@@ -6,7 +6,7 @@ import { Avatar, Badge, Button, Page, PageHeader, Section, Status, Tags } from "
 import { loadSnapshot } from "@/lib/data";
 import { accountInteractions, derivePlan, eventOverview, vercelUsage } from "@/lib/derive";
 import { messageVars, sender } from "@/lib/outreach";
-import { render, schedule } from "@/lib/sequence";
+import { render, schedule, shortDate } from "@/lib/sequence";
 import Outreach from "./outreach";
 
 type Props = PageProps<"/events/[eventId]/candidates/[candidateId]">;
@@ -37,7 +37,7 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
   const usage = vercelUsage(s, plan.account.id);
   const brief = s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
   const outreach = s.outreach.find((x) => x.campaign_id === event.campaign_id && x.contact_id === candidateId);
-  const day = (d: Date | null) => d && d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const day = (d: Date | null) => d && shortDate(d);
   const steps = schedule(brief?.sequence ?? [], outreach).map(({ step, index, due, sent, status }) => {
     const vars = messageVars(s, event.campaign_id, target, step);
     const from = sender(s, step, target);

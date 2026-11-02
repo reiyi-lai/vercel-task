@@ -2,9 +2,9 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { ok, type Db } from "./write";
 
 // Slack alerts are for exceptions: a step falling due, a reply to handle, an acceptance or decline. Each is saved for the
-// in-app feed and, when SLACK_WEBHOOK_URL is set, posted to that channel. Step cards carry buttons (Mark Sent, Edit &
-// Mark Sent) that Slack sends back to /api/slack/interactions; those need the app's Interactivity turned on, its
-// SLACK_SIGNING_SECRET, and a SLACK_BOT_TOKEN to open the edit form. Production would DM each AE or BDR instead.
+// in-app feed and, when SLACK_WEBHOOK_URL is set, posted to that channel. A step card's Mark Sent button comes back to
+// /api/slack/interactions, which needs the app's Interactivity turned on and its SLACK_SIGNING_SECRET; its other buttons
+// are links (Open in Gmail, Edit in Seatbook). Production would DM each AE or BDR instead.
 
 type Alert = { campaign_id: string; contact_id: string | null; recipient: string; kind: string; text: string };
 export type Block = Record<string, unknown>;
@@ -24,18 +24,6 @@ export function verifySlack(rawBody: string, headers: Headers) {
   if (!secret || !ts || !sig || Math.abs(Date.now() / 1000 - Number(ts)) > 300) return false;
   const expected = `v0=${createHmac("sha256", secret).update(`v0:${ts}:${rawBody}`).digest("hex")}`;
   return expected.length === sig.length && timingSafeEqual(Buffer.from(expected), Buffer.from(sig));
-}
-
-// The Slack Web API with the bot token, for opening the edit form.
-export async function slackApi(method: string, body: object) {
-  const res = await fetch(`https://slack.com/api/${method}`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${process.env.SLACK_BOT_TOKEN}`, "Content-Type": "application/json; charset=utf-8" },
-    body: JSON.stringify(body),
-  });
-  const json = await res.json();
-  if (!json.ok) throw new Error(`Slack ${method}: ${json.error}`);
-  return json;
 }
 
 // Replaces the card a button was clicked on, through the response_url Slack sent with the click.

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    { "path": "/api/outreach/reminders?run=morning", "schedule": "0 17 * * *" },
+    { "path": "/api/outreach/reminders?run=afternoon", "schedule": "0 0 * * *" }
+  ]
+}

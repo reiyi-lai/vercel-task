@@ -3,6 +3,9 @@
 // The sample data is dated around this day, so "months ago" stays stable.
 export const AS_OF = new Date("2026-10-29T00:00:00Z");
 
+// The business time zone for outreach: when a step is "due today", and when the 9am and 4pm Slack reminders run.
+export const TIMEZONE = "America/Los_Angeles";
+
 export const ROUTES = {
   levelZero: "AE · existing customer", // the target works at a customer: their AE invites directly, always first
   customer: "Via existing customer",
