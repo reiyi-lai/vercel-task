@@ -14,7 +14,6 @@ import Assign from "./assign";
 import { RemoveCheckbox, RemoveSelected, RemoveSelection } from "./remove";
 import FindEmail from "./find-email";
 import StartSequence from "./start-sequence";
-import CandidatePanel from "./candidate-panel";
 
 type Props = PageProps<"/events/[eventId]/candidates">;
 
@@ -24,15 +23,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: event && `Candidates · ${event.short_name}` };
 }
 
-export default function CandidatesPage({ params, searchParams }: Props) {
-  return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><Candidates params={params} searchParams={searchParams} /></Suspense>;
+export default function CandidatesPage({ params }: Props) {
+  return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><Candidates params={params} /></Suspense>;
 }
 
-// Everyone selected to invite on this event's account plans, with their owners and outreach status. ?candidate=<id>
-// opens that candidate's invitation plan in a panel over the list.
-async function Candidates({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
+// Everyone selected to invite on this event's account plans, with their owners and outreach status.
+async function Candidates({ params }: Pick<Props, "params">) {
   const { eventId } = await params;
-  const open = (await searchParams).candidate;
   await connection(); // outreach status depends on today's date, so render at request time
   const s = await loadSnapshot();
   const o = eventOverview(s, eventId);
@@ -70,7 +67,7 @@ async function Candidates({ params, searchParams }: Pick<Props, "params" | "sear
             {selected.length ? (
               <ul className="material-base divide-y divide-gray-alpha-400">
                 {selected.map(({ contact: c, account, bdrId, qualified, outreach, started }) => (
-                  <li key={c.id} className={`grid items-start gap-3 px-5 py-4 xl:grid-cols-[minmax(0,1fr)_150px_140px_140px_200px_120px] xl:gap-5 ${c.id === open ? "bg-gray-100" : ""}`}>
+                  <li key={c.id} className={`grid items-start gap-3 px-5 py-4 xl:grid-cols-[minmax(0,1fr)_150px_140px_140px_200px_120px] xl:gap-5`}>
                     <div className="flex min-w-0 items-center gap-3">
                       <RemoveCheckbox id={c.id} name={`${c.first_name} ${c.last_name}`} />
                       <Avatar name={`${c.first_name} ${c.last_name}`} />
@@ -105,7 +102,7 @@ async function Candidates({ params, searchParams }: Pick<Props, "params" | "sear
                       <Status color={outreach.color}><span className="text-label-12">{outreach.text}</span></Status>
                     </div>
                     <div className="flex flex-col items-start gap-2 xl:justify-self-end">
-                      <Link href={`?candidate=${c.id}`} scroll={false} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
+                      <Link href={`/events/${event.slug}/candidates/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
                       {!c.email && c.linkedin_url && !c.linkedin_url.includes("linkedin.example") && <FindEmail contactId={c.id} />}
                       {c.email && !started && <StartSequence campaignId={event.campaign_id} contactId={c.id} />}
                     </div>
@@ -120,7 +117,6 @@ async function Candidates({ params, searchParams }: Pick<Props, "params" | "sear
           </Section>
         </RemoveSelection>
       </Page>
-      {typeof open === "string" && <CandidatePanel s={s} event={brief} contactId={open} close={`/events/${event.slug}/candidates`} />}
     </>
   );
 }

@@ -9,7 +9,7 @@ import { gmailDraft, shortDate } from "@/lib/sequence";
 import StartSequence from "../events/[eventId]/candidates/start-sequence";
 import MarkSent from "./mark-sent";
 
-export const metadata: Metadata = { title: "My Outreach" };
+export const metadata: Metadata = { title: "For AE/BDR" };
 
 export default function OutreachPage({ searchParams }: PageProps<"/outreach">) {
   return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><Queue searchParams={searchParams} /></Suspense>;
@@ -24,7 +24,8 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
   const { due, replies, toStart } = myQueue(s, me.id);
-  const panel = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates?candidate=${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
+  // The candidate's invitation plan, with a back link to this queue.
+  const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}?from=outreach&as=${me.id}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
     <div className="flex min-w-0 items-center gap-3">
       <Avatar name={`${r.c.first_name} ${r.c.last_name}`} />
@@ -45,7 +46,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           </div>
         }
       >
-        <h1 className="text-heading-32">My Outreach</h1>
+        <h1 className="text-heading-32">For AE/BDR</h1>
         <p className="mt-1 text-copy-14 text-gray-900">{me.first_name}’s steps due across every event, replies to answer, and candidates waiting to start.</p>
       </PageHeader>
       <Page>
@@ -58,7 +59,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                   Step {r.step.index + 1} · {r.step.step.channel} · {r.step.status === "Overdue" ? `overdue since ${shortDate(r.step.due!)}` : "due today"}
                 </Status>
                 <div className="flex flex-wrap items-start justify-end gap-2">
-                  <Link href={panel(r.e.slug, r.c.id, r.step.index)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">View Draft</Link>
+                  <Link href={plan(r.e.slug, r.c.id, r.step.index)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">View Draft</Link>
                   {r.step.step.channel === "Email" && r.c.email && <Button href={gmailDraft(r.c.email, r.copy.subject, r.copy.body)}>Open in Gmail</Button>}
                   <MarkSent campaignId={r.x.campaign_id} contactId={r.c.id} step={r.step.index} />
                 </div>
@@ -74,7 +75,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                 {who(r)}
                 <Status color="gray">Not started</Status>
                 <div className="flex flex-wrap items-start justify-end gap-3">
-                  <Link href={panel(r.e.slug, r.c.id)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">Open Plan</Link>
+                  <Link href={plan(r.e.slug, r.c.id)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">Open Plan</Link>
                   {r.c.email ? <StartSequence campaignId={r.x.campaign_id} contactId={r.c.id} /> : <span className="flex h-8 items-center text-label-13 text-gray-900">Needs an email</span>}
                 </div>
               </Row>
@@ -88,7 +89,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
               <Row key={`${r.x.campaign_id}${r.c.id}`}>
                 {who(r)}
                 <Status color="blue">Replied</Status>
-                <Link href={panel(r.e.slug, r.c.id)} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
+                <Link href={plan(r.e.slug, r.c.id)} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
               </Row>
             ))}
           </List>

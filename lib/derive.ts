@@ -107,7 +107,7 @@ export function eventOverview(s: Snapshot, slug: string) {
         id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals,
         // Who runs the outreach: the assigned BDR on a BDR-led event, otherwise the account's AE. null until assigned.
         owner: brief?.outreach_lead === "bdr" ? (bdr_id ? fullName(user.get(bdr_id)!) : null) : k.owner_id ? fullName(user.get(k.owner_id)!) : null, outcome: o?.outcome ?? null, started: !!o?.started_at,
-        detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates?candidate=${id}`,
+        detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates/${id}`,
       };
     });
   const responded = (outcome: string) => cards.filter((c) => c.outcome === outcome);

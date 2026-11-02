@@ -17,7 +17,7 @@ export default function SidebarNav({ events }: { events: SidebarEvent[] }) {
     <nav aria-label="Main" className="space-y-6">
       <ul className="space-y-0.5">
         <li><Link href="/" className={item(path === "/")} aria-current={path === "/" ? "page" : undefined}>All Events</Link></li>
-        <li><Link href="/outreach" className={item(path === "/outreach")} aria-current={path === "/outreach" ? "page" : undefined}>My Outreach</Link></li>
+        <li><Link href="/outreach" className={item(path === "/outreach")} aria-current={path === "/outreach" ? "page" : undefined}>For AE/BDR</Link></li>
       </ul>
       <div>
         <p className="px-2.5 pb-1.5 text-label-12 text-gray-900">Events</p>

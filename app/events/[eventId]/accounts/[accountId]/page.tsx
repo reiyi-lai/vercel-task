@@ -193,7 +193,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
                     {e.status !== "Excluded" && (
                       <>
                         <SelectExecutive campaignId={event.campaign_id} contactId={c.id} name={`${c.first_name} ${c.last_name}`} selected={e.selected} />
-                        <Link href={`/events/${event.slug}/candidates?candidate=${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
+                        <Link href={`/events/${event.slug}/candidates/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
                       </>
                     )}
                   </div>

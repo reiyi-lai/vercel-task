@@ -18,7 +18,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 - **Head of Marketing:** **All Events** shows overview of statistics and dates for all events, clicking on each event card also reveals **Overview** of each event.
 - **Marketing:** Each event in the sidebar, in workflow order: **Brief**, **Accounts**, **Candidates** with root page showing progress for that event.
-- **AEs/BDRs:** **My Outreach** lists their steps due across every event (with the draft, Open in Gmail and Mark Sent), candidates ready to start, and emails to replies to answer. Slack pings them about the same steps at 9am and 4pm.
+- **AEs/BDRs:** **For AE/BDR** lists their steps due across every event (with the draft, Open in Gmail and Mark Sent), candidates ready to start, and emails to replies to answer. Slack pings them about the same steps at 9am and 4pm.
 
 ## Sample Flow
 
@@ -35,12 +35,12 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
    - The candidates you've selected across all accounts for this event appear here.
    - Clicking **Find Email** fetches a missing email for that candidate via Sumble if needed.
    - **Start Sequence** kickstarts the outreach sequence, which involves a message to the respective AE/BDR via Slack.
-6. **Invitation plan** (click **Invitation Plan →**; it opens as a panel over the Candidates list).
+6. **Invitation plan** (click **Invitation Plan →**).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.
    - Temporary setup: **Mark Sent** once it goes out. Candidate outcome can be updated via **Replied, Accepted or Declined**.
 7. **Overview.** View overview of invitation pipeline with shortlisted, invited and accepted counts against the targets. The pipeline board shows each candidate's stage and owner, and Recent Activity lists the Slack alerts.
-8. **My Outreach.** Pick who you're viewing as (an AE or BDR) to see their queue across all events.
+8. **For AE/BDR.** Pick who you're viewing as (an AE or BDR) to see their queue across all events.
 
 ## Architecture
 

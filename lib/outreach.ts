@@ -54,7 +54,7 @@ const siteUrl = () =>
 
 // The Slack card for a step that's due: who it's for, the drafted copy, and buttons to mark it sent as drafted, open a
 // Gmail draft of it (email steps, when the link fits Slack's 3,000-character limit), or edit it in Seatbook, which opens
-// that step in the candidate's panel. Mark Sent carries "campaignId|contactId|step".
+// that step on the candidate's invitation plan. Mark Sent carries "campaignId|contactId|step".
 export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false) {
   const step = s.events.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const by = sender(s, campaignId, step, c)!; // cards are only sent for started sequences, whose senders are assigned
@@ -73,7 +73,7 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
       elements: [
         { type: "button", style: "primary", text: { type: "plain_text", text: "Mark Sent" }, action_id: "mark_sent", value },
         ...(gmail && gmail.length <= 3000 ? [{ type: "button", text: { type: "plain_text", text: "Open in Gmail" }, action_id: "gmail", url: gmail }] : []),
-        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/candidates?candidate=${c.id}#step-${index + 1}` },
+        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/candidates/${c.id}#step-${index + 1}` },
       ],
     },
   ];
