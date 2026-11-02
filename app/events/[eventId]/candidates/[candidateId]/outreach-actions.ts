@@ -1,6 +1,6 @@
 "use server";
 
-import { loadSnapshot, type Outreach } from "@/lib/data";
+import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
 import { recordSent, sender, stepCard } from "@/lib/outreach";
 import { notify } from "@/lib/slack";
 import { ok, write } from "@/lib/write";
@@ -11,8 +11,8 @@ import { ok, write } from "@/lib/write";
 async function context(campaignId: string, contactId: string) {
   const s = await loadSnapshot();
   const c = s.contacts.find((x) => x.id === contactId)!;
-  const brief = s.event_briefs.find((b) => b.campaign_id === campaignId)!;
-  const o = s.outreach.find((x) => x.campaign_id === campaignId && x.contact_id === contactId);
+  const brief = s.events.find((b) => b.campaign_id === campaignId)!;
+  const o = s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === contactId);
   const ae = s.users.find((u) => u.id === c.owner_id);
   const who = `${c.first_name} ${c.last_name} (${s.accounts.find((a) => a.id === c.account_id)!.name})`;
   return { s, c, brief, o, ae: ae ? `${ae.first_name} ${ae.last_name}` : "Unassigned AE", who, event: s.campaigns.find((x) => x.id === campaignId)!.name };
@@ -25,7 +25,7 @@ export async function startSequence(campaignId: string, contactId: string) {
   const missing = brief.sequence.find((step) => !sender(s, campaignId, step, c));
   if (missing) return `Assign ${missing.sender === "AE" ? "an AE" : "a BDR"} first.`;
   return write(async (db) => {
-    ok(await db.from("outreach").upsert({ campaign_id: campaignId, contact_id: contactId, started_at: new Date().toISOString(), sent: [], outcome: null, outcome_at: null }));
+    ok(await db.from(TABLES.candidates).update({ started_at: new Date().toISOString(), sent: [], outcome: null, outcome_at: null }).eq("campaign_id", campaignId).eq("contact_id", contactId));
     // Step 1 is due now: its card, with the drafted copy and Mark Sent / Edit buttons, goes to its sender.
     const card = stepCard(s, campaignId, c, 0);
     await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: card.recipient, kind: "Started", text: `${event} outreach to ${who} has started. ${card.text}` }, card.blocks);
@@ -44,10 +44,10 @@ const NEXT: Record<string, string> = {
 };
 
 // null clears the outcome (resumes a paused sequence).
-export async function setOutcome(campaignId: string, contactId: string, outcome: Outreach["outcome"]) {
+export async function setOutcome(campaignId: string, contactId: string, outcome: Candidate["outcome"]) {
   const { ae, who, event } = await context(campaignId, contactId);
   return write(async (db) => {
-    ok(await db.from("outreach").update({ outcome, outcome_at: outcome && new Date().toISOString() }).eq("campaign_id", campaignId).eq("contact_id", contactId));
+    ok(await db.from(TABLES.candidates).update({ outcome, outcome_at: outcome && new Date().toISOString() }).eq("campaign_id", campaignId).eq("contact_id", contactId));
     if (outcome && NEXT[outcome]) await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: ae, kind: outcome, text: `${who} ${NEXT[outcome]} (${event})` });
   });
 }
@@ -56,6 +56,6 @@ export async function setOutcome(campaignId: string, contactId: string, outcome:
 export async function saveDraft(campaignId: string, contactId: string, step: number, copy: { subject: string; body: string }) {
   const { o } = await context(campaignId, contactId);
   return write(async (db) =>
-    ok(await db.from("outreach").upsert({ campaign_id: campaignId, contact_id: contactId, drafts: { ...o?.drafts, [step]: copy } }))
+    ok(await db.from(TABLES.candidates).update({ drafts: { ...o?.drafts, [step]: copy } }).eq("campaign_id", campaignId).eq("contact_id", contactId))
   );
 }

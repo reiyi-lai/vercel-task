@@ -5,7 +5,7 @@ import { Suspense, type ReactNode } from "react";
 import { Avatar, Badge, Page, PageHeader, PersonName, Section, Status } from "@/components/ui";
 import { relevantTheme } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
-import { derivePlan, eventDetails, formatDate, vercelUsage } from "@/lib/derive";
+import { eventDetails, formatDate, vercelUsage } from "@/lib/derive";
 import { accountPlan } from "@/lib/qualify";
 import { profileKey } from "@/lib/sumble";
 import { AddToCrm, FindExecutives, RefreshSignals, SelectExecutive } from "./controls";
@@ -31,7 +31,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
   const { eventId, accountId } = await params;
   const s = await loadSnapshot();
   const event = eventDetails(s, eventId);
-  const brief = event && s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
+  const brief = event && s.events.find((b) => b.campaign_id === event.campaign_id);
   const account = s.accounts.find((a) => a.id === accountId);
   if (!event || !brief || !account) notFound();
   const plan = accountPlan(s, account, brief);
@@ -162,9 +162,8 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
           <ul className="material-base divide-y divide-gray-alpha-400">
             {plan.executives.map((e) => {
               const c = e.contact;
-              const top = e.status !== "Excluded" && c.owner_id ? derivePlan(s, c.id, event.campaign_id).ladder[0] : undefined;
               return (
-                <li key={c.id} className={`grid items-start gap-3 px-5 py-4 lg:grid-cols-[260px_1fr_220px_130px] lg:gap-6 ${e.status === "Excluded" ? "opacity-60" : ""}`}>
+                <li key={c.id} className={`grid items-start gap-3 px-5 py-4 lg:grid-cols-[260px_1fr_160px] lg:gap-6 ${e.status === "Excluded" ? "opacity-60" : ""}`}>
                   <div className="flex items-center gap-3">
                     <Avatar name={`${c.first_name} ${c.last_name}`} />
                     <div className="min-w-0">
@@ -177,14 +176,6 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
                     <ul className="flex flex-wrap gap-x-4 gap-y-1">
                       {e.labels.map((l) => <li key={l.text}><Status color={l.color}><span className="text-label-12">{l.text}</span></Status></li>)}
                     </ul>
-                  </div>
-                  <div className="text-label-12">
-                    {top && (
-                      <>
-                        <p className="text-gray-900">Best route</p>
-                        <p>{top.route} · {top.connector.name}</p>
-                      </>
-                    )}
                   </div>
                   <div className="flex flex-col gap-2 lg:items-end">
                     {e.status !== "Excluded" && (

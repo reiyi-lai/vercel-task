@@ -1,5 +1,5 @@
 import { randomBytes } from "node:crypto";
-import { loadSnapshot, type AccountSignal, type EventBrief } from "./data";
+import { loadSnapshot, TABLES, type AccountSignal, type EventBrief } from "./data";
 import { geocode } from "./geocode";
 import { matchPersona } from "./qualify";
 import { hiringSignals, initiativeSignals, leadershipSignals, sumbleOrgId } from "./signals";
@@ -32,8 +32,8 @@ export async function refreshSignals(accountId: string, group: "sumble" | "resea
         failed.push(`${source}: ${(r.reason as Error).message}`);
         continue;
       }
-      ok(await db.from("account_signals").delete().eq("account_id", a.id).eq("source", source));
-      if (r.value.length) ok(await db.from("account_signals").insert(r.value));
+      ok(await db.from(TABLES.account_signals).delete().eq("account_id", a.id).eq("source", source));
+      if (r.value.length) ok(await db.from(TABLES.account_signals).insert(r.value));
     }
   }, expireFromRoute);
   return err ?? (failed.length ? failed.join(" ") : undefined);
@@ -54,12 +54,11 @@ export async function addContact(accountId: string, linkedinUrl: string) {
     const place = await geocode(p.attributes.location);
     const [first, ...rest] = p.attributes.name.split(" ");
     ok(
-      await db.from("contacts").insert({
+      await db.from(TABLES.contacts).insert({
         id: `003Sb${randomBytes(5).toString("hex")}AAA`, // Salesforce-style 18-character id
         first_name: first, last_name: rest.join(" "), email: null, title: p.attributes.job_title ?? null,
-        account_id: a.id, owner_id: a.owner_id, linkedin_url: linkedinUrl, intro_program: null, employment_status: "Current",
-        mailing_city: place?.city ?? null, mailing_state: place?.state ?? null, mailing_latitude: place?.latitude ?? null,
-        mailing_longitude: place?.longitude ?? null, has_opted_out_of_email: false,
+        account_id: a.id, owner_id: a.owner_id, linkedin_url: linkedinUrl, employment_status: "Current",
+        mailing_city: place?.city ?? null, mailing_state: place?.state ?? null, has_opted_out_of_email: false,
       })
     );
   }, expireFromRoute);
@@ -81,7 +80,7 @@ const FUNCTIONS = ["Engineering & R&D", "Information Technology", "Product & Des
 export async function findExecutives(accountId: string, campaignId: string) {
   const s = await loadSnapshot();
   const a = s.accounts.find((x) => x.id === accountId);
-  const brief = s.event_briefs.find((b) => b.campaign_id === campaignId);
+  const brief = s.events.find((b) => b.campaign_id === campaignId);
   if (!a || !brief) return "No such account or event.";
   return write(async (db) => {
     const orgId = await sumbleOrgId(a);
@@ -108,8 +107,8 @@ export async function findExecutives(accountId: string, campaignId: string) {
         linkedin_url: x.linkedin_url, persona: matchPersona(x.job_title ?? "", brief.personas)!,
       }];
     });
-    ok(await db.from("found_executives").delete().eq("campaign_id", campaignId).eq("account_id", a.id));
-    if (rows.length) ok(await db.from("found_executives").upsert(rows));
+    ok(await db.from(TABLES.found_executives).delete().eq("campaign_id", campaignId).eq("account_id", a.id));
+    if (rows.length) ok(await db.from(TABLES.found_executives).upsert(rows));
   }, expireFromRoute);
 }
 
@@ -123,6 +122,6 @@ export async function findEmail(contactId: string) {
     const { people } = await sumble("people", { people: [{ linkedin_url: c.linkedin_url }], select: { attributes: ["email"] } });
     const email = (people as SumblePerson[])[0]?.attributes?.email;
     if (!email) throw new Error(`Sumble has no email for ${c.first_name} ${c.last_name}.`);
-    ok(await db.from("contacts").update({ email }).eq("id", c.id));
+    ok(await db.from(TABLES.contacts).update({ email }).eq("id", c.id));
   }, expireFromRoute);
 }

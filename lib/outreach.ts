@@ -1,4 +1,4 @@
-import { loadSnapshot, type Contact, type SequenceStep, type Snapshot } from "./data";
+import { loadSnapshot, TABLES, type Contact, type SequenceStep, type Snapshot } from "./data";
 import { eventOverview } from "./derive";
 import { gmailDraft, render, schedule, type StepStatus } from "./sequence";
 import { notify, quote, type Block } from "./slack";
@@ -9,20 +9,18 @@ const fullName = (p: { first_name: string; last_name: string }) => `${p.first_na
 // Who sends a step: the AE is the account's owner (its contacts share it); the BDR is the one assigned to this candidate
 // for the event. Undefined until they're assigned on the Candidates page.
 export function sender(s: Snapshot, campaignId: string, step: SequenceStep, c: Contact) {
-  const id = step.sender === "AE" ? c.owner_id : s.invitation_selections.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
+  const id = step.sender === "AE" ? c.owner_id : s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
   return s.users.find((u) => u.id === id);
 }
 
 // The values a step's template fills for one candidate.
 export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: SequenceStep) {
   const event = eventOverview(s, s.events.find((e) => e.campaign_id === campaignId)!.slug)!.event;
-  const o = s.outreach.find((x) => x.campaign_id === campaignId && x.contact_id === c.id);
   return {
     first_name: c.first_name,
     account: s.accounts.find((a) => a.id === c.account_id)!.name,
     event: event.name,
     date: event.date,
-    personal_line: o?.personal_line ?? "", // the line is optional: render drops it, and its blank line, when empty
     sender_first_name: sender(s, campaignId, step, c)?.first_name ?? "{sender_first_name}",
     ae_first_name: s.users.find((u) => u.id === c.owner_id)?.first_name ?? "{ae_first_name}",
   };
@@ -30,9 +28,9 @@ export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: S
 
 // A step's message for one candidate: the edit saved for it, or else the event's template filled in.
 export function draftCopy(s: Snapshot, campaignId: string, c: Contact, index: number) {
-  const edited = s.outreach.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.drafts?.[index];
+  const edited = s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.drafts?.[index];
   if (edited) return edited;
-  const step = s.event_briefs.find((b) => b.campaign_id === campaignId)!.sequence[index];
+  const step = s.events.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const vars = messageVars(s, campaignId, c, step);
   return { subject: render(step.subject, vars), body: render(step.body, vars) };
 }
@@ -41,12 +39,12 @@ export function draftCopy(s: Snapshot, campaignId: string, c: Contact, index: nu
 // by: who marked it, when it came from Slack.
 export async function recordSent(campaignId: string, contactId: string, index: number, copy?: { subject: string; body: string }, by?: string, expire?: () => void) {
   const s = await loadSnapshot();
-  const o = s.outreach.find((x) => x.campaign_id === campaignId && x.contact_id === contactId);
+  const o = s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === contactId);
   if (!o?.started_at) return "Start the sequence first.";
   const c = s.contacts.find((x) => x.id === contactId)!;
   const entry = { step: index, at: new Date().toISOString(), ...(copy ?? draftCopy(s, campaignId, c, index)), ...(by && { by }) };
   return write(
-    async (db) => ok(await db.from("outreach").update({ sent: [...o.sent.filter((x) => x.step !== index), entry] }).eq("campaign_id", campaignId).eq("contact_id", contactId)),
+    async (db) => ok(await db.from(TABLES.candidates).update({ sent: [...o.sent.filter((x) => x.step !== index), entry] }).eq("campaign_id", campaignId).eq("contact_id", contactId)),
     expire
   );
 }
@@ -58,7 +56,7 @@ const siteUrl = () =>
 // Gmail draft of it (email steps, when the link fits Slack's 3,000-character limit), or edit it in Seatbook, which opens
 // that step on the invitation page. Mark Sent carries "campaignId|contactId|step".
 export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false) {
-  const step = s.event_briefs.find((b) => b.campaign_id === campaignId)!.sequence[index];
+  const step = s.events.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const by = sender(s, campaignId, step, c)!; // cards are only sent for started sequences, whose senders are assigned
   const account = s.accounts.find((a) => a.id === c.account_id)!.name;
   const event = s.campaigns.find((x) => x.id === campaignId)!.name;
@@ -95,9 +93,9 @@ export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: num
 // and at 9am, due today at 4pm.
 export async function sendReminders(campaignId: string, statuses: StepStatus[] = ["Due", "Overdue"]) {
   const s = await loadSnapshot();
-  const brief = s.event_briefs.find((b) => b.campaign_id === campaignId);
+  const brief = s.events.find((b) => b.campaign_id === campaignId);
   if (!brief) return { error: "No such event." };
-  const due = s.outreach
+  const due = s.candidates
     .filter((o) => o.campaign_id === campaignId)
     .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status && statuses.includes(x.status)).map((x) => ({ o, x })));
   const error = await write(async (db) => {

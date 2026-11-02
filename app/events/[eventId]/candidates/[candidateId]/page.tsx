@@ -37,8 +37,8 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
   const ae = s.users.find((u) => u.id === target.owner_id);
   const name = `${target.first_name} ${target.last_name}`;
   const usage = vercelUsage(s, account.id);
-  const brief = s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
-  const outreach = s.outreach.find((x) => x.campaign_id === event.campaign_id && x.contact_id === candidateId);
+  const brief = s.events.find((b) => b.campaign_id === event.campaign_id);
+  const outreach = s.candidates.find((x) => x.campaign_id === event.campaign_id && x.contact_id === candidateId);
   const day = (d: Date | null) => d && shortDate(d);
   const steps = schedule(brief?.sequence ?? [], outreach).map(({ step, index, due, sent, status }) => {
     const from = sender(s, event.campaign_id, step, target);

@@ -26,7 +26,7 @@ async function Accounts({ params }: Pick<Props, "params">) {
   const { eventId } = await params;
   const s = await loadSnapshot();
   const event = eventDetails(s, eventId);
-  const brief = event && s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
+  const brief = event && s.events.find((b) => b.campaign_id === event.campaign_id);
   if (!event || !brief) notFound();
   const basePath = `/events/${event.slug}`;
   // The ABM target accounts (Target_Account__c), minus Enterprise customers, who aren't invited through this flow.

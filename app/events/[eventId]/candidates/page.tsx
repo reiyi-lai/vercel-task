@@ -34,14 +34,14 @@ async function Candidates({ params }: Pick<Props, "params">) {
   await connection(); // outreach status depends on today's date, so render at request time
   const s = await loadSnapshot();
   const o = eventOverview(s, eventId);
-  const brief = o && s.event_briefs.find((b) => b.campaign_id === o.event.campaign_id);
+  const brief = o && s.events.find((b) => b.campaign_id === o.event.campaign_id);
   if (!o || !brief) notFound();
   const { event } = o;
   const people = (title: string) => s.users.filter((u) => u.title === title).map((u) => ({ id: u.id, name: `${u.first_name} ${u.last_name}` }));
   const aes = people("Account Executive");
   const bdrs = people("BDR");
   const alerts = s.slack_alerts.filter((a) => a.campaign_id === event.campaign_id).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 10);
-  const selected = s.invitation_selections
+  const selected = s.candidates
     .filter((x) => x.campaign_id === event.campaign_id)
     .map((x) => {
       const contact = s.contacts.find((c) => c.id === x.contact_id)!;
@@ -50,8 +50,8 @@ async function Candidates({ params }: Pick<Props, "params">) {
         account: s.accounts.find((a) => a.id === contact.account_id)!,
         bdrId: x.bdr_id,
         qualified: qualifyContact(s, contact, brief),
-        outreach: progress(brief.sequence, s.outreach.find((o) => o.campaign_id === event.campaign_id && o.contact_id === contact.id)),
-        started: !!s.outreach.find((o) => o.campaign_id === event.campaign_id && o.contact_id === contact.id)?.started_at,
+        outreach: progress(brief.sequence, s.candidates.find((o) => o.campaign_id === event.campaign_id && o.contact_id === contact.id)),
+        started: !!s.candidates.find((o) => o.campaign_id === event.campaign_id && o.contact_id === contact.id)?.started_at,
       };
     })
     .sort((a, b) => a.account.name.localeCompare(b.account.name) || a.contact.last_name.localeCompare(b.contact.last_name));

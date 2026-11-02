@@ -23,7 +23,7 @@ async function Brief({ params }: Pick<Props, "params">) {
   const { eventId } = await params;
   const s = await loadSnapshot();
   const event = eventDetails(s, eventId);
-  const brief = event && s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
+  const brief = event && s.events.find((b) => b.campaign_id === event.campaign_id);
   if (!event || !brief) notFound();
   const campaign = s.campaigns.find((c) => c.id === event.campaign_id)!;
   const confirmed = s.campaign_members.filter((m) => m.campaign_id === event.campaign_id && m.invite_status === "Confirmed").length;

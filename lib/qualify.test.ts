@@ -3,7 +3,7 @@ import { loadSampleSnapshot } from "./csv";
 import { accountGate, matchPersona, qualifyContact, seniority } from "./qualify";
 
 const s = loadSampleSnapshot();
-const brief = (slug: string) => s.event_briefs.find((b) => b.campaign_id === s.events.find((e) => e.slug === slug)!.campaign_id)!;
+const brief = (slug: string) => s.events.find((b) => b.campaign_id === s.events.find((e) => e.slug === slug)!.campaign_id)!;
 const contact = (first: string) => s.contacts.find((c) => c.first_name === first)!;
 const account = (name: string) => s.accounts.find((a) => a.name === name)!;
 const check = (first: string, slug: string) => qualifyContact(s, contact(first), brief(slug));

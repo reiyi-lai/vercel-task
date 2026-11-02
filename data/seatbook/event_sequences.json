@@ -5,7 +5,7 @@
       "channel": "Email",
       "sender": "AE",
       "subject": "{first_name}, a seat for you at the Las Vegas Grand Prix",
-      "body": "Hi {first_name},\n\n{personal_line}\n\nVercel is hosting a small group of technology leaders at the Las Vegas Grand Prix on {date}: race-week hospitality, and an unhurried conversation about how teams are shipping AI apps and agents to production. We have ten seats, and I'd like one of them to be yours.\n\nShall I hold a seat for you?\n\n{sender_first_name}"
+      "body": "Hi {first_name},\n\nVercel is hosting a small group of technology leaders at the Las Vegas Grand Prix on {date}: race-week hospitality, and an unhurried conversation about how teams are shipping AI apps and agents to production. We have ten seats, and I'd like one of them to be yours.\n\nShall I hold a seat for you?\n\n{sender_first_name}"
     },
     {
       "day": 4,
@@ -35,7 +35,7 @@
       "channel": "Email",
       "sender": "BDR",
       "subject": "AI & Avocados: retail leaders breakfast at NRF",
-      "body": "Hi {first_name},\n\n{personal_line}\n\nVercel is hosting a breakfast for retail technology and commerce leaders during NRF on {date} in New York, with Stripe, Contentful and others. The topic is agentic commerce: what changes when AI assistants start shopping and checking out for customers.\n\nWould you like to join us?\n\n{sender_first_name}"
+      "body": "Hi {first_name},\n\nVercel is hosting a breakfast for retail technology and commerce leaders during NRF on {date} in New York, with Stripe, Contentful and others. The topic is agentic commerce: what changes when AI assistants start shopping and checking out for customers.\n\nWould you like to join us?\n\n{sender_first_name}"
     },
     {
       "day": 3,
@@ -65,7 +65,7 @@
       "channel": "Email",
       "sender": "AE",
       "subject": "When anyone can build, who governs what ships?",
-      "body": "Hi {first_name},\n\n{personal_line}\n\nVercel's engineering leaders are hosting a small dinner in San Francisco on {date} for leaders working through the same question: when more people can build apps and agents with AI, how do you govern what reaches production? It's off the record, with a dozen peers.\n\nWould you like to join us?\n\n{sender_first_name}"
+      "body": "Hi {first_name},\n\nVercel's engineering leaders are hosting a small dinner in San Francisco on {date} for leaders working through the same question: when more people can build apps and agents with AI, how do you govern what reaches production? It's off the record, with a dozen peers.\n\nWould you like to join us?\n\n{sender_first_name}"
     },
     {
       "day": 5,

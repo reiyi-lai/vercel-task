@@ -27,7 +27,7 @@ async function EventOverview({ params }: Pick<Props, "params">) {
   await connection(); // overdue steps depend on today's date, so render at request time
   const s = await loadSnapshot();
   const o = eventOverview(s, eventId);
-  const brief = o && s.event_briefs.find((b) => b.campaign_id === o.event.campaign_id);
+  const brief = o && s.events.find((b) => b.campaign_id === o.event.campaign_id);
   if (!o || !brief) notFound();
   const { event, pipeline } = o;
   const p = eventProgress(s, brief);

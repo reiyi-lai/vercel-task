@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore, useTransition } from "react";
 import { Button, Section, Status, type DotColor } from "@/components/ui";
-import type { Outreach as OutreachRow } from "@/lib/data";
+import type { Candidate } from "@/lib/data";
 import { gmailDraft, type StepStatus } from "@/lib/sequence";
 import FindEmail from "../find-email";
 import { markSent, saveDraft, setOutcome, startSequence } from "./outreach-actions";
@@ -18,7 +18,7 @@ const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
 // filled-in copy, due date and status. Sending happens outside Seatbook (Outreach in production); Mark Sent records it.
 // to: where steps go. Email steps link a mailto with the step's copy filled in; LinkedIn steps link the profile.
 export default function Outreach({ campaignId, contactId, outreach, steps, to }: {
-  campaignId: string; contactId: string; outreach?: OutreachRow; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
+  campaignId: string; contactId: string; outreach?: Candidate; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();

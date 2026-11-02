@@ -41,9 +41,3 @@ export async function sumble(path: string, body: object) {
   if (job.status && job.status !== "succeeded") throw new Error(`Sumble job ${job.request_id} ${job.status}`);
   return job;
 }
-
-// Work history for up to 200 people by LinkedIn URL: 3 credits per matched person, unmatched are free.
-export async function fetchExperience(linkedinUrls: string[]): Promise<SumblePerson[]> {
-  const job = await sumble("people", { people: linkedinUrls.map((linkedin_url) => ({ linkedin_url })), select: { attributes: ["name", "current_employer", "experience"] } });
-  return job.people;
-}

@@ -5,7 +5,7 @@ import type { eventDetails } from "@/lib/derive";
 type Event = NonNullable<ReturnType<typeof eventDetails>>;
 
 // The Candidates tab's count: executives selected on account plans.
-export const candidateCount = (s: Snapshot, campaignId: string) => s.invitation_selections.filter((x) => x.campaign_id === campaignId).length;
+export const candidateCount = (s: Snapshot, campaignId: string) => s.candidates.filter((x) => x.campaign_id === campaignId).length;
 
 // The event's header band and its Brief / Accounts / Candidates / Overview tabs.
 export default function EventHeader({ event, active, candidates }: { event: Event; active: "brief" | "accounts" | "overview" | "candidates"; candidates: number }) {

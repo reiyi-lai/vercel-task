@@ -18,6 +18,6 @@ export async function GET(req: Request) {
   const run = new URL(req.url).searchParams.get("run");
   if (run !== "morning" && run !== "afternoon") return Response.json({ error: "run must be morning or afternoon" }, { status: 400 });
   const s = await loadSnapshot();
-  const results = await Promise.all(s.event_briefs.map((b) => sendReminders(b.campaign_id, run === "morning" ? ["Due", "Overdue"] : ["Due"])));
+  const results = await Promise.all(s.events.map((b) => sendReminders(b.campaign_id, run === "morning" ? ["Due", "Overdue"] : ["Due"])));
   return Response.json({ sent: results.reduce((n, r) => n + (r.sent ?? 0), 0), errors: results.flatMap((r) => (r.error ? [r.error] : [])) });
 }

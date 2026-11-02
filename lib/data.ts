@@ -1,53 +1,36 @@
 import { createClient } from "@supabase/supabase-js";
 import { cacheLife, cacheTag } from "next/cache";
-import type { Overlap } from "./overlap";
-import type { SumbleRole } from "./sumble";
+import { TABLES } from "./tables";
 
 // Row types mirror the tables in supabase/migrations. CRM rows are Salesforce objects keyed by 18-character IDs.
 // A Snapshot is every table, loaded at once (the sample data is a few hundred rows; derivation happens in lib/derive.ts).
 
-export type User = { id: string; first_name: string; last_name: string; email: string | null; title: string | null; department: string | null };
+export type User = { id: string; first_name: string; last_name: string; email: string | null; title: string | null };
 export type Account = {
   id: string; name: string; website: string | null; industry: string | null; employees: number | null; type: string | null; owner_id: string | null;
-  target_account: boolean | null; icp_tier: string | null; vertical: string | null; horizontals: string[]; est_first_year_value: number | null;
-  nextjs_job_posts: number | null;
+  target_account: boolean | null; icp_tier: string | null; vertical: string | null; horizontals: string[];
 };
 export type Contact = {
   id: string; first_name: string; last_name: string; email: string | null; title: string | null; account_id: string | null; owner_id: string | null;
-  linkedin_url: string | null; intro_program: string | null; employment_status: string | null;
-  mailing_city: string | null; mailing_state: string | null; mailing_latitude: number | null; mailing_longitude: number | null;
+  linkedin_url: string | null; employment_status: string | null; mailing_city: string | null; mailing_state: string | null;
   has_opted_out_of_email: boolean;
 };
 export type Opportunity = {
   id: string; name: string; account_id: string | null; owner_id: string | null; stage: string | null; amount: number | null;
-  close_date: string | null; is_closed: boolean; is_won: boolean; last_activity: string | null;
+  is_closed: boolean; is_won: boolean;
 };
-export type OpportunityContactRole = { id: string; opportunity_id: string; contact_id: string; role: string | null; is_primary: boolean };
+export type OpportunityContactRole = { id: string; opportunity_id: string; contact_id: string; role: string | null };
 export type Activity = {
   id: string; kind: "task" | "event"; subtype: "Email" | "Call" | "Meeting"; occurred_at: string; direction: string | null;
   owner_id: string | null; contact_id: string | null; account_id: string | null; source: string | null;
 };
 export type Campaign = { id: string; name: string; type: string | null; start_date: string | null; end_date: string | null; status: string | null };
-export type CampaignMember = { campaign_id: string; contact_id: string; status: string | null; invite_status: string | null; seat: number | null };
-export type TeamlinkConnection = { captured_at: string | null; contact_id: string; user_id: string; seat_type: string | null; degree: string | null; capture_method: string | null };
-// The Swarm's warm-intro response, trimmed to what Seatbook reads. closeness and detail are added in Clay.
-export type SwarmSource = {
-  origin: "work_overlap" | "shared_org" | "linkedin_connection";
-  shared_company?: string; overlap_start_date?: string; overlap_end_date?: string | null; detail?: string;
-  closeness?: "same_team" | "reporting_line" | "same_company";
-};
-export type SwarmConnection = { connector_name: string; connector_linkedin_url: string; connector_current_company_name: string; sources: SwarmSource[] };
-export type ClayEnrichment = {
-  contact_id: string; campaign_id: string; requested_at: string | null;
-  work_history: { company: string; title: string; start: string; end: string | null }[];
-  warm_intro_paths: { profile: { full_name: string; linkedin_url: string }; connections: SwarmConnection[] };
-};
+export type CampaignMember = { campaign_id: string; contact_id: string; status: string | null; invite_status: string | null };
 // A Vercel team on the account. key_contact_*: its billing owner, the person who pays for the plan.
 export type VercelTeam = {
   id: string; name: string; account_id: string; plan: string | null; active_users_30d: number | null; monthly_spend: number | null;
   key_contact_email: string | null; key_contact_name: string | null; key_contact_title: string | null; key_contact_id: string | null;
 };
-export type EventRow = { campaign_id: string; slug: string; short_name: string; program: string | null; seats: number | null; host_user_ids: string[]; slack_channel: string | null };
 // One step of an event's outreach sequence: when (days after the sequence starts), how, who sends it, and its template
 // copy with placeholders (lib/sequence.ts fills them).
 export type SequenceStep = { day: number; channel: "Email" | "LinkedIn" | "Phone"; sender: "AE" | "BDR"; subject: string; body: string };
@@ -64,30 +47,17 @@ export type EventBrief = {
   outreach_lead: "ae" | "bdr" | "mixed"; // ae: the AE sends every step, no BDR (F1)
   target_guests: number; acceptance_rate: number; approval_rate: number; sequence: SequenceStep[];
 };
-export type Confirmation = {
-  asked_at: string | null; method: "slack_dm" | "slack_dm_customer_ae" | "slack_channel"; asked_to: string | null; target_contact_id: string;
-  connector_ref: string; answer: string | null; answered_by: string | null; answered_at: string | null;
-};
-export type WarmContact = {
-  name: string; title: string | null; company: string | null; sumble_org_id: number | null; linkedin_url: string | null;
-  warm_type: "customer_leader" | "vercel_executive" | "board_member" | "investor" | "angel"; route: string; source: string | null;
-  experience: SumbleRole[] | null;
-};
-// Imported on the Candidates page. experience and warm_overlaps stay null until generated.
-export type Candidate = {
-  id: string; campaign_id: string; first_name: string | null; last_name: string | null; title: string | null; company: string | null;
-  linkedin_url: string | null; email: string | null; sumble_person_id: number | null; experience: SumbleRole[] | null; warm_overlaps: Overlap[] | null;
-  created_at: string;
-};
+// A Seatbook event: its Salesforce campaign's display details plus its brief.
+export type EventRow = EventBrief & { slug: string; short_name: string; program: string | null; seats: number | null; host_user_ids: string[] };
 // Why an account matters now (lib/signals.ts fetches them). theme is one of the brief's campaign themes.
 export type AccountSignal = {
   account_id: string; category: "hiring" | "leadership" | "initiative"; theme: string | null; title: string; detail: string | null;
   signal_date: string; url: string | null; source: string; person_linkedin_url: string | null;
 };
-export type InvitationSelection = { campaign_id: string; contact_id: string; bdr_id: string | null }; // bdr_id: the BDR assigned for this event
-// One selected executive's outreach for an event: their personalized line, the steps sent, and how they responded.
-export type Outreach = {
-  campaign_id: string; contact_id: string; personal_line: string | null; line_signal: string | null; started_at: string | null;
+// An executive selected for an event, with their outreach: the BDR assigned (null on AE-led events), when the sequence
+// started, the steps sent, and how they responded.
+export type Candidate = {
+  campaign_id: string; contact_id: string; bdr_id: string | null; started_at: string | null;
   // drafts: edited copy saved per step before sending. sent: each step marked sent, with the copy that actually went out
   // and, from Slack, who marked it.
   drafts: Record<string, { subject: string; body: string }>;
@@ -98,21 +68,13 @@ export type SlackAlert = { id: number; campaign_id: string; contact_id: string |
 export type FoundExecutive = {
   campaign_id: string; account_id: string; name: string; title: string | null; location: string | null; linkedin_url: string; persona: string; found_at: string;
 };
-export type ConnectorLoad = { connector_name: string; connector_type: string | null; monthly_cap: number; used: number; resets: string | null };
-
 export type Snapshot = {
   users: User[]; accounts: Account[]; contacts: Contact[]; opportunities: Opportunity[]; opportunity_contact_roles: OpportunityContactRole[];
-  activities: Activity[]; campaigns: Campaign[]; campaign_members: CampaignMember[]; teamlink_connections: TeamlinkConnection[];
-  clay_enrichments: ClayEnrichment[]; vercel_teams: VercelTeam[]; events: EventRow[]; event_briefs: EventBrief[]; connector_confirmations: Confirmation[]; connector_load: ConnectorLoad[];
-  warm_contacts: WarmContact[]; candidates: Candidate[]; account_signals: AccountSignal[]; invitation_selections: InvitationSelection[];
-  found_executives: FoundExecutive[]; outreach: Outreach[]; slack_alerts: SlackAlert[];
+  activities: Activity[]; campaigns: Campaign[]; campaign_members: CampaignMember[]; vercel_teams: VercelTeam[]; events: EventRow[];
+  account_signals: AccountSignal[]; found_executives: FoundExecutive[]; candidates: Candidate[]; slack_alerts: SlackAlert[];
 };
 
-// In foreign-key order, so the seed can insert them as listed.
-export const tables = [
-  "users", "accounts", "contacts", "opportunities", "opportunity_contact_roles", "activities", "campaigns", "campaign_members",
-  "teamlink_connections", "clay_enrichments", "vercel_teams", "events", "event_briefs", "connector_confirmations", "connector_load", "warm_contacts", "candidates", "account_signals", "invitation_selections", "found_executives", "outreach", "slack_alerts",
-] as const satisfies readonly (keyof Snapshot)[];
+export { TABLES } from "./tables";
 
 // Cached for a minute, then refreshed in the background, so new Slack answers show within a minute.
 // Server Actions that write expire the "snapshot" tag, so their changes show at once.
@@ -123,11 +85,12 @@ export async function loadSnapshot(): Promise<Snapshot> {
   cacheTag("snapshot");
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return (await import("./csv")).loadSampleSnapshot();
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
-  const results = await Promise.all(tables.map((t) => supabase.from(t).select("*")));
+  const entries = Object.entries(TABLES);
+  const results = await Promise.all(entries.map(([, table]) => supabase.from(table).select("*")));
   return Object.fromEntries(
     results.map(({ data, error }, i) => {
-      if (error) throw new Error(`Loading ${tables[i]}: ${error.message}`);
-      return [tables[i], data];
+      if (error) throw new Error(`Loading ${entries[i][1]}: ${error.message}`);
+      return [entries[i][0], data];
     })
   ) as Snapshot;
 }

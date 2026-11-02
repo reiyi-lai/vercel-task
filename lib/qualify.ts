@@ -117,7 +117,7 @@ export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
     .filter((x) => x.account_id === a.id)
     .filter((x, i, all) => all.findIndex((y) => y.account_id === a.id && y.source === x.source && y.title === x.title) === i) // no repeats
     .sort((x, y) => Number(relevantTheme(y.theme, b)) - Number(relevantTheme(x.theme, b)) || y.signal_date.localeCompare(x.signal_date));
-  const selected = new Set(s.invitation_selections.filter((x) => x.campaign_id === b.campaign_id).map((x) => x.contact_id));
+  const selected = new Set(s.candidates.filter((x) => x.campaign_id === b.campaign_id).map((x) => x.contact_id));
   return {
     account: a,
     excluded: accountGate(a, b) ?? objectiveGate(s, a, b),
