@@ -21,16 +21,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: contact && `${contact.first_name} ${contact.last_name}` };
 }
 
-export default function InvitationPlanPage({ params, searchParams }: Props) {
-  return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><InvitationPlan params={params} searchParams={searchParams} /></Suspense>;
+export default function InvitationPlanPage({ params }: Props) {
+  return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><InvitationPlan params={params} /></Suspense>;
 }
 
 // One candidate's invitation plan for an event: the outreach sequence with drafts, their Vercel usage, and past
-// interactions at the account. ?from=outreach&as=<user id> (from For AE/BDR) points the back link at that queue;
-// otherwise it goes back to the event's Candidates.
-async function InvitationPlan({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
+// interactions at the account.
+async function InvitationPlan({ params }: Pick<Props, "params">) {
   const { eventId, candidateId } = await params;
-  const { from, as } = await searchParams;
   await connection(); // step due dates depend on today's date
   const s = await loadSnapshot();
   const event = s.events.find((e) => e.slug === eventId);
@@ -55,7 +53,6 @@ async function InvitationPlan({ params, searchParams }: Pick<Props, "params" | "
   });
   const interactions = accountInteractions(s, target);
   const base = `/events/${event.slug}`;
-  const back = from === "outreach" ? { label: "For AE/BDR", href: `/outreach${typeof as === "string" ? `?as=${as}` : ""}` } : { label: "Candidates", href: `${base}/candidates` };
 
   return (
     <>
@@ -78,10 +75,6 @@ async function InvitationPlan({ params, searchParams }: Pick<Props, "params" | "
       </PageHeader>
 
       <Page>
-        <Link href={back.href} className="-mb-4 flex w-fit items-center gap-1.5 text-label-13 text-gray-900 hover:text-gray-1000">
-          <span aria-hidden>←</span> {back.label}
-        </Link>
-
         <Outreach
           campaignId={event.campaign_id}
           contactId={candidateId}

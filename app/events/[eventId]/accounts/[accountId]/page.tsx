@@ -6,7 +6,7 @@ import { Avatar, Badge, Page, PageHeader, PersonName, Section, Status } from "@/
 import { relevantTheme } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
 import { eventDetails, formatDate, vercelUsage } from "@/lib/derive";
-import { accountPlan, eventAccounts } from "@/lib/qualify";
+import { accountPlan } from "@/lib/qualify";
 import { profileKey } from "@/lib/sumble";
 import { AddToCrm, FindExecutives, RefreshSignals, SelectExecutive } from "./controls";
 
@@ -45,11 +45,6 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
   const usage = vercelUsage(s, account.id);
   const live = !account.website?.endsWith(".example");
   const inCrm = new Set(contacts.flatMap((c) => (c.linkedin_url ? [profileKey(c.linkedin_url)] : [])));
-  // Previous and next in the Accounts list's order, so the BDR can work through the accounts without going back to it.
-  const order = eventAccounts(s, brief).fits.map((p) => p.account);
-  const at = order.findIndex((a) => a.id === account.id);
-  const [prev, next] = at < 0 ? [] : [order[at - 1], order[at + 1]];
-  const candidates = s.candidates.filter((x) => x.campaign_id === event.campaign_id).length;
   const base = `/events/${event.slug}`;
 
   const signalRow = (x: (typeof plan.signals)[number]) => (
@@ -89,12 +84,6 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
       </PageHeader>
 
       <Page>
-        <nav aria-label="Accounts" className="-mb-4 flex flex-wrap items-center justify-between gap-3 text-label-13">
-          {prev ? <Link href={`${base}/accounts/${prev.id}`} className="text-gray-900 hover:text-gray-1000">← {prev.name}</Link> : <span />}
-          <Link href={`${base}/candidates`} className="font-medium text-blue-900 hover:underline">{candidates} {candidates === 1 ? "candidate" : "candidates"} added · Go to Candidates →</Link>
-          {next ? <Link href={`${base}/accounts/${next.id}`} className="text-gray-900 hover:text-gray-1000">{next.name} →</Link> : <span />}
-        </nav>
-
         <Block title="Vercel Usage" source="Vercel teams and billing">
           {usage.teams.length ? (
             <p className="text-copy-13">

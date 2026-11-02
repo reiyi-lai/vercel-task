@@ -23,7 +23,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 ## Sample Flow
 
 1. **Brief.** In the sidebar, open **Las Vegas GP**, then **Brief**. Check the target verticals, personas, seniority, location and guest target.
-2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**. On any account plan, **← / →** steps through the accounts in order.
+2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**.
 3. **Account plan: Signals.** Click either buttons. They can run at the same time, but will take a while till you can refresh.
    - Clicking **Refresh Sumble Signals** loads new leaders hired and recent job post summaries. You can 'Add to CRM' the executives you deem relevant.
    - Clicking **Research AI Initiatives** uses Claude to search the web for Visa's AI projects via three categories: Internal Software; Retail/Agentic Commerce; Financial Services.

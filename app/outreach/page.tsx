@@ -24,8 +24,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
   const { due, replies, toStart } = myQueue(s, me.id);
-  // The candidate's invitation plan, with a back link to this queue.
-  const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}?from=outreach&as=${me.id}${step === undefined ? "" : `#step-${step + 1}`}`;
+  const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
     <div className="flex min-w-0 items-center gap-3">
       <Avatar name={`${r.c.first_name} ${r.c.last_name}`} />
