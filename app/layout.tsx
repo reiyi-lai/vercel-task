@@ -9,7 +9,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: { default: "Seatbook", template: "%s · Seatbook" },
-  description: "Curate who gets the 10 seats, and the warmest way to invite them.",
+  description: "Find the right executives for each Vercel event, and run their outreach.",
 };
 
 export const viewport: Viewport = { themeColor: "#000000" };
