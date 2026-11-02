@@ -46,7 +46,7 @@ Visa is a real target account. Its signals are cleared on purpose, so you can se
 | Button | Service | What it does | Endpoint / Webhook URL |
 |---|---|---|---|
 | Refresh Sumble Signals | Sumble | Leadership changes and hiring from job posts. | `api.sumble.com/v9/organizations`, `/v9/people`, `/v9/jobs` |
-| Research AI Initiatives | Claude with web search | Up to 10 searches. Keeps one initiative per theme. | `api.anthropic.com/v1/messages` |
+| Research AI Initiatives | Claude with web search, via Vercel AI Gateway | Up to 10 searches. Keeps one initiative per theme. | `ai-gateway.vercel.sh/v1/messages` |
 | Find Executives | Sumble | People matching the brief's personas (about 100 credits). | `api.sumble.com/v9/organizations`, `/v9/people` |
 | Add to CRM | Sumble | The person's current title and location (about 4 credits). | `api.sumble.com/v9/people` |
 | Find Email | Sumble | Reveals a work email (10 credits). | `api.sumble.com/v9/people` |

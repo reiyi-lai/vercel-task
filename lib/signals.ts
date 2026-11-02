@@ -6,7 +6,7 @@ import { AS_OF } from "./rules";
 import { sumble, type SumbleJob, type SumblePerson } from "./sumble";
 
 // Live signals for one account, from three sources:
-// hiring (Sumble job posts), leadership changes (Sumble people), and initiatives (Claude with web search).
+// hiring (Sumble job posts), leadership changes (Sumble people), and initiatives (Claude with web search, through AI Gateway).
 
 const since = new Date(AS_OF);
 since.setUTCMonth(since.getUTCMonth() - 6);
@@ -115,15 +115,16 @@ const INDUSTRY_SEARCH: Record<string, string> = {
 
 // Initiatives from web research: Claude searches the web and returns dated, sourced announcements.
 export async function initiativeSignals(a: Account): Promise<AccountSignal[]> {
-  if (!process.env.ANTHROPIC_API_KEY) throw new Error("Web research needs ANTHROPIC_API_KEY.");
-  const client = new Anthropic();
+  if (!process.env.AI_GATEWAY_API_KEY) throw new Error("Web research needs AI_GATEWAY_API_KEY.");
+  // Through Vercel AI Gateway, which speaks the Anthropic Messages API: usage and billing sit with the Vercel team.
+  const client = new Anthropic({ baseURL: "https://ai-gateway.vercel.sh", apiKey: process.env.AI_GATEWAY_API_KEY });
   const angles = INDUSTRY_SEARCH[a.vertical ?? ""];
   const messages: Anthropic.Beta.BetaMessageParam[] = [
     { role: "user", content: `${a.name} (${a.website})${a.vertical ? `, ${a.vertical}` : ""}.${angles ? ` Industry angles: ${angles}` : ""}` },
   ];
   for (let turn = 0; turn < 3; turn++) {
     const res = await client.beta.messages.parse({
-      model: "claude-opus-5-5",
+      model: "anthropic/claude-opus-5-5",
       max_tokens: 16000,
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",

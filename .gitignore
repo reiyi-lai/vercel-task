@@ -1,7 +1,5 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-README.md
-
 # dependencies
 /node_modules
 /.pnp
@@ -49,3 +47,4 @@ supabase/.temp/
 
 # private working files: the brief, research notes, mockups, the old HubSpot pack
 /archive/
+!.env.example
