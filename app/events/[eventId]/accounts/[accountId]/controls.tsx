@@ -70,7 +70,7 @@ export function FindExecutives({ accountId, campaignId, found, inCrm }: { accoun
           {pending ? "Searching Sumble…" : found.length ? "Search Again" : "Find Executives"}
         </Button>
         <span className="text-label-12 text-gray-900">
-          {found.length ? `Found ${formatDate(found[0].found_at)} · ` : ""}Searches Sumble for this event’s target personas · about 100 credits
+          {found.length ? `Found ${formatDate(found[0].found_at)} · ` : ""}Searches Sumble for this event’s target personas
         </span>
       </div>
       {error && <p className="text-label-12 text-red-900">{error}</p>}
