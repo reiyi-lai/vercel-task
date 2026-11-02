@@ -1,6 +1,6 @@
 # Getting the Right People in the Room
 
-This platform, Seatbook, helps fill executive seats at Vercel events (an F1 suite, a breakfast, a dinner). It takes an event from "who should we invite?" to "who said yes?" in one place.
+This platform, Seatbook, helps fill executive seats at Vercel events (an F1 suite, a breakfast, a dinner). It takes an event from "Who should we invite for this event?" to "Who said yes?" in one place.
 
 ## Problems it solves
 
