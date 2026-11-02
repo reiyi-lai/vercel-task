@@ -48,3 +48,7 @@ supabase/.temp/
 # private working files: the brief, research notes, mockups, the old HubSpot pack
 /archive/
 !.env.example
+
+Assignment Analysis Strategy.MD
+README copy.md
+HOW-IT-WORKS.md
