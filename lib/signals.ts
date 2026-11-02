@@ -128,7 +128,7 @@ export async function initiativeSignals(a: Account): Promise<AccountSignal[]> {
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
       system: RESEARCH_PROMPT,
-      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 15 }],
+      tools: [{ type: "web_search_20260209", name: "web_search", max_uses: 10 }],
       output_config: { effort: "medium", format: betaZodOutputFormat(Initiatives) },
       messages,
     });

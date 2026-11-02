@@ -16,12 +16,12 @@ export function SelectExecutive({ campaignId, contactId, name, selected }: { cam
       <input
         type="checkbox"
         className="size-4 accent-gray-1000"
-        aria-label={`Select ${name} to invite`}
+        aria-label={`Add ${name} as a candidate`}
         checked={selected}
         disabled={pending}
         onChange={(e) => startTransition(async () => setError(await setSelected(campaignId, contactId, e.target.checked)))}
       />
-      {error ? <span className="text-red-900">{error}</span> : selected ? "Selected" : "Select"}
+      {error ? <span className="text-red-900">{error}</span> : selected ? "Candidate Added" : "Add Candidate"}
     </label>
   );
 }

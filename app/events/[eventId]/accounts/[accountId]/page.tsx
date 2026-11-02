@@ -3,9 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense, type ReactNode } from "react";
 import { Avatar, Badge, Page, PageHeader, PersonName, Section, Status } from "@/components/ui";
-import { INDUSTRY_ANGLE, relevantTheme } from "@/lib/brief";
+import { relevantTheme } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
-import { derivePlan, eventOverview, formatDate, vercelUsage } from "@/lib/derive";
+import { derivePlan, eventDetails, formatDate, vercelUsage } from "@/lib/derive";
 import { accountPlan } from "@/lib/qualify";
 import { profileKey } from "@/lib/sumble";
 import { AddToCrm, FindExecutives, RefreshSignals, SelectExecutive } from "./controls";
@@ -30,11 +30,10 @@ export default function AccountPlanPage({ params }: Props) {
 async function AccountPlan({ params }: Pick<Props, "params">) {
   const { eventId, accountId } = await params;
   const s = await loadSnapshot();
-  const o = eventOverview(s, eventId);
-  const brief = o && s.event_briefs.find((b) => b.campaign_id === o.event.campaign_id);
+  const event = eventDetails(s, eventId);
+  const brief = event && s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
   const account = s.accounts.find((a) => a.id === accountId);
-  if (!o || !brief || !account) notFound();
-  const { event } = o;
+  if (!event || !brief || !account) notFound();
   const plan = accountPlan(s, account, brief);
   const owner = s.users.find((u) => u.id === account.owner_id);
   const contacts = s.contacts.filter((c) => c.account_id === account.id);
@@ -72,18 +71,29 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
   return (
     <>
       <PageHeader
-        crumbs={[{ label: "All Events" }, { label: event.short_name, href: `/events/${event.slug}` }, { label: "Accounts", href: `/events/${event.slug}/accounts` }, { label: account.name }]}
+        crumbs={[{ label: "All Events" }, { label: event.short_name, href: `/events/${event.slug}/brief` }, { label: "Accounts", href: `/events/${event.slug}/accounts` }, { label: account.name }]}
         aside={plan.excluded ? <Status color="red">Outside the brief: {plan.excluded}</Status> : <Status color={plan.state.color}>{plan.state.label}</Status>}
       >
         <h1 className="text-heading-32">{account.name}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          {[account.icp_tier, account.segment, account.vertical].filter(Boolean).map((x) => <Badge key={x}>{x}</Badge>)}
+          {[account.icp_tier, account.vertical].filter(Boolean).map((x) => <Badge key={x}>{x}</Badge>)}
           {account.horizontals.map((h) => <Badge key={h} variant="outline">{h}</Badge>)}
-          <span className="text-label-13 text-gray-900">AE {owner && `${owner.first_name} ${owner.last_name}`} · {event.name}</span>
+          <span className="text-label-13 text-gray-900">AE {owner ? `${owner.first_name} ${owner.last_name}` : "Unassigned"} · {event.name}</span>
         </div>
       </PageHeader>
 
       <Page>
+        <Block title="Vercel Usage" source="Vercel teams and billing">
+          {usage.teams.length ? (
+            <p className="text-copy-13">
+              {usage.teams.length} {[...new Set(usage.teams.map((t) => t.plan))].join(" / ")} {usage.teams.length === 1 ? "team" : "teams"} · {usage.activeUsers} active users · {usd.format(usage.monthlySpend)}/mo
+              <span className="block text-gray-900">Largest: {usage.teams[0].name}{`, billing owner ${usage.teams[0].key_contact_name ?? usage.teams[0].key_contact_title ?? "not on file"}`}</span>
+            </p>
+          ) : (
+            <p className="text-copy-13 text-gray-900">No Vercel teams on this domain.</p>
+          )}
+        </Block>
+
         <div className="grid gap-6 lg:grid-cols-2">
           <Block title="Relationship" source="Salesforce">
             <ul className="space-y-1.5 text-copy-13">
@@ -98,14 +108,18 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
             </ul>
           </Block>
 
-          <Block title="Vercel Usage" source="Vercel teams and billing">
-            {usage.teams.length ? (
-              <p className="text-copy-13">
-                {usage.teams.length} {[...new Set(usage.teams.map((t) => t.plan))].join(" / ")} {usage.teams.length === 1 ? "team" : "teams"} · {usage.activeUsers} active users · {usd.format(usage.monthlySpend)}/mo
-                <span className="block text-gray-900">Largest: {usage.teams[0].name}{usage.teams[0].key_contact_name && `, run by ${usage.teams[0].key_contact_name}`}</span>
-              </p>
+          <Block title="Event History" source="Salesforce campaigns">
+            {history.length ? (
+              <ul className="space-y-1 text-copy-13">
+                {history.map((m) => (
+                  <li key={`${m.campaign_id}${m.contact_id}`}>
+                    {name(m.contact_id).first_name} {name(m.contact_id).last_name} · {s.campaigns.find((c) => c.id === m.campaign_id)!.name}
+                    <span className="text-gray-900"> · {m.invite_status}</span>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <p className="text-copy-13 text-gray-900">No Vercel teams on this domain.</p>
+              <p className="text-copy-13 text-gray-900">Not invited to any event yet.</p>
             )}
           </Block>
         </div>
@@ -134,27 +148,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
           </ul>
         </Section>
 
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Block title="Industry Angle">
-            <p className="text-copy-13">{INDUSTRY_ANGLE[account.vertical ?? ""] ?? "No industry tag: this account is targeted for its scale and growth rather than its vertical."}</p>
-          </Block>
-          <Block title="Event History" source="Salesforce campaigns">
-            {history.length ? (
-              <ul className="space-y-1 text-copy-13">
-                {history.map((m) => (
-                  <li key={`${m.campaign_id}${m.contact_id}`}>
-                    {name(m.contact_id).first_name} {name(m.contact_id).last_name} · {s.campaigns.find((c) => c.id === m.campaign_id)!.name}
-                    <span className="text-gray-900"> · {m.invite_status}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-copy-13 text-gray-900">Not invited to any event yet.</p>
-            )}
-          </Block>
-        </div>
-
-        <Section title="Executives" description="Qualified against this event’s brief. Select who to invite, then open their invitation plan for the warm route and drafts.">
+        <Section title="Executives" description="Qualified against this event’s brief. Add candidates to invite, then open their invitation plan for the warm route and drafts.">
           {live && (
             <div className="mb-4">
               <FindExecutives
@@ -168,7 +162,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
           <ul className="material-base divide-y divide-gray-alpha-400">
             {plan.executives.map((e) => {
               const c = e.contact;
-              const top = e.status !== "Excluded" ? derivePlan(s, c.id, event.campaign_id).ladder[0] : undefined;
+              const top = e.status !== "Excluded" && c.owner_id ? derivePlan(s, c.id, event.campaign_id).ladder[0] : undefined;
               return (
                 <li key={c.id} className={`grid items-start gap-3 px-5 py-4 lg:grid-cols-[260px_1fr_220px_130px] lg:gap-6 ${e.status === "Excluded" ? "opacity-60" : ""}`}>
                   <div className="flex items-center gap-3">

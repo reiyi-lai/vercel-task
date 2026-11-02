@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Page } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { eventOverview } from "@/lib/derive";
+import { eventDetails } from "@/lib/derive";
 import EventHeader, { candidateCount } from "../event-header";
 import BriefForm from "./brief-form";
 
@@ -22,10 +22,10 @@ export default function BriefPage({ params }: Props) {
 async function Brief({ params }: Pick<Props, "params">) {
   const { eventId } = await params;
   const s = await loadSnapshot();
-  const o = eventOverview(s, eventId);
-  const brief = o && s.event_briefs.find((b) => b.campaign_id === o.event.campaign_id);
-  if (!o || !brief) notFound();
-  const { event } = o;
+  const event = eventDetails(s, eventId);
+  const brief = event && s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
+  if (!event || !brief) notFound();
+  const campaign = s.campaigns.find((c) => c.id === event.campaign_id)!;
   const confirmed = s.campaign_members.filter((m) => m.campaign_id === event.campaign_id && m.invite_status === "Confirmed").length;
 
   return (
@@ -35,7 +35,7 @@ async function Brief({ params }: Pick<Props, "params">) {
         <BriefForm
           key={event.slug}
           brief={brief}
-          event={{ slug: event.slug, name: event.name, date: event.date, seats: event.seats }}
+          event={{ slug: event.slug, startDate: campaign.start_date!, endDate: campaign.end_date, seats: event.seats }}
           events={s.events.map((e) => ({ slug: e.slug, name: s.campaigns.find((c) => c.id === e.campaign_id)!.name }))}
           confirmed={confirmed}
         />

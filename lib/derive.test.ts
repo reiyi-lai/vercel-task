@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { loadSampleSnapshot } from "./csv";
-import { accountInteractions, derivePlan, eventOverview, vercelUsage } from "./derive";
+import { accountInteractions, derivePlan, eventOverview, formatDates, vercelUsage } from "./derive";
 import { ROUTES } from "./rules";
 
 const s = loadSampleSnapshot();
@@ -19,7 +19,6 @@ it("Owen: customer intro via Ethan, Jordan as backup, Marcus's direct invite as 
     "Fallback: direct: Marcus Lee (AE / deal team)",
   ]);
   expect(roles(90001)).toMatchObject({
-    "Daniel Brooks": "Seating · Moderate", // attendee-only paths are for seating
     "Priya Natarajan": "Weak · Weak", // LinkedIn noise, denied in Slack
   });
 });
@@ -60,10 +59,13 @@ it("Level zero: a target at a customer is invited by their AE first", () => {
   expect(top.connector.name).toBe("Dana Ruiz");
 });
 
-it("Event overview: open seats and candidates come from the roster and the Clay table", () => {
-  const o = eventOverview(s, "lvgp")!;
-  expect(o.seats.filter((x) => x.status === "Open").map((x) => x.n)).toEqual([4, 10]);
-  expect(o.pipeline[0].cards.map((c) => c.name)).toEqual(["Owen Fischer", "Julian Wright", "Rajat Taneja", "Jason Morris", "Prem Natarajan"]);
+it("Event overview: the pipeline follows selected executives and their outreach", () => {
+  const snap = { ...s, invitation_selections: [{ campaign_id: LVGP, contact_id: contact(90001), bdr_id: null }, { campaign_id: LVGP, contact_id: contact(90006), bdr_id: null }] };
+  snap.outreach = [{ campaign_id: LVGP, contact_id: contact(90006), personal_line: null, line_signal: null, started_at: "2026-11-01T09:00:00Z", drafts: {}, sent: [], outcome: "Replied", outcome_at: null }];
+  const o = eventOverview(snap, "lvgp")!;
+  expect(o.pipeline.map((col) => [col.title, col.cards.map((c) => c.name)])).toEqual([
+    ["Selected", ["Owen Fischer"]], ["In Sequence", []], ["Replied", ["Julian Wright"]], ["Accepted", []], ["Declined", []],
+  ]);
 });
 
 it("Past account interactions: Marcus's thread with Sam", () => {
@@ -79,4 +81,10 @@ it("Vercel usage: teams by highest spend, key contacts matched to Salesforce by 
   expect(af.teams[0].key_contact_id).toBe(contact(90019));
   expect([af.activeUsers, af.monthlySpend]).toEqual([9, 660]);
   expect(vercelUsage(s, account(70006)).teams).toEqual([]);
+});
+
+it("Event dates show as one day or a range", () => {
+  expect(formatDates("2026-11-19", null)).toBe("Nov 19, 2026");
+  expect(formatDates("2026-11-19", "2026-11-21")).toBe("Nov 19–21, 2026");
+  expect(formatDates("2026-11-30", "2026-12-02")).toBe("Nov 30 – Dec 2, 2026");
 });

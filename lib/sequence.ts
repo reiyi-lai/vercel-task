@@ -1,8 +1,10 @@
-import type { Outreach, SequenceStep } from "./data";
+import type { EventBrief, Outreach, SequenceStep, Snapshot } from "./data";
 import { TIMEZONE } from "./rules";
 
-// Fills a step's template. Unknown placeholders stay visible, so a typo in a template shows up in the preview.
-export const render = (template: string, vars: Record<string, string>) => template.replace(/\{(\w+)\}/g, (m, k: string) => vars[k] ?? m);
+// Fills a step's template. Unknown placeholders stay visible, so a typo in a template shows up in the preview. An empty
+// value on its own line leaves no gap: runs of blank lines collapse to one.
+export const render = (template: string, vars: Record<string, string>) =>
+  template.replace(/\{(\w+)\}/g, (m, k: string) => vars[k] ?? m).replace(/\n{3,}/g, "\n\n");
 
 export const PLACEHOLDERS = ["first_name", "account", "event", "date", "personal_line", "sender_first_name", "ae_first_name"];
 
@@ -46,5 +48,24 @@ export function progress(steps: SequenceStep[], o: Outreach | undefined, now = n
   return {
     text: `Step ${next.index + 1} of ${steps.length} · ${next.status === "Overdue" ? `overdue since ${when}` : next.status === "Due" ? "due today" : `due ${when}`}`,
     color: next.status === "Overdue" ? ("red" as const) : next.status === "Due" ? ("amber" as const) : ("gray" as const),
+  };
+}
+
+// Where an event stands against its brief. Invites sent: candidates whose first step went out. Accepted: confirmed in
+// Salesforce, or marked Accepted in Seatbook. Awaiting: invited, no response yet.
+export function eventProgress(s: Snapshot, b: EventBrief, now = new Date()) {
+  const outreach = s.outreach.filter((o) => o.campaign_id === b.campaign_id);
+  const invited = outreach.filter((o) => o.sent.some((x) => x.step === 0));
+  const confirmed = s.campaign_members.filter((m) => m.campaign_id === b.campaign_id && m.invite_status === "Confirmed").map((m) => m.contact_id);
+  const outcome = (kind: Outreach["outcome"]) => outreach.filter((o) => o.outcome === kind);
+  return {
+    shortlisted: s.invitation_selections.filter((x) => x.campaign_id === b.campaign_id).length,
+    invited: invited.length,
+    accepted: new Set([...confirmed, ...outcome("Accepted").map((o) => o.contact_id)]).size,
+    confirmedInSalesforce: confirmed.length,
+    awaiting: invited.filter((o) => !o.outcome).length,
+    replied: outcome("Replied").length,
+    declined: outcome("Declined").length,
+    overdue: outreach.flatMap((o) => schedule(b.sequence, o, now)).filter((x) => x.status === "Overdue").length,
   };
 }

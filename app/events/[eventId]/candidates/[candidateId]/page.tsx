@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Avatar, Badge, Button, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
+import { Avatar, Badge, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { accountInteractions, derivePlan, eventOverview, vercelUsage } from "@/lib/derive";
-import { messageVars, sender } from "@/lib/outreach";
-import { render, schedule, shortDate } from "@/lib/sequence";
+import { accountInteractions, eventOverview, vercelUsage } from "@/lib/derive";
+import { draftCopy, sender } from "@/lib/outreach";
+import { schedule, shortDate } from "@/lib/sequence";
 import Outreach from "./outreach";
 
 type Props = PageProps<"/events/[eventId]/candidates/[candidateId]">;
@@ -29,22 +30,24 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
   await connection(); // step due dates depend on today's date, so render at request time
   const s = await loadSnapshot();
   const overview = eventOverview(s, eventId);
-  if (!overview || !s.contacts.some((c) => c.id === candidateId)) notFound();
+  const target = s.contacts.find((c) => c.id === candidateId);
+  if (!overview || !target) notFound();
   const { event } = overview;
-  const plan = derivePlan(s, candidateId, event.campaign_id);
-  const { target, targetOwner, account } = plan;
+  const account = s.accounts.find((a) => a.id === target.account_id)!;
+  const ae = s.users.find((u) => u.id === target.owner_id);
   const name = `${target.first_name} ${target.last_name}`;
-  const usage = vercelUsage(s, plan.account.id);
+  const usage = vercelUsage(s, account.id);
   const brief = s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
   const outreach = s.outreach.find((x) => x.campaign_id === event.campaign_id && x.contact_id === candidateId);
   const day = (d: Date | null) => d && shortDate(d);
   const steps = schedule(brief?.sequence ?? [], outreach).map(({ step, index, due, sent, status }) => {
-    const vars = messageVars(s, event.campaign_id, target, step);
-    const from = sender(s, step, target);
-    const done = outreach?.sent.find((x) => x.step === index); // once sent, show the copy that actually went out
+    const from = sender(s, event.campaign_id, step, target);
+    const done = outreach?.sent.find((x) => x.step === index);
+    // The copy that went out once sent; before that, the saved edit or the template filled in.
+    const copy = done?.body ? { subject: done.subject ?? "", body: done.body } : draftCopy(s, event.campaign_id, target, index);
     return {
-      index, day: step.day, channel: step.channel, sender: `${from.first_name} ${from.last_name}`,
-      subject: done?.body ? (done.subject ?? "") : render(step.subject, vars), body: done?.body ?? render(step.body, vars),
+      index, day: step.day, channel: step.channel, sender: from ? `${from.first_name} ${from.last_name}` : `${step.sender} unassigned`, ...copy,
+      edited: !done && !!outreach?.drafts?.[index],
       status, due: day(due), sent: day(sent) && `${day(sent)}${done?.by ? ` by ${done.by} in Slack` : ""}`,
     };
   });
@@ -53,7 +56,13 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
   return (
     <>
       <PageHeader
-        crumbs={[{ label: "All Events" }, { label: event.short_name, href: `/events/${event.slug}` }, { label: "Candidates", href: `/events/${event.slug}/candidates` }, { label: name }]}
+        crumbs={[
+          { label: "All Events" },
+          { label: event.short_name, href: `/events/${event.slug}/brief` },
+          { label: "Accounts", href: `/events/${event.slug}/accounts` },
+          { label: account.name, href: `/events/${event.slug}/accounts/${account.id}` },
+          { label: name },
+        ]}
         aside={<Badge>{account.icp_tier} · {account.type}</Badge>}
       >
         <div className="flex items-center gap-4">
@@ -64,12 +73,15 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
           </div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <span className="text-label-13 text-gray-900">AE {targetOwner.first_name} {targetOwner.last_name}</span>
+          <span className="text-label-13 text-gray-900">AE {ae ? `${ae.first_name} ${ae.last_name}` : "Unassigned"}</span>
           <Tags vertical={account.vertical ?? "Other"} horizontals={account.horizontals} />
         </div>
       </PageHeader>
 
       <Page>
+        <Link href={`/events/${event.slug}/candidates`} className="mb-7 flex w-fit items-center gap-1.5 text-label-13 text-gray-900 hover:text-gray-1000">
+          <span aria-hidden className="text-label-12 text-gray-1000">◀</span> Candidates
+        </Link>
         <Section
           title="Vercel Usage"
           aside={usage.teams.length > 0 && (
@@ -83,7 +95,7 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
           ) : (
             <ul className="material-base divide-y divide-gray-alpha-400 overflow-hidden">
               {usage.teams.map((t, i) => (
-                <li key={t.id} className={`grid items-center gap-3 px-5 py-4 sm:grid-cols-[220px_1fr_130px_110px_90px_120px] sm:gap-6 ${i === 0 ? "bg-blue-100" : ""}`}>
+                <li key={t.id} className={`grid items-center gap-3 px-5 py-4 sm:grid-cols-[220px_1fr_130px_110px_90px] sm:gap-6 ${i === 0 ? "bg-blue-100" : ""}`}>
                   <div className="min-w-0">
                     <p className="truncate text-label-14 font-medium">{t.name}</p>
                     <div className="mt-0.5 flex items-center gap-1.5 text-label-12 text-gray-900">
@@ -94,14 +106,14 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar name={t.key_contact_name ?? "?"} />
                     <div className="min-w-0">
-                      <p className="truncate text-label-14 font-medium">{t.key_contact_name}</p>
+                      <p className="text-label-12 text-gray-900">Billing Owner</p>
+                      <p className="truncate text-label-14 font-medium">{t.key_contact_name ?? "Name not on file"}</p>
                       <p className="truncate text-label-12 text-gray-900">{t.key_contact_title}</p>
                     </div>
                   </div>
                   <div><Badge variant={t.key_contact_id ? "amber" : "gray"}>{t.key_contact_id ? "In Salesforce" : "Not in Salesforce"}</Badge></div>
                   <p className="text-label-13 text-gray-900">{t.active_users_30d} active {t.active_users_30d === 1 ? "user" : "users"}</p>
                   <p className="text-label-13 text-gray-900">{usd.format(t.monthly_spend ?? 0)}/mo</p>
-                  <div className="flex sm:justify-end">{i === 0 && <Button>Add Context</Button>}</div>
                 </li>
               ))}
             </ul>

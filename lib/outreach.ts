@@ -1,18 +1,16 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
-import { z } from "zod";
 import { loadSnapshot, type Contact, type SequenceStep, type Snapshot } from "./data";
-import { eventOverview, vercelUsage } from "./derive";
-import { accountPlan, commercialState } from "./qualify";
+import { eventOverview } from "./derive";
 import { gmailDraft, render, schedule, type StepStatus } from "./sequence";
 import { notify, quote, type Block } from "./slack";
 import { expireFromRoute, ok, write } from "./write";
 
 const fullName = (p: { first_name: string; last_name: string }) => `${p.first_name} ${p.last_name}`;
 
-// Who sends a step: the AE is the contact's owner; the BDR is the sales development rep.
-export function sender(s: Snapshot, step: SequenceStep, c: Contact) {
-  return s.users.find((u) => (step.sender === "AE" ? u.id === c.owner_id : u.title === "BDR"))!;
+// Who sends a step: the AE is the account's owner (its contacts share it); the BDR is the one assigned to this candidate
+// for the event. Undefined until they're assigned on the Candidates page.
+export function sender(s: Snapshot, campaignId: string, step: SequenceStep, c: Contact) {
+  const id = step.sender === "AE" ? c.owner_id : s.invitation_selections.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
+  return s.users.find((u) => u.id === id);
 }
 
 // The values a step's template fills for one candidate.
@@ -24,62 +22,16 @@ export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: S
     account: s.accounts.find((a) => a.id === c.account_id)!.name,
     event: event.name,
     date: event.date,
-    personal_line: o?.personal_line ?? "{personal_line}",
-    sender_first_name: sender(s, step, c).first_name,
-    ae_first_name: s.users.find((u) => u.id === c.owner_id)!.first_name,
+    personal_line: o?.personal_line ?? "", // the line is optional: render drops it, and its blank line, when empty
+    sender_first_name: sender(s, campaignId, step, c)?.first_name ?? "{sender_first_name}",
+    ae_first_name: s.users.find((u) => u.id === c.owner_id)?.first_name ?? "{ae_first_name}",
   };
 }
 
-const Line = z.object({
-  line: z.string().describe("One opening sentence for the invitation, under 30 words"),
-  signal: z.string().describe("The fact from the context the sentence draws on, in a few words"),
-});
-
-const LINE_PROMPT = `You write the opening sentence of an invitation from a Vercel account executive to a technology executive, asking them to a small event.
-
-Ground the sentence in one specific fact about their company from the context you're given: a recent initiative, a leadership change, a hiring push, their Vercel or Next.js footprint, or the history with Vercel. Choose the fact that best connects to the event's theme. Write to the executive directly, in plain words: no flattery, no exclamation marks, no claims beyond the context, under 30 words. If the fact is about layoffs or other sensitive news, choose a different one. Don't mention the event or invite them: the next sentence of the message does that.`;
-
-// Drafts a candidate's personalized line with Claude from the account's context, and saves it.
-export async function draftLine(campaignId: string, contactId: string) {
-  if (!process.env.ANTHROPIC_API_KEY) return "Drafting needs ANTHROPIC_API_KEY.";
-  const s = await loadSnapshot();
-  const c = s.contacts.find((x) => x.id === contactId);
-  const brief = s.event_briefs.find((b) => b.campaign_id === campaignId);
-  if (!c || !brief) return "No such candidate or event.";
-  const a = s.accounts.find((x) => x.id === c.account_id)!;
-  const campaign = s.campaigns.find((x) => x.id === campaignId)!;
-  const plan = accountPlan(s, a, brief);
-  const usage = vercelUsage(s, a.id);
-  const opp = s.opportunities.find((o) => o.account_id === a.id && !o.is_closed);
-  const context = [
-    `Event: ${campaign.name}. ${brief.purpose}. Themes: ${brief.themes.join(", ")}.`,
-    `Executive: ${fullName(c)}, ${c.title} at ${a.name}${a.vertical ? ` (${a.vertical})` : ""}.`,
-    `Commercial context: ${commercialState(s, a).label}.${opp ? ` Open opportunity: ${opp.name} (${opp.stage}).` : ""}`,
-    usage.teams.length ? `Vercel usage: ${usage.teams.length} teams, ${usage.activeUsers} active users.` : "",
-    a.nextjs_job_posts ? `${a.nextjs_job_posts} of their job posts in the last year name Next.js.` : "",
-    "Signals:",
-    ...plan.signals.map((x) => `- ${x.signal_date}: ${x.title}.${x.detail ? ` ${x.detail}` : ""}`),
-  ].filter(Boolean).join("\n");
-
-  return write(async (db) => {
-    const res = await new Anthropic().beta.messages.parse({
-      model: "claude-opus-5-5",
-      max_tokens: 4000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      system: LINE_PROMPT,
-      output_config: { effort: "low", format: betaZodOutputFormat(Line) },
-      messages: [{ role: "user", content: context }],
-    });
-    if (res.stop_reason === "refusal" || !res.parsed_output) throw new Error("Couldn't draft a line for this executive.");
-    ok(
-      await db.from("outreach").upsert({ campaign_id: campaignId, contact_id: contactId, personal_line: res.parsed_output.line, line_signal: res.parsed_output.signal })
-    );
-  }, expireFromRoute);
-}
-
-// A step's message for one candidate, filled in from the event's template.
+// A step's message for one candidate: the edit saved for it, or else the event's template filled in.
 export function draftCopy(s: Snapshot, campaignId: string, c: Contact, index: number) {
+  const edited = s.outreach.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.drafts?.[index];
+  if (edited) return edited;
   const step = s.event_briefs.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const vars = messageVars(s, campaignId, c, step);
   return { subject: render(step.subject, vars), body: render(step.body, vars) };
@@ -107,7 +59,7 @@ const siteUrl = () =>
 // that step on the invitation page. Mark Sent carries "campaignId|contactId|step".
 export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false) {
   const step = s.event_briefs.find((b) => b.campaign_id === campaignId)!.sequence[index];
-  const by = sender(s, step, c);
+  const by = sender(s, campaignId, step, c)!; // cards are only sent for started sequences, whose senders are assigned
   const account = s.accounts.find((a) => a.id === c.account_id)!.name;
   const event = s.campaigns.find((x) => x.id === campaignId)!.name;
   const slug = s.events.find((e) => e.campaign_id === campaignId)!.slug;

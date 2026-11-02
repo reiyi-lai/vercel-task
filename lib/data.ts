@@ -9,7 +9,7 @@ import type { SumbleRole } from "./sumble";
 export type User = { id: string; first_name: string; last_name: string; email: string | null; title: string | null; department: string | null };
 export type Account = {
   id: string; name: string; website: string | null; industry: string | null; employees: number | null; type: string | null; owner_id: string | null;
-  target_account: boolean | null; icp_tier: string | null; segment: "Majors" | "Commercial" | null; vertical: string | null; horizontals: string[]; est_first_year_value: number | null;
+  target_account: boolean | null; icp_tier: string | null; vertical: string | null; horizontals: string[]; est_first_year_value: number | null;
   nextjs_job_posts: number | null;
 };
 export type Contact = {
@@ -27,7 +27,7 @@ export type Activity = {
   id: string; kind: "task" | "event"; subtype: "Email" | "Call" | "Meeting"; occurred_at: string; direction: string | null;
   owner_id: string | null; contact_id: string | null; account_id: string | null; source: string | null;
 };
-export type Campaign = { id: string; name: string; type: string | null; start_date: string | null; status: string | null };
+export type Campaign = { id: string; name: string; type: string | null; start_date: string | null; end_date: string | null; status: string | null };
 export type CampaignMember = { campaign_id: string; contact_id: string; status: string | null; invite_status: string | null; seat: number | null };
 export type TeamlinkConnection = { captured_at: string | null; contact_id: string; user_id: string; seat_type: string | null; degree: string | null; capture_method: string | null };
 // The Swarm's warm-intro response, trimmed to what Seatbook reads. closeness and detail are added in Clay.
@@ -42,6 +42,7 @@ export type ClayEnrichment = {
   work_history: { company: string; title: string; start: string; end: string | null }[];
   warm_intro_paths: { profile: { full_name: string; linkedin_url: string }; connections: SwarmConnection[] };
 };
+// A Vercel team on the account. key_contact_*: its billing owner, the person who pays for the plan.
 export type VercelTeam = {
   id: string; name: string; account_id: string; plan: string | null; active_users_30d: number | null; monthly_spend: number | null;
   key_contact_email: string | null; key_contact_name: string | null; key_contact_title: string | null; key_contact_id: string | null;
@@ -54,12 +55,13 @@ export type SequenceStep = { day: number; channel: "Email" | "LinkedIn" | "Phone
 // An event's brief: who to find, how to rank them, how many to invite, and its outreach sequence (lib/brief.ts has the
 // labels and sizing).
 export type EventBrief = {
-  campaign_id: string; format: string | null; location: string | null; purpose: string | null;
+  campaign_id: string; format: string | null; location: string | null;
   verticals: string[]; themes: string[]; personas: string[];
-  geography: "city" | "regional" | "nationwide"; city: string | null; radius_miles: number | null;
-  min_seniority: "c_suite" | "svp" | "vp" | "director"; seniority_mode: "preference" | "gate";
-  segment: "both" | "majors" | "commercial"; tiers: string[]; tier_mode: "prefer" | "only";
-  objective: "balanced" | "pipeline" | "net_new"; account_weight: number; search_scope: "crm_clay" | "crm";
+  geography: "city" | "conference" | "nationwide"; cities: string[];
+  min_seniority: "c_suite" | "svp" | "vp" | "director"; // a hard gate
+  tiers: string[]; tier_mode: "prefer" | "only";
+  objective: "balanced" | "pipeline" | "net_new";
+  outreach_lead: "ae" | "bdr" | "mixed"; // ae: the AE sends every step, no BDR (F1)
   target_guests: number; acceptance_rate: number; approval_rate: number; sequence: SequenceStep[];
 };
 export type Confirmation = {
@@ -82,11 +84,13 @@ export type AccountSignal = {
   account_id: string; category: "hiring" | "leadership" | "initiative"; theme: string | null; title: string; detail: string | null;
   signal_date: string; url: string | null; source: string; person_linkedin_url: string | null;
 };
-export type InvitationSelection = { campaign_id: string; contact_id: string };
+export type InvitationSelection = { campaign_id: string; contact_id: string; bdr_id: string | null }; // bdr_id: the BDR assigned for this event
 // One selected executive's outreach for an event: their personalized line, the steps sent, and how they responded.
 export type Outreach = {
   campaign_id: string; contact_id: string; personal_line: string | null; line_signal: string | null; started_at: string | null;
-  // sent: each step marked sent, with the copy that actually went out and, from Slack, who marked it
+  // drafts: edited copy saved per step before sending. sent: each step marked sent, with the copy that actually went out
+  // and, from Slack, who marked it.
+  drafts: Record<string, { subject: string; body: string }>;
   sent: { step: number; at: string; subject?: string; body?: string; by?: string }[]; outcome: "Replied" | "Accepted" | "Declined" | "Paused" | null; outcome_at: string | null;
 };
 export type SlackAlert = { id: number; campaign_id: string; contact_id: string | null; recipient: string; kind: string; text: string; posted: boolean; created_at: string };

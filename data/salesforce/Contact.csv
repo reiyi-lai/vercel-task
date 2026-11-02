@@ -81,10 +81,10 @@ Id,FirstName,LastName,Email,Title,AccountId,OwnerId,LinkedIn_URL__c,Intro_Progra
 003Sb0000090081AAA,Yanbing,Li,,Chief Product Officer,001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/yanbingli,,Current,San Francisco,CA,37.7879,-122.4075,false
 003Sb0000090082AAA,Bharat,Sajnani,,"Senior Vice President, Head of Corp Development, Hyperscalers, Startups, Fde, and Ai Tooling",001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/bsaj,,Current,San Francisco,CA,37.7879,-122.4075,false
 003Sb0000090083AAA,Bianca,Lankford,,"Vice President Engineering (Security, Sr E, Threat Detection & Trust)",001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/biancalankford,,Current,Knoxville,TN,35.9604,-83.921,false
-003Sb0000090084AAA,Amit,Zavery,,"President, Chief Product Officer, and Chief Operating Officer",001Sb0000070039AAA,005Sb0000050001AAA,https://www.linkedin.com/in/amitzavery,,Current,Redwood City,CA,37.4863,-122.2325,false
-003Sb0000090085AAA,Ben,De Bont,,Ciso,001Sb0000070039AAA,005Sb0000050001AAA,https://www.linkedin.com/in/bendebont,,Current,Seattle,WA,47.6038,-122.3301,false
-003Sb0000090086AAA,Adam,Geller,,Chief Product Officer,001Sb0000070040AAA,005Sb0000050002AAA,https://www.linkedin.com/in/adamgeller55,,Current,San Francisco,CA,37.7879,-122.4075,false
-003Sb0000090087AAA,Kailash,Kailash,,Chief Architect and Founder,001Sb0000070040AAA,005Sb0000050002AAA,https://www.linkedin.com/in/kailash-kailash-85295518,,Current,San Jose,CA,37.3362,-121.8906,false
-003Sb0000090088AAA,Levi,Bolourie,,Corporate Chief Information Security Officer (CISO),001Sb0000070040AAA,005Sb0000050002AAA,https://www.linkedin.com/in/levi-bolourie,,Current,,,,,false
-003Sb0000090089AAA,Helen,London,,Chief Information Security Officer,001Sb0000070041AAA,005Sb0000050001AAA,https://www.linkedin.com/in/henri-susila-6b593071,,Current,,,,,false
-003Sb0000090090AAA,Lee,Klarich,,Chief Product & Technology Officer and Board Member,001Sb0000070041AAA,005Sb0000050001AAA,https://www.linkedin.com/in/leeklarich,,Current,Los Gatos,CA,37.2266,-121.9747,false
+003Sb0000090084AAA,Amit,Zavery,,"President, Chief Product Officer, and Chief Operating Officer",001Sb0000070039AAA,,https://www.linkedin.com/in/amitzavery,,Current,Redwood City,CA,37.4863,-122.2325,false
+003Sb0000090085AAA,Ben,De Bont,,Ciso,001Sb0000070039AAA,,https://www.linkedin.com/in/bendebont,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090086AAA,Adam,Geller,,Chief Product Officer,001Sb0000070040AAA,,https://www.linkedin.com/in/adamgeller55,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090087AAA,Kailash,Kailash,,Chief Architect and Founder,001Sb0000070040AAA,,https://www.linkedin.com/in/kailash-kailash-85295518,,Current,San Jose,CA,37.3362,-121.8906,false
+003Sb0000090088AAA,Levi,Bolourie,,Corporate Chief Information Security Officer (CISO),001Sb0000070040AAA,,https://www.linkedin.com/in/levi-bolourie,,Current,,,,,false
+003Sb0000090089AAA,Helen,London,,Chief Information Security Officer,001Sb0000070041AAA,,https://www.linkedin.com/in/henri-susila-6b593071,,Current,,,,,false
+003Sb0000090090AAA,Lee,Klarich,,Chief Product & Technology Officer and Board Member,001Sb0000070041AAA,,https://www.linkedin.com/in/leeklarich,,Current,Los Gatos,CA,37.2266,-121.9747,false

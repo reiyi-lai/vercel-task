@@ -1,3 +1,4 @@
+import { progress } from "./sequence";
 import type { Activity, Contact, Snapshot, SwarmSource, User } from "./data";
 import {
   ACTIVITY_MONTHS, ANSWER_HOLD, ANSWER_STRENGTH, AS_OF, LEADERSHIP_TITLES, ROUTE_PRECEDENCE, ROUTES, STRENGTH_RANK, TIE_ORDER,
@@ -33,6 +34,15 @@ const months = (iso: string) => {
   const d = new Date(iso);
   return (AS_OF.getUTCFullYear() - d.getUTCFullYear()) * 12 + AS_OF.getUTCMonth() - d.getUTCMonth();
 };
+// An event's dates: "Nov 19, 2026", or a range, "Nov 19–21, 2026" or "Nov 30 – Dec 2, 2026".
+export function formatDates(start: string, end: string | null) {
+  if (!end || end === start) return formatDate(start);
+  const [a, b] = [new Date(start), new Date(end)];
+  const md = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  if (a.getUTCFullYear() !== b.getUTCFullYear()) return `${formatDate(start)} – ${formatDate(end)}`;
+  if (a.getUTCMonth() !== b.getUTCMonth()) return `${md(a)} – ${md(b)}, ${b.getUTCFullYear()}`;
+  return `${md(a)}–${b.getUTCDate()}, ${b.getUTCFullYear()}`;
+}
 export const formatDate = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
 const primaryRoute = (c: Connector) => ROUTE_PRECEDENCE.find((r) => c.routes.includes(r))!;
 
@@ -231,51 +241,53 @@ export function vercelUsage(s: Snapshot, accountId: string) {
   return { teams, activeUsers: sum("active_users_30d"), monthlySpend: sum("monthly_spend") };
 }
 
-// Event overview: the seat grid and the pipeline columns.
-export function eventOverview(s: Snapshot, slug: string) {
-  const { user, contact, account, isCustomer } = lookups(s);
+// An event's details for its header. Kept apart from the pipeline, which depends on today's date, so pages without it
+// can prerender.
+export function eventDetails(s: Snapshot, slug: string) {
+  const user = new Map(s.users.map((u) => [u.id, u]));
   const ev = s.events.find((e) => e.slug === slug);
   if (!ev) return null;
   const campaign = s.campaigns.find((c) => c.id === ev.campaign_id)!;
-  const parts = s.campaign_members.filter((m) => m.campaign_id === ev.campaign_id);
-  const person = (id: string) => {
-    const k = contact.get(id)!;
-    const a = account.get(k.account_id!)!;
-    return { id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals, ae: fullName(user.get(k.owner_id!)!) };
+  return {
+    ...ev,
+    name: campaign.name,
+    date: formatDates(campaign.start_date!, campaign.end_date),
+    daysOut: Math.round((Date.parse(campaign.start_date!) - AS_OF.getTime()) / 86_400_000),
+    hosts: ev.host_user_ids.map((id) => `${fullName(user.get(id)!)} (${user.get(id)!.title})`).join(", "),
   };
+}
 
-  const seats = Array.from({ length: ev.seats ?? 0 }, (_, i) => {
-    const p = parts.find((p) => p.seat === i + 1);
-    if (!p) return { n: i + 1, status: "Open" as const };
-    return { n: i + 1, status: p.invite_status === "Confirmed" ? ("Confirmed" as const) : ("Pending" as const), ...person(p.contact_id) };
-  });
-
-  const card = (contactId: string, extra: { route?: string; detail?: string; href?: string }) => ({ ...person(contactId), ...extra });
-  const byStatus = (match: (status: string) => boolean) =>
-    parts.filter((p) => match(p.invite_status ?? "")).map((p) =>
-      card(p.contact_id, { route: isCustomer(contact.get(p.contact_id)!.account_id) ? ROUTES.levelZero : undefined, detail: p.seat ? `Seat ${p.seat}` : p.invite_status!.split(" — ")[1] })
-    );
-  const candidates = s.clay_enrichments
-    .filter((e) => e.campaign_id === ev.campaign_id && !parts.some((p) => p.contact_id === e.contact_id))
-    .map((e) => card(e.contact_id, { route: derivePlan(s, e.contact_id, ev.campaign_id).ladder[0].route, href: `/events/${ev.slug}/candidates/${e.contact_id}` }));
+// Event overview: the event's details and the invitation pipeline, built from the executives selected on its account
+// plans and where their outreach stands.
+export function eventOverview(s: Snapshot, slug: string) {
+  const { user, contact, account } = lookups(s);
+  const ev = eventDetails(s, slug);
+  if (!ev) return null;
+  const brief = s.event_briefs.find((b) => b.campaign_id === ev.campaign_id);
+  const sequence = brief?.sequence ?? [];
+  const cards = s.invitation_selections
+    .filter((x) => x.campaign_id === ev.campaign_id)
+    .map(({ contact_id: id, bdr_id }) => {
+      const k = contact.get(id)!;
+      const a = account.get(k.account_id!)!;
+      const o = s.outreach.find((x) => x.campaign_id === ev.campaign_id && x.contact_id === id);
+      return {
+        id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals,
+        // Who runs the outreach: the assigned BDR on a BDR-led event, otherwise the account's AE. null until assigned.
+        owner: brief?.outreach_lead === "bdr" ? (bdr_id ? fullName(user.get(bdr_id)!) : null) : k.owner_id ? fullName(user.get(k.owner_id)!) : null, outcome: o?.outcome ?? null, started: !!o?.started_at,
+        detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates/${id}`,
+      };
+    });
+  const responded = (outcome: string) => cards.filter((c) => c.outcome === outcome);
 
   return {
-    event: {
-      ...ev,
-      name: campaign.name,
-      date: formatDate(campaign.start_date!),
-      daysOut: Math.round((Date.parse(campaign.start_date!) - AS_OF.getTime()) / 86_400_000),
-      hosts: ev.host_user_ids.map((id) => `${fullName(user.get(id)!)} (${user.get(id)!.title})`).join(", "),
-    },
-    seats,
-    // Accepted, but not placed yet: who can fill an open seat.
-    unseated: parts.filter((p) => p.invite_status === "Confirmed" && !p.seat).map((p) => ({ status: "Confirmed" as const, ...person(p.contact_id) })),
+    event: ev,
     pipeline: [
-      { title: "Plan Ready", dot: "gray" as const, cards: candidates },
-      { title: "Intro Requested", dot: "blue" as const, cards: byStatus((st) => st === "Pending — intro requested") },
-      { title: "Invite Sent", dot: "amber" as const, cards: byStatus((st) => st === "Pending — invite sent") },
-      { title: "Accepted", dot: "green" as const, cards: byStatus((st) => st === "Confirmed") },
-      { title: "Declined · Rerouted", dot: "red" as const, cards: byStatus((st) => st.startsWith("Declined")) },
+      { title: "Selected", dot: "gray" as const, cards: cards.filter((c) => !c.started) },
+      { title: "In Sequence", dot: "blue" as const, cards: cards.filter((c) => c.started && (!c.outcome || c.outcome === "Paused")) },
+      { title: "Replied", dot: "amber" as const, cards: responded("Replied") },
+      { title: "Accepted", dot: "green" as const, cards: responded("Accepted") },
+      { title: "Declined", dot: "red" as const, cards: responded("Declined") },
     ],
   };
 }

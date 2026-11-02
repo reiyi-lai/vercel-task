@@ -2,13 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { Badge, Page, Section, Status } from "@/components/ui";
+import { Page, Section, Status } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { eventOverview } from "@/lib/derive";
+import { eventDetails, vercelUsage } from "@/lib/derive";
 import { accountPlan, isEnterpriseCustomer } from "@/lib/qualify";
 import EventHeader, { candidateCount } from "../event-header";
 
 type Props = PageProps<"/events/[eventId]/accounts">;
+
+const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { eventId } = await params;
@@ -23,10 +25,10 @@ export default function AccountsPage({ params }: Props) {
 async function Accounts({ params }: Pick<Props, "params">) {
   const { eventId } = await params;
   const s = await loadSnapshot();
-  const o = eventOverview(s, eventId);
-  const brief = o && s.event_briefs.find((b) => b.campaign_id === o.event.campaign_id);
-  if (!o || !brief) notFound();
-  const basePath = `/events/${o.event.slug}`;
+  const event = eventDetails(s, eventId);
+  const brief = event && s.event_briefs.find((b) => b.campaign_id === event.campaign_id);
+  if (!event || !brief) notFound();
+  const basePath = `/events/${event.slug}`;
   // The ABM target accounts (Target_Account__c), minus Enterprise customers, who aren't invited through this flow.
   const plans = s.accounts.filter((a) => a.target_account && !isEnterpriseCustomer(s, a)).map((a) => accountPlan(s, a, brief));
   const count = (p: (typeof plans)[number], status: string) => p.executives.filter((e) => e.status === status).length;
@@ -36,7 +38,7 @@ async function Accounts({ params }: Pick<Props, "params">) {
 
   return (
     <>
-      <EventHeader event={o.event} active="accounts" candidates={candidateCount(s, o.event.campaign_id)} />
+      <EventHeader event={event} active="accounts" candidates={candidateCount(s, event.campaign_id)} />
       <Page>
         <Section
           title="Accounts"
@@ -47,8 +49,7 @@ async function Accounts({ params }: Pick<Props, "params">) {
               <thead className="border-b border-gray-alpha-400 text-label-12 text-gray-900">
                 <tr>
                   <th className="px-4 py-3 font-medium">Account</th>
-                  <th className="px-4 py-3 font-medium">Commercial Context</th>
-                  <th className="px-4 py-3 font-medium">Latest Signal</th>
+                  <th className="px-4 py-3 font-medium">Vercel Pro Usage</th>
                   <th className="px-4 py-3 font-medium">Executives</th>
                   <th className="px-4 py-3 font-medium"><span className="sr-only">Plan</span></th>
                 </tr>
@@ -56,27 +57,24 @@ async function Accounts({ params }: Pick<Props, "params">) {
               <tbody className="divide-y divide-gray-alpha-400">
                 {fits.map((p) => {
                   const picked = p.executives.filter((e) => e.selected).length;
-                  const latest = p.signals.toSorted((x, y) => y.signal_date.localeCompare(x.signal_date))[0];
+                  const usage = vercelUsage(s, p.account.id);
                   return (
                     <tr key={p.account.id} className="align-top">
                       <td className="px-4 py-3">
                         <p className="text-label-14 font-medium">{p.account.name}</p>
-                        <p className="text-label-12 text-gray-900">{[p.account.icp_tier, p.account.segment, p.account.vertical].filter(Boolean).join(" · ")}</p>
+                        <p className="text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</p>
                       </td>
-                      <td className="px-4 py-3.5"><Status color={p.state.color}>{p.state.label}</Status></td>
-                      <td className="max-w-xs px-4 py-3">
-                        {latest ? (
-                          <>
-                            <p className="text-label-13">{latest.title}</p>
-                            <p className="text-label-12 text-gray-900">{p.signals.length} {p.signals.length === 1 ? "signal" : "signals"}</p>
-                          </>
+                      <td className="px-4 py-3.5">
+                        {usage.teams.length ? (
+                          <Status color="green">
+                            {usage.teams.length} Pro {usage.teams.length === 1 ? "team" : "teams"} · {usage.activeUsers} active users · {usd.format(usage.monthlySpend)}/mo
+                          </Status>
                         ) : (
-                          <p className="text-label-13 text-gray-900">No signals yet</p>
+                          <Status color="gray">No Pro teams</Status>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-label-13">
-                        <p>{count(p, "Qualified")} qualified · {count(p, "Review")} to review</p>
-                        {picked > 0 && <Badge variant="blue">{picked} selected</Badge>}
+                      <td className="px-4 py-3.5 text-label-13">
+                        {p.executives.filter((e) => e.status !== "Excluded").length} to review · {picked} selected
                       </td>
                       <td className="px-4 py-3.5 text-right">
                         <Link href={`${basePath}/accounts/${p.account.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>

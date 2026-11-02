@@ -1,16 +1,15 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState, useSyncExternalStore, useTransition } from "react";
 import { Button, Section, Status, type DotColor } from "@/components/ui";
 import type { Outreach as OutreachRow } from "@/lib/data";
 import { gmailDraft, type StepStatus } from "@/lib/sequence";
 import FindEmail from "../find-email";
-import { markSent, savePersonalLine, setOutcome, startSequence } from "./outreach-actions";
+import { markSent, saveDraft, setOutcome, startSequence } from "./outreach-actions";
 
 export type StepView = {
   index: number; day: number; channel: string; sender: string; subject: string; body: string;
-  status: StepStatus | null; due: string | null; sent: string | null;
+  status: StepStatus | null; due: string | null; sent: string | null; edited: boolean;
 };
 const statusColor: Record<StepStatus, DotColor> = { Sent: "green", Due: "amber", Overdue: "red", Upcoming: "gray", Stopped: "hollow" };
 const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
@@ -21,10 +20,8 @@ const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
 export default function Outreach({ campaignId, contactId, outreach, steps, to }: {
   campaignId: string; contactId: string; outreach?: OutreachRow; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
 }) {
-  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
-  const [line, setLine] = useState(outreach?.personal_line ?? "");
   // Every step's message can be opened, due or not. The next unsent step starts open, as does one linked to from Slack;
   // clicking flips a step from that default.
   const [flipped, setFlipped] = useState<Set<number>>(new Set());
@@ -42,59 +39,13 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
   const linked = Number(hash.match(/^#step-(\d+)$/)?.[1] ?? 0) - 1;
   const isOpen = (i: number) => (i === nextUnsent || i === linked) !== flipped.has(i);
   const run = (action: () => Promise<string | undefined>) => startTransition(async () => setError(await action()));
-  const draft = () =>
-    startTransition(async () => {
-      const res = await fetch("/api/outreach/line", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ campaignId, contactId }) });
-      const { error } = await res.json();
-      setError(error);
-      if (!error) router.refresh();
-    });
   const started = !!outreach?.started_at;
 
   return (
-    <Section
-      title="Outreach Sequence"
-      description="The event’s sequence, filled in for this executive. Send each step yourself, then mark it sent; the AE or BDR gets a Slack alert when something needs them."
-      aside={
-        started ? (
-          <div className="flex flex-wrap gap-2">
-            {outreach?.outcome === "Paused" ? (
-              <Button disabled={pending} onClick={() => run(() => setOutcome(campaignId, contactId, null))}>Resume</Button>
-            ) : (
-              OUTCOMES.map((o) => (
-                <Button key={o} disabled={pending || outreach?.outcome === o} onClick={() => run(() => setOutcome(campaignId, contactId, o))}>
-                  {o === "Paused" ? "Pause" : o}
-                </Button>
-              ))
-            )}
-          </div>
-        ) : (
-          <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Start Sequence</Button>
-        )
-      }
-    >
+    <Section title="Outreach Sequence">
       <div className="space-y-4">
         {error && <p className="text-label-13 text-red-900">{error}</p>}
         {outreach?.outcome && <Status color={outreach.outcome === "Accepted" ? "green" : outreach.outcome === "Declined" ? "red" : "blue"}>{outreach.outcome}: remaining steps are stopped</Status>}
-
-        <div className="material-base space-y-3 p-5">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-heading-16">Personalized Line</h3>
-            {outreach?.line_signal && <span className="text-label-12 text-gray-900">Draws on: {outreach.line_signal}</span>}
-          </div>
-          <textarea
-            key={outreach?.personal_line ?? ""}
-            defaultValue={outreach?.personal_line ?? ""}
-            onChange={(e) => setLine(e.target.value)}
-            rows={2}
-            placeholder="One sentence tying this executive’s company to the event. Draft it with Claude or write your own."
-            className="w-full rounded-lg bg-background-100 px-3 py-2 text-copy-14 shadow-border"
-          />
-          <div className="flex gap-2">
-            <Button disabled={pending} onClick={draft}>{pending ? "Working…" : outreach?.personal_line ? "Redraft with Claude" : "Draft with Claude"}</Button>
-            <Button disabled={pending || line === (outreach?.personal_line ?? "")} onClick={() => run(() => savePersonalLine(campaignId, contactId, line))}>Save Line</Button>
-          </div>
-        </div>
 
         {steps.length ? (
           <ol className="material-base divide-y divide-gray-alpha-400">
@@ -138,7 +89,7 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
                 {isOpen(x.index) && (
                   <div className="mt-3 space-y-2 rounded-lg bg-background-200 p-4">
                     <p className="text-label-12 font-medium uppercase tracking-wide text-gray-900">
-                      {editing?.index === x.index ? "Edit to what you sent" : x.status === "Sent" ? "Sent copy" : "Draft"}
+                      {editing?.index === x.index ? "Editing" : x.status === "Sent" ? "Sent copy" : x.edited ? "Edited draft" : "Draft"}
                     </p>
                     {editing?.index === x.index ? (
                       <>
@@ -149,16 +100,15 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
                         <textarea aria-label="Message" rows={10} value={editing.body} onChange={(e) => setEditing({ ...editing, body: e.target.value })}
                           className="w-full rounded-lg bg-background-100 px-3 py-2 text-copy-14 shadow-border" />
                         <div className="flex flex-wrap gap-2">
-                          <Button variant="primary" disabled={pending || !started}
+                          <Button variant="primary" disabled={pending}
                             onClick={() => run(async () => {
-                              const err = await markSent(campaignId, contactId, x.index, { subject: editing.subject, body: editing.body });
+                              const err = await saveDraft(campaignId, contactId, x.index, { subject: editing.subject, body: editing.body });
                               if (!err) setEditing(null);
                               return err;
                             })}>
-                            Save & Mark Sent
+                            Save
                           </Button>
                           <Button onClick={() => setEditing(null)}>Cancel</Button>
-                          {!started && <span className="self-center text-label-12 text-gray-900">Start the sequence first.</span>}
                         </div>
                       </>
                     ) : (
@@ -179,6 +129,23 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
           </ol>
         ) : (
           <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">This event has no sequence yet. Add steps on the Brief.</p>
+        )}
+
+        {/* Status changes come after the sequence they act on. */}
+        {started ? (
+          <div className="flex flex-wrap gap-2">
+            {outreach?.outcome === "Paused" ? (
+              <Button disabled={pending} onClick={() => run(() => setOutcome(campaignId, contactId, null))}>Resume</Button>
+            ) : (
+              OUTCOMES.map((o) => (
+                <Button key={o} disabled={pending || outreach?.outcome === o} onClick={() => run(() => setOutcome(campaignId, contactId, o))}>
+                  {o === "Paused" ? "Pause" : o}
+                </Button>
+              ))
+            )}
+          </div>
+        ) : (
+          <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Start Sequence</Button>
         )}
       </div>
     </Section>

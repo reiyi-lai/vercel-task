@@ -33,7 +33,7 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
     })),
     accounts: read("salesforce/Account.csv").map((r) => ({
       id: r.Id, name: r.Name, website: str(r.Website), industry: str(r.Industry), employees: num(r.NumberOfEmployees), type: str(r.Type),
-      owner_id: str(r.OwnerId), target_account: bool(r.Target_Account__c), icp_tier: str(r.ICP_Tier__c), segment: str(r.Segment__c) as Snapshot["accounts"][number]["segment"], vertical: str(r.Vertical__c),
+      owner_id: str(r.OwnerId), target_account: bool(r.Target_Account__c), icp_tier: str(r.ICP_Tier__c), vertical: str(r.Vertical__c),
       horizontals: list(r.Horizontal_Themes__c), est_first_year_value: num(r.Est_First_Year_Value__c),
       nextjs_job_posts: num(r.NextJS_Job_Posts__c),
     })),
@@ -56,7 +56,7 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
         direction: null, owner_id: r.OwnerId, contact_id: r.WhoId, account_id: r.WhatId, source: r.Source__c,
       })),
     ],
-    campaigns: read("salesforce/Campaign.csv").map((r) => ({ id: r.Id, name: r.Name, type: str(r.Type), start_date: str(r.StartDate), status: str(r.Status) })),
+    campaigns: read("salesforce/Campaign.csv").map((r) => ({ id: r.Id, name: r.Name, type: str(r.Type), start_date: str(r.StartDate), end_date: str(r.EndDate), status: str(r.Status) })),
     campaign_members: read("salesforce/CampaignMember.csv").map((r) => ({
       campaign_id: r.CampaignId, contact_id: r.ContactId, status: str(r.Status), invite_status: str(r.Invite_Status__c), seat: num(r.Seat__c),
     })),
@@ -80,12 +80,11 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
     event_briefs: read("connector_info/event_briefs.csv").map((r) => {
       type Brief = Snapshot["event_briefs"][number];
       return {
-        campaign_id: r["Campaign ID"], format: str(r.Format), location: str(r.Location), purpose: str(r.Purpose),
+        campaign_id: r["Campaign ID"], format: str(r.Format), location: str(r.Location),
         verticals: list(r.Verticals), themes: list(r.Themes), personas: list(r.Personas),
-        geography: r.Geography as Brief["geography"], city: str(r.City), radius_miles: num(r["Radius Miles"]),
-        min_seniority: r["Min Seniority"] as Brief["min_seniority"], seniority_mode: r["Seniority Mode"] as Brief["seniority_mode"],
-        segment: r.Segment as Brief["segment"], tiers: list(r.Tiers), tier_mode: r["Tier Mode"] as Brief["tier_mode"],
-        objective: r.Objective as Brief["objective"], account_weight: Number(r["Account Weight"]), search_scope: r["Search Scope"] as Brief["search_scope"],
+        geography: r.Geography as Brief["geography"], cities: list(r.Cities), min_seniority: r["Min Seniority"] as Brief["min_seniority"],
+        tiers: list(r.Tiers), tier_mode: r["Tier Mode"] as Brief["tier_mode"],
+        objective: r.Objective as Brief["objective"], outreach_lead: r["Outreach Lead"] as Brief["outreach_lead"],
         target_guests: Number(r["Target Guests"]), acceptance_rate: Number(r["Acceptance Rate"]), approval_rate: Number(r["Approval Rate"]),
         sequence: sequences[r["Campaign ID"]] ?? [],
       };

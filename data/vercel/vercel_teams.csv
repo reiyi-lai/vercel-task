@@ -9,3 +9,15 @@ team_fw_labs,fenwick-labs,001Sb0000070002AAA,Pro,1,20,ana.ito@fenwickrx.example,
 team_hd_tools,halden-internal-tools,001Sb0000070003AAA,Pro,2,160,kai.berg@haldenlogistics.example,Kai Berg,Staff Engineer
 team_sb_store,stonebridge-storefront,001Sb0000070005AAA,Pro,4,320,lucy.adams@stonebridge.example,Lucy Adams,Lead Frontend Engineer
 team_sb_blog,stonebridge-journal,001Sb0000070005AAA,Pro,1,20,lucy.adams@stonebridge.example,Lucy Adams,Lead Frontend Engineer
+team_target_commerce,target-commerce-labs,001Sb0000070027AAA,Pro,9,720,,,Director of Commerce Engineering
+team_target_design,target-design-system,001Sb0000070027AAA,Pro,4,320,,,Lead Product Designer
+team_bestbuy_sites,bestbuy-marketing-sites,001Sb0000070028AAA,Pro,6,480,,,Director of Web Engineering
+team_chewy_web,chewy-web-platform,001Sb0000070031AAA,Pro,11,880,,,"Engineering Manager, Web Platform"
+team_chewy_vet,chewy-vet-care,001Sb0000070031AAA,Pro,3,240,,,Senior Frontend Engineer
+team_nordstrom_labs,nordstrom-digital-labs,001Sb0000070020AAA,Pro,5,400,,,"Principal Engineer, Digital Labs"
+team_capone_portal,capitalone-dev-portal,001Sb0000070021AAA,Pro,4,320,,,"Senior Engineering Manager, Developer Experience"
+team_toast_marketing,toast-marketing,001Sb0000070037AAA,Pro,7,560,,,Director of Marketing Technology
+team_datadog_docs,datadog-docs,001Sb0000070038AAA,Pro,8,640,,,Documentation Engineering Lead
+team_crowdstrike_events,crowdstrike-events,001Sb0000070036AAA,Pro,3,240,,,"Web Team Lead, Events"
+team_visa_devx,visa-developer-experience,001Sb0000070019AAA,Pro,6,480,,,"Director, Developer Experience"
+team_visa_acceptance,visa-acceptance-demos,001Sb0000070019AAA,Pro,3,240,,,Senior Solutions Engineer

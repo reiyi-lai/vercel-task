@@ -2,7 +2,7 @@
 import { writeFileSync } from "node:fs";
 import { loadSampleSnapshot } from "../lib/csv.ts";
 
-const jsonb = new Set(["work_history", "warm_intro_paths", "experience", "warm_overlaps", "sequence", "sent"]);
+const jsonb = new Set(["work_history", "warm_intro_paths", "experience", "warm_overlaps", "sequence", "sent", "drafts"]);
 const sql = (v: unknown, column: string): string =>
   v === null ? "null"
   : jsonb.has(column) ? `'${JSON.stringify(v).replaceAll("'", "''")}'::jsonb`

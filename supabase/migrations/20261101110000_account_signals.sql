@@ -4,7 +4,7 @@ create table account_signals (
   id serial primary key,
   account_id text not null references accounts,
   category text not null,            -- hiring | leadership | initiative
-  theme text,                        -- Apps & Agents | Software Factories | Agentic Commerce
+  theme text,                        -- Apps & Agents | Software Factories
   title text not null,
   detail text,
   signal_date date not null,
