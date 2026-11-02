@@ -148,7 +148,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
           </ul>
         </Section>
 
-        <Section title="Executives" description="Qualified against this event’s brief. Add candidates to invite, then open their invitation plan for the warm route and drafts.">
+        <Section title="Executives" description="Qualified against this event’s brief. Add candidates to invite, then open their invitation plan for the outreach drafts.">
           {live && (
             <div className="mb-4">
               <FindExecutives

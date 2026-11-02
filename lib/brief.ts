@@ -1,6 +1,6 @@
 import type { EventBrief } from "./data";
 
-// Choices and labels for the Event Brief. Values are what event_briefs stores.
+// Choices and labels for the Event Brief. Values are what the events table stores.
 
 // The verticals a brief can target, as Salesforce holds them (Vertical__c), plus Cross-industry for any vertical.
 export const VERTICALS = ["Retail", "Financial Services", "Cross-industry"];

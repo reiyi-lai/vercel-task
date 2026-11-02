@@ -40,7 +40,7 @@ export function lookups(s: Snapshot) {
 }
 
 // Past Account Interactions: others at the target's account whom Vercel has emailed, met or had on an opportunity.
-// Context for the AE's invite, not a route.
+// Context for the AE's invite.
 export function accountInteractions(s: Snapshot, target: Contact) {
   return s.contacts.filter((k) => k.account_id === target.account_id && k.id !== target.id).flatMap((k) => {
     const acts = s.activities.filter((e) => e.contact_id === k.id);

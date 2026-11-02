@@ -14,8 +14,7 @@ export type StepView = {
 const statusColor: Record<StepStatus, DotColor> = { Sent: "green", Due: "amber", Overdue: "red", Upcoming: "gray", Stopped: "hollow" };
 const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
 
-// The candidate's outreach for this event: their personalized line, then the event's sequence with each step's
-// filled-in copy, due date and status. Sending happens outside Seatbook (Outreach in production); Mark Sent records it.
+// The candidate's outreach for this event: the event's sequence with each step's filled-in copy, due date and status. Sending happens outside Seatbook (Outreach in production); Mark Sent records it.
 // to: where steps go. Email steps link a mailto with the step's copy filled in; LinkedIn steps link the profile.
 export default function Outreach({ campaignId, contactId, outreach, steps, to }: {
   campaignId: string; contactId: string; outreach?: Candidate; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
