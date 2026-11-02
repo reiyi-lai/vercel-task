@@ -1,0 +1,26 @@
+Account ID,Category,Theme,Title,Detail,Date,Person LinkedIn URL
+001Sb0000070001AAA,initiative,Retail/Agentic Commerce,Launched an AI shopping assistant on its app and site,Answers product questions and builds outfits from the full catalog; rolled out to all US shoppers,2026-09-18,
+001Sb0000070001AAA,hiring,Software Factories,9 job posts mention coding agents since May 2026,"Latest: Staff Engineer, Developer Experience; Senior Platform Engineer",2026-10-22,
+001Sb0000070002AAA,initiative,Internal Software,"Rolled out an internal pharmacist assistant agent to 2,000 stores",Agent drafts refill and interaction notes for pharmacist review,2026-08-05,
+001Sb0000070002AAA,hiring,Apps & Agents,6 job posts mention AI agent frameworks since May 2026,Latest: Senior AI Engineer (LangGraph); ML Platform Engineer,2026-10-09,
+001Sb0000070003AAA,initiative,Internal Software,Announced an AI governance council for internal tools,Every internal AI app now needs council sign-off before production,2026-07-14,
+001Sb0000070004AAA,hiring,Software Factories,11 job posts mention coding agents since May 2026,Latest: Engineering Manager; Developer Productivity,2026-10-27,
+001Sb0000070005AAA,hiring,Software Factories,3 job posts mention coding agents since May 2026,Latest: Senior Frontend Engineer (Next.js),2026-09-30,
+001Sb0000070006AAA,initiative,Internal Software,CTO memo mandates AI coding agents across engineering,All squads to adopt agent-assisted code review by Q1 2027,2026-06-23,
+001Sb0000070007AAA,leadership,Software Factories,Diego Alvarez started as VP Developer Productivity,New role created to lead the agent-assisted delivery program,2026-06-01,https://linkedin.example/in/diego-alvarez
+001Sb0000070007AAA,initiative,Internal Software,Piloting a clinical documentation agent in three hospitals,Ambient notes drafted by an agent and signed off by clinicians,2026-08-27,
+001Sb0000070008AAA,initiative,Retail/Agentic Commerce,Testing agentic checkout through a ChatGPT app,Shoppers can build and pay for a grocery basket inside ChatGPT,2026-10-02,
+001Sb0000070009AAA,hiring,Software Factories,5 job posts mention coding agents since May 2026,Latest: Platform Engineer; Developer Tooling,2026-10-15,
+001Sb0000070010AAA,leadership,Apps & Agents,Lucas Berg started as Head of AI Platform,Joined from a fintech; owns the internal agent platform,2026-09-01,https://linkedin.example/in/lucas-berg
+001Sb0000070010AAA,initiative,Financial Services,"Launched an internal AI assistant for 4,000 advisors",Built on the bank's own agent platform with audit logging,2026-07-29,
+001Sb0000070011AAA,leadership,Software Factories,Kenji Watanabe started as VP Engineering,Promoted from Director of Platform Engineering,2026-07-01,https://linkedin.example/in/kenji-watanabe
+001Sb0000070011AAA,initiative,Retail/Agentic Commerce,Replatforming storefronts ahead of holiday 2026,Moving web and app storefronts onto one composable commerce stack,2026-05-20,
+001Sb0000070012AAA,leadership,Agentic Commerce,Elena Vasquez started as VP Digital Commerce,Promoted from Senior Director of Ecommerce,2026-07-01,https://linkedin.example/in/elena-vasquez
+001Sb0000070012AAA,initiative,Retail/Agentic Commerce,Announced AI recipe-to-cart in its app,An agent turns any recipe into a basket from local store stock,2026-09-09,
+001Sb0000070013AAA,hiring,Software Factories,2 job posts mention coding agents since May 2026,Latest: Senior Software Engineer,2026-08-12,
+001Sb0000070014AAA,initiative,Internal Software,Adopted an internal developer platform with coding agents,Agents open pull requests for routine dependency and test work,2026-09-24,
+001Sb0000070015AAA,initiative,Financial Services,Claims-intake agent now handles first notice of loss,Covers auto and home claims; staff review every payout,2026-08-18,
+001Sb0000070016AAA,leadership,Apps & Agents,Imani Carter started as Chief Information Security Officer,Joined from a public bank; leads AI risk policy,2026-06-01,https://linkedin.example/in/imani-carter
+001Sb0000070017AAA,leadership,Software Factories,Adaeze Nwosu started as VP Platform Engineering,Joined from a cloud provider to consolidate developer platforms,2026-08-01,https://linkedin.example/in/adaeze-nwosu
+001Sb0000070017AAA,hiring,Software Factories,14 job posts mention coding agents since May 2026,Latest: Principal Engineer; Developer Platform,2026-10-29,
+001Sb0000070018AAA,initiative,Retail/Agentic Commerce,Launched AI personalized lookbooks by email and web,Generated per shopper from browsing and purchase history,2026-07-08,

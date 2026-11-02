@@ -22,9 +22,11 @@ create table accounts (
   owner_id text references users,
   target_account boolean,
   icp_tier text,
+  segment text,                      -- Majors | Commercial
   vertical text,
   horizontals text[] not null default '{}',
-  est_first_year_value int
+  est_first_year_value int,
+  nextjs_job_posts int               -- NextJS_Job_Posts__c: job posts naming Next.js in the last year, synced from Sumble
 );
 
 create table contacts (
@@ -37,7 +39,12 @@ create table contacts (
   owner_id text references users,
   linkedin_url text,
   intro_program text,                -- Intro_Program__c
-  employment_status text             -- Employment_Status__c: Current | Former
+  employment_status text,            -- Employment_Status__c: Current | Former
+  mailing_city text,
+  mailing_state text,
+  mailing_latitude double precision, -- geocoded by Salesforce from the mailing address
+  mailing_longitude double precision,
+  has_opted_out_of_email boolean not null default false
 );
 
 create table opportunities (
@@ -132,7 +139,7 @@ create table events (
   slug text unique not null,
   short_name text not null,
   program text,
-  seats int not null,
+  seats int,                         -- null when the capacity isn't set
   host_user_ids text[] not null default '{}',
   slack_channel text
 );

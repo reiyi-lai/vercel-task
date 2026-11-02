@@ -208,37 +208,6 @@ export function derivePlan(s: Snapshot, targetId: string, campaignId: string) {
 
 export type Plan = ReturnType<typeof derivePlan>;
 
-// Template drafts built from the plan (no LLM yet): the ask to the connector, the blurb they forward, and the AE's direct invite.
-// Drafts for asking one connector; the top of the ladder by default.
-export function drafts(plan: Plan, eventName: string, date: string, activeUsers: number, c = plan.ladder[0].connector) {
-  const { target, targetOwner, account, ladder } = plan;
-  const ae = fullName(targetOwner);
-  const direct = {
-    tab: "Fallback: Direct",
-    meta: `From ${ae} → ${fullName(target)}${ladder.length > 1 ? " · sent if the warm path stalls" : ""}`,
-    body: `Hi ${target.first_name} — I'm ${first(ae)}, Vercel's account lead for ${account.name}.${activeUsers ? ` ${activeUsers} of your engineers already build on Vercel, so I thought you'd value the conversation.` : ""}\n\nWe're hosting a small group of technology leaders at ${eventName} on ${date}. Would you like to join us?\n\n— ${first(ae)}`,
-    approve: ladder.length > 1 ? "Approve as Fallback" : "Approve & Send",
-  };
-  if (c.ref === `user:${targetOwner.id}`) return [{ ...direct, tab: "Direct Invite" }];
-
-  const asker = c.asker ?? ae;
-  return [
-    {
-      tab: "To Connector",
-      meta: `From ${asker} → ${c.name}${c.asker ? ` · by email, ${ae} cc'd` : " · Slack DM"}`,
-      body: `Hi ${first(c.name)} — quick favor. ${fullName(target)} (${target.title}, ${account.name}) is on our list for ${eventName} on ${date}, and I believe you two ${c.relationship ?? "know each other"}. Would you be open to forwarding the short note below? Totally fine if the timing isn't right.\n\n— ${first(asker)}`,
-      approve: `Approve & Send to ${first(asker)}`,
-    },
-    {
-      tab: "Blurb to Forward",
-      meta: `${c.name} forwards this to ${target.first_name}`,
-      body: `${target.first_name} — Vercel is hosting a small group of technology leaders at ${eventName} on ${date}.${c.routes.includes(ROUTES.attendee) ? " I'll be there and thought you'd enjoy it." : ""} Happy to connect you with ${ae}, who's hosting.`,
-      approve: `Approve & Send to ${first(asker)}`,
-    },
-    direct,
-  ];
-}
-
 // Past Account Interactions: others at the target's account whom Vercel has emailed, met or had on an opportunity.
 // Context for the AE's invite, not a route.
 export function accountInteractions(s: Snapshot, target: Contact) {
@@ -275,7 +244,7 @@ export function eventOverview(s: Snapshot, slug: string) {
     return { id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals, ae: fullName(user.get(k.owner_id!)!) };
   };
 
-  const seats = Array.from({ length: ev.seats }, (_, i) => {
+  const seats = Array.from({ length: ev.seats ?? 0 }, (_, i) => {
     const p = parts.find((p) => p.seat === i + 1);
     if (!p) return { n: i + 1, status: "Open" as const };
     return { n: i + 1, status: p.invite_status === "Confirmed" ? ("Confirmed" as const) : ("Pending" as const), ...person(p.contact_id) };
@@ -301,7 +270,6 @@ export function eventOverview(s: Snapshot, slug: string) {
     seats,
     // Accepted, but not placed yet: who can fill an open seat.
     unseated: parts.filter((p) => p.invite_status === "Confirmed" && !p.seat).map((p) => ({ status: "Confirmed" as const, ...person(p.contact_id) })),
-    candidates: candidates.length,
     pipeline: [
       { title: "Plan Ready", dot: "gray" as const, cards: candidates },
       { title: "Intro Requested", dot: "blue" as const, cards: byStatus((st) => st === "Pending — intro requested") },

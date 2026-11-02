@@ -46,6 +46,17 @@ export function Status({ color, children }: { color: DotColor; children: ReactNo
   );
 }
 
+// A person's name, linked to their LinkedIn profile when there is a real one (sample contacts use linkedin.example).
+export function PersonName({ name, linkedinUrl }: { name: string; linkedinUrl: string | null }) {
+  if (!linkedinUrl || linkedinUrl.includes("linkedin.example")) return <p className="text-label-14 font-medium">{name}</p>;
+  return (
+    <a href={linkedinUrl} target="_blank" rel="noreferrer" className="block text-label-14 font-medium hover:underline">
+      {name} <span aria-hidden className="text-gray-900">↗</span>
+      <span className="sr-only"> (LinkedIn profile)</span>
+    </a>
+  );
+}
+
 // Decorative: the person's name is always shown next to it.
 const avatarTones = { gray: "bg-gray-100 text-gray-900 shadow-border", dark: "bg-gray-1000 text-background-100", blue: "bg-blue-200 text-blue-900" };
 
@@ -64,9 +75,10 @@ const buttonStyles = {
   secondary: "bg-background-100 shadow-border hover:bg-gray-100",
 };
 
-export function Button({ children, variant = "secondary", href, onClick, className = "" }: { children: ReactNode; variant?: keyof typeof buttonStyles; href?: string; onClick?: () => void; className?: string }) {
-  const classes = `inline-flex h-8 items-center justify-center whitespace-nowrap rounded-lg px-3 text-button-14 ${buttonStyles[variant]} ${className}`;
-  return href ? <Link href={href} className={classes}>{children}</Link> : <button type="button" onClick={onClick} className={classes}>{children}</button>;
+export function Button({ children, variant = "secondary", href, onClick, disabled, className = "" }: { children: ReactNode; variant?: keyof typeof buttonStyles; href?: string; onClick?: () => void; disabled?: boolean; className?: string }) {
+  const classes = `inline-flex h-8 items-center justify-center whitespace-nowrap rounded-lg px-3 text-button-14 disabled:pointer-events-none disabled:opacity-50 ${buttonStyles[variant]} ${className}`;
+  if (href?.startsWith("http")) return <a href={href} target="_blank" rel="noreferrer" className={classes}>{children}</a>; // external: new tab
+  return href ? <Link href={href} className={classes}>{children}</Link> : <button type="button" onClick={onClick} disabled={disabled} className={classes}>{children}</button>;
 }
 
 export function Section({ title, description, aside, children }: { title: ReactNode; description?: ReactNode; aside?: ReactNode; children: ReactNode }) {

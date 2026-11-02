@@ -2,7 +2,7 @@
 import { writeFileSync } from "node:fs";
 import { loadSampleSnapshot } from "../lib/csv.ts";
 
-const jsonb = new Set(["work_history", "warm_intro_paths"]);
+const jsonb = new Set(["work_history", "warm_intro_paths", "experience", "warm_overlaps", "sequence", "sent"]);
 const sql = (v: unknown, column: string): string =>
   v === null ? "null"
   : jsonb.has(column) ? `'${JSON.stringify(v).replaceAll("'", "''")}'::jsonb`
@@ -11,7 +11,7 @@ const sql = (v: unknown, column: string): string =>
   : String(v);
 
 const snapshot = loadSampleSnapshot();
-const tables = Object.keys(snapshot) as (keyof typeof snapshot)[]; // already in foreign-key order
+const tables = (Object.keys(snapshot) as (keyof typeof snapshot)[]).filter((t) => snapshot[t].length); // in foreign-key order
 const statements = tables.map((t) => {
   const rows = snapshot[t] as Record<string, unknown>[];
   const columns = Object.keys(rows[0]);

@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import ParamSwitch from "@/components/param-switch";
-import { Page, PageHeader, TabLinks } from "@/components/ui";
+import { Page } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventOverview } from "@/lib/derive";
+import EventHeader, { candidateCount } from "./event-header";
 import Pipeline, { slugify } from "./pipeline";
 import Seats from "./seats";
 
@@ -21,7 +22,8 @@ export default function EventPage({ params }: Props) {
 
 async function EventOverview({ params }: Pick<Props, "params">) {
   const { eventId } = await params;
-  const o = eventOverview(await loadSnapshot(), eventId);
+  const s = await loadSnapshot();
+  const o = eventOverview(s, eventId);
   if (!o) notFound();
   const { event, seats, pipeline } = o;
   const basePath = `/events/${event.slug}`;
@@ -29,20 +31,14 @@ async function EventOverview({ params }: Pick<Props, "params">) {
 
   return (
     <>
-      <PageHeader
-        crumbs={[{ label: "All Events" }, { label: event.program ?? event.short_name }]}
-        tabs={<TabLinks items={[{ label: "Overview", href: basePath, active: true }, { label: <>Candidates <span className="text-label-12 text-gray-900">{o.candidates}</span></> }]} />}
-      >
-        <h1 className="text-heading-32">{event.name}</h1>
-        <p className="mt-1 text-label-13 text-gray-900">
-          {event.date} · {seats.length}&nbsp;seats · {event.daysOut}&nbsp;days out · Hosts: {event.hosts}
-        </p>
-      </PageHeader>
+      <EventHeader event={event} active="overview" candidates={candidateCount(s, event.campaign_id)} />
 
       <Page>
-        <div className="material-medium p-6">
-          <Seats initialSeats={seats} initialUnseated={o.unseated} />
-        </div>
+        {seats.length > 0 && (
+          <div className="material-medium p-6">
+            <Seats initialSeats={seats} initialUnseated={o.unseated} />
+          </div>
+        )}
 
         <ParamSwitch
           name="ae"

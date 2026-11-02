@@ -1,0 +1,2721 @@
+[
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/ivanhzhao"
+    },
+    "person_id": 254692300,
+    "sumble_url": "https://sumble.com/l/person/Bu5cWFDuzOCxLT",
+    "attributes": {
+      "name": "Ivan Zhao",
+      "current_employer": {
+        "organization_id": 3730,
+        "name": "Notion",
+        "slug": "notion-labs",
+        "start_date": "2013-01",
+        "sumble_url": "https://sumble.com/l/org/EOqpf5B19rxQ"
+      },
+      "experience": [
+        {
+          "title": "Founder",
+          "start_date": "2013-01",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 3730,
+            "name": "Notion",
+            "slug": "notion-labs",
+            "linkedin_url": "https://www.linkedin.com/company/notionhq",
+            "sumble_url": "https://sumble.com/l/org/EOqpf5B19rxQ"
+          }
+        },
+        {
+          "title": "Product",
+          "start_date": "2011-01",
+          "end_date": "2012-01",
+          "employer": {
+            "organization_id": 84861,
+            "name": "Inkling",
+            "slug": "inkling",
+            "linkedin_url": "https://www.linkedin.com/company/inklingsf",
+            "sumble_url": "https://sumble.com/l/org/mNtc1E0OrVQL"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/akothari"
+    },
+    "person_id": 172411042,
+    "sumble_url": "https://sumble.com/l/person/d69A5K0CA8ZOAS",
+    "attributes": {
+      "name": "Akshay Kothari",
+      "current_employer": {
+        "organization_id": 3730,
+        "name": "Notion",
+        "slug": "notion-labs",
+        "start_date": "2018-08",
+        "sumble_url": "https://sumble.com/l/org/EOqpf5B19rxQ"
+      },
+      "experience": [
+        {
+          "title": "Co-Founder",
+          "start_date": "2018-08",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 3730,
+            "name": "Notion",
+            "slug": "notion-labs",
+            "linkedin_url": "https://www.linkedin.com/company/notionhq",
+            "sumble_url": "https://sumble.com/l/org/EOqpf5B19rxQ"
+          }
+        },
+        {
+          "title": "VP Product, Head of LinkedIn India",
+          "start_date": "2016-01",
+          "end_date": "2018-08",
+          "location": "Bengaluru Area, India",
+          "description": "Country Manager for LinkedIn's second biggest market, with 50+ million members and 1000+ employees. Responsible for international R&D teams (China, Japan, Germany, India)",
+          "employer": {
+            "organization_id": 61349,
+            "name": "LinkedIn",
+            "slug": "linkedin",
+            "linkedin_url": "https://www.linkedin.com/company/linkedin",
+            "sumble_url": "https://sumble.com/l/org/8RVScY81ano9"
+          }
+        },
+        {
+          "title": "Product Lead",
+          "start_date": "2013-04",
+          "end_date": "2015-12",
+          "location": "Mountain view, CA",
+          "description": "Product lead for major content initiatives at Linkedin, including Pulse, Publishing Platform and Influencer program",
+          "employer": {
+            "organization_id": 61349,
+            "name": "LinkedIn",
+            "slug": "linkedin",
+            "linkedin_url": "https://www.linkedin.com/company/linkedin",
+            "sumble_url": "https://sumble.com/l/org/8RVScY81ano9"
+          }
+        },
+        {
+          "title": "Co-Founder/CEO",
+          "start_date": "2010-05",
+          "end_date": "2013-04",
+          "location": "San Francisco, CA",
+          "description": "Pulse was an award-winning application for iPhone, iPad, Android and the web. It gave users the opportunity to access their favorite content—from traditional news sources to blogs to social networks—all in one beautiful interface. Pulse had been named to Apple's App Store Hall of Fame, chosen as an Android Editor's Choice app, selected as one of TIME's top 50 iPhone apps of 2011, and honored with the Apple Design Award. Pulse was acquired by LinkedIn in 2013 for $90 million.",
+          "employer": {
+            "name": "LinkedIn Pulse",
+            "linkedin_url": "https://www.linkedin.com/company/pulse-news"
+          }
+        },
+        {
+          "title": "Analyst",
+          "start_date": "2007-06",
+          "end_date": "2008-05",
+          "location": "Los Altos, CA",
+          "employer": {
+            "name": "Sdl Ventures",
+            "linkedin_url": "https://www.linkedin.com/company/sdl-ventures"
+          }
+        },
+        {
+          "title": "Intern",
+          "start_date": "2006-06",
+          "end_date": "2006-08",
+          "location": "Bangalore, India",
+          "employer": {
+            "organization_id": 71,
+            "name": "Infosys Technologies",
+            "slug": "infosys",
+            "linkedin_url": "https://www.linkedin.com/company/infosys",
+            "sumble_url": "https://sumble.com/l/org/H8nxoQsfU0Q"
+          }
+        },
+        {
+          "title": "Intern",
+          "start_date": "2005-01",
+          "end_date": "2005-12",
+          "location": "Coopersburg, PA",
+          "employer": {
+            "organization_id": 3640,
+            "name": "Lutron Electronics",
+            "slug": "lutron-electronics",
+            "linkedin_url": "https://www.linkedin.com/company/lutron-electronics",
+            "sumble_url": "https://sumble.com/l/org/ysJUHCj8ANz"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/eglyman"
+    },
+    "person_id": 268507715,
+    "sumble_url": "https://sumble.com/l/person/4Ln95xujFUebjN",
+    "attributes": {
+      "name": "Eric Glyman",
+      "current_employer": {
+        "organization_id": 6943,
+        "name": "Ramp",
+        "slug": "ramp-2",
+        "start_date": "2019-03",
+        "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+      },
+      "experience": [
+        {
+          "title": "Co-Founder, CEO",
+          "start_date": "2019-03",
+          "description": "Ramp is building the next generation of finance tools – from corporate cards and expense management, to bill payments and accounting integrations – designed to save businesses time and money with every click. Over 30,000 companies are spending an average of 5% less and closing their books 8x faster by switching to Ramp's finance automation platform. Founded in 2019, Ramp powers the fastest-growing corporate card and bill payment software in America. Recently named Fast Company’s 2023 Most Innovative Company in North America, investors include Founders Fund, Sequoia Capital, Coatue Management, D1 Capital Partners, Thrive Capital, Sands Capital, Redpoint Ventures, Iconiq Growth, Altimeter, Stripe, Goldman Sachs, Citi, Lux Capital, Vista Public Strategies, Spark Capital, Definition Capital, General Catalyst, 137 Ventures, Neo, Soma Capital, and Declaration Partners, and more.",
+          "employer": {
+            "organization_id": 6943,
+            "name": "Ramp",
+            "slug": "ramp-2",
+            "linkedin_url": "https://www.linkedin.com/company/ramp",
+            "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+          }
+        },
+        {
+          "title": "Sr. Director, Paribus @ US Card / CEO, Paribus",
+          "start_date": "2016-10",
+          "end_date": "2019-02",
+          "location": "New York City Metropolitan Area",
+          "employer": {
+            "organization_id": 26,
+            "name": "Capital One",
+            "slug": "capital-one",
+            "linkedin_url": "https://www.linkedin.com/company/capital-one",
+            "sumble_url": "https://sumble.com/l/org/57TXQzxsaa"
+          }
+        },
+        {
+          "title": "Co-Founder",
+          "start_date": "2014-01",
+          "end_date": "2019-02",
+          "location": "Brooklyn, NY",
+          "description": "Join Paribus today",
+          "employer": {
+            "name": "Paribus Co.",
+            "linkedin_url": "https://www.linkedin.com/company/paribus-co-"
+          }
+        },
+        {
+          "title": "Financial Analyst",
+          "start_date": "2012-07",
+          "end_date": "2014-09",
+          "location": "New York, NY",
+          "description": "Millstein & Co. provides financial and strategic advice in special situations, restructurings and recapitalization transactions and invests in such transactions with its own capital or together with third party investors, where requested or appropriate.",
+          "employer": {
+            "name": "Millstein & Co."
+          }
+        },
+        {
+          "title": "Summer Analyst",
+          "start_date": "2011-06",
+          "end_date": "2011-08",
+          "location": "Los Angeles Metropolitan Area",
+          "description": "Financial Restructuring Group",
+          "employer": {
+            "organization_id": 2421,
+            "name": "Houlihan Lokey",
+            "slug": "houlihan-lokey",
+            "linkedin_url": "https://www.linkedin.com/company/houlihan-lokey",
+            "sumble_url": "https://sumble.com/l/org/kXtHL9w1JTj"
+          }
+        },
+        {
+          "title": "Visiting Research Assistant",
+          "start_date": "2011-04",
+          "end_date": "2011-06",
+          "location": "Beijing, China",
+          "employer": {
+            "name": "Peking University Center for Health Economics Research"
+          }
+        },
+        {
+          "title": "Logistics Coordinator",
+          "start_date": "2011-01",
+          "location": "Las Vegas Metropolitan Area",
+          "employer": {
+            "organization_id": 43560,
+            "name": "Consumer Electronics Association",
+            "slug": "consumer-technology-association",
+            "linkedin_url": "https://www.linkedin.com/company/consumer-technology-association",
+            "sumble_url": "https://sumble.com/l/org/UPZcK9qdND2O"
+          }
+        },
+        {
+          "title": "Research Associate",
+          "start_date": "2010-06",
+          "end_date": "2010-08",
+          "location": "Beijing, China",
+          "employer": {
+            "name": "iKang Guobin"
+          }
+        },
+        {
+          "title": "Logistics Coordinator",
+          "start_date": "2010-01",
+          "location": "Las Vegas Metropolitan Area",
+          "employer": {
+            "organization_id": 43560,
+            "name": "Consumer Electronics Association",
+            "slug": "consumer-technology-association",
+            "linkedin_url": "https://www.linkedin.com/company/consumer-technology-association",
+            "sumble_url": "https://sumble.com/l/org/UPZcK9qdND2O"
+          }
+        },
+        {
+          "title": "Trustee",
+          "start_date": "2009-01",
+          "end_date": "2014-07",
+          "description": "Served on the Board of Trustees of GCC, and was responsible for major strategic decisions and officer appointments. Founded Harvard College chapter of GCC. As an early founder at GCC, led the growth of the student organization from three university chapters to over 60.",
+          "employer": {
+            "organization_id": 2102454,
+            "name": "Global China Connection",
+            "slug": "gccglobal",
+            "linkedin_url": "https://www.linkedin.com/company/gccglobal",
+            "sumble_url": "https://sumble.com/l/org/1c9UDs3r4V35y"
+          }
+        },
+        {
+          "title": "Sales Associate",
+          "start_date": "2008-06",
+          "end_date": "2008-09",
+          "location": "Las Vegas, NV",
+          "employer": {
+            "organization_id": 12828,
+            "name": "EXPRESS",
+            "slug": "express",
+            "linkedin_url": "https://www.linkedin.com/company/express-llc",
+            "sumble_url": "https://sumble.com/l/org/mKRn1E0OrVQL"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/karimatiyeh"
+    },
+    "person_id": 268454602,
+    "sumble_url": "https://sumble.com/l/person/FQ6K7RLyImBhuo",
+    "attributes": {
+      "name": "Karim Atiyeh",
+      "current_employer": {
+        "organization_id": 6943,
+        "name": "Ramp",
+        "slug": "ramp-2",
+        "start_date": "2019-03",
+        "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+      },
+      "experience": [
+        {
+          "title": "Co-Founder, CTO Ramp",
+          "start_date": "2019-03",
+          "location": "Greater New York City Area",
+          "employer": {
+            "organization_id": 6943,
+            "name": "Ramp",
+            "slug": "ramp-2",
+            "linkedin_url": "https://www.linkedin.com/company/ramp",
+            "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/geoffrey-charles"
+    },
+    "person_id": 90167520,
+    "sumble_url": "https://sumble.com/l/person/x9t5UUJZOJW6ZA",
+    "attributes": {
+      "name": "Geoff Charles",
+      "current_employer": {
+        "organization_id": 6943,
+        "name": "Ramp",
+        "slug": "ramp-2",
+        "start_date": "2025-01",
+        "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+      },
+      "experience": [
+        {
+          "title": "CPO",
+          "start_date": "2025-01",
+          "location": "New York City Metropolitan Area",
+          "employer": {
+            "organization_id": 6943,
+            "name": "Ramp",
+            "slug": "ramp-2",
+            "linkedin_url": "https://www.linkedin.com/company/ramp",
+            "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+          }
+        },
+        {
+          "title": "VP Product",
+          "start_date": "2022-07",
+          "end_date": "2025-01",
+          "location": "New York City Metropolitan Area",
+          "employer": {
+            "organization_id": 6943,
+            "name": "Ramp",
+            "slug": "ramp-2",
+            "linkedin_url": "https://www.linkedin.com/company/ramp",
+            "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+          }
+        },
+        {
+          "title": "Head of Product",
+          "start_date": "2020-01",
+          "end_date": "2022-07",
+          "location": "New York City Metropolitan Area",
+          "description": "First product hire. Currently oversee Product Management, Product Marketing, Product Operations, Product Growth, and Customer Support. Ramp is the only corporate card and spend management solution that helps companies spend less. We're growing fast and just getting started - join us! https://ramp.com/careers",
+          "employer": {
+            "organization_id": 6943,
+            "name": "Ramp",
+            "slug": "ramp-2",
+            "linkedin_url": "https://www.linkedin.com/company/ramp",
+            "sumble_url": "https://sumble.com/l/org/bQI6XO60ECdd"
+          }
+        },
+        {
+          "title": "Sabbatical - FinTech Advisory",
+          "start_date": "2019-08",
+          "end_date": "2020-01",
+          "description": "Sabbatical project exploring FinTech’s role in furthering financial inclusion in Mexico, India, Myanmar, Kenya, and China. Helped disruptive FinTech startups in emerging markets get to the next level.",
+          "employer": {
+            "name": "FinTech World Tour",
+            "linkedin_url": "https://www.linkedin.com/company/fintech-world-tour"
+          }
+        },
+        {
+          "title": "Group Product Manager (Founding Team)",
+          "start_date": "2018-12",
+          "end_date": "2019-08",
+          "location": "San Francisco Bay Area",
+          "description": "Helped Mission Lane spin off of LendUp, rebrand, and scale 3x. Then I took a much needed sabbatical. Product lead for our credit card product. Responsible for the user journey from marketing to card in hand, including: growth, marketing, application, securitization, underwriting, KYC, risk management, card issuance.",
+          "employer": {
+            "organization_id": 5991,
+            "name": "Mission Lane",
+            "slug": "mission-lane",
+            "linkedin_url": "https://www.linkedin.com/company/missionlane",
+            "sumble_url": "https://sumble.com/l/org/Ts24m0TgkRrD"
+          }
+        },
+        {
+          "title": "Senior Product Manager",
+          "start_date": "2017-01",
+          "end_date": "2018-12",
+          "location": "San Francisco Bay Area",
+          "description": "Launched LendUp's Secured Card program. Led the platform team building core underwriting and servicing systems for our card and loans products.",
+          "employer": {
+            "organization_id": 1321424,
+            "name": "LendUp",
+            "slug": "lendup",
+            "linkedin_url": "https://www.linkedin.com/company/lendup",
+            "sumble_url": "https://sumble.com/l/org/4zUiYueBf5YN8"
+          }
+        },
+        {
+          "title": "Product Manager",
+          "start_date": "2014-12",
+          "end_date": "2016-12",
+          "location": "San Francisco Bay Area",
+          "description": "I helped banks build and deploy pricing models for their financial products using \"big data\" and \"ML\".",
+          "employer": {
+            "organization_id": 1200510,
+            "name": "Nomis Solutions",
+            "slug": "nomis-solutions",
+            "linkedin_url": "https://www.linkedin.com/company/nomis-solutions",
+            "sumble_url": "https://sumble.com/l/org/VZTncaVhyjy5x"
+          }
+        },
+        {
+          "title": "Senior Management Consultant",
+          "start_date": "2012-08",
+          "end_date": "2014-11",
+          "location": "New York City Metropolitan Area",
+          "description": "I made really nice looking slide decks. Financial Services Management Consulting. Worked with major financial institutions on a range of areas including Finance & Risk, Wealth & Asset Management, Retail Banking, Insurance, Organization Transformation, and IT.",
+          "employer": {
+            "organization_id": 4641,
+            "name": "Oliver Wyman",
+            "slug": "oliver-wyman-group",
+            "linkedin_url": "https://www.linkedin.com/company/oliver-wyman",
+            "sumble_url": "https://sumble.com/l/org/AWMn4aHNhJGg"
+          }
+        },
+        {
+          "title": "Consultant (Summer Internship)",
+          "start_date": "2011-05",
+          "end_date": "2011-08",
+          "location": "New York City Metropolitan Area",
+          "description": "I learned that SAP needed to die.",
+          "employer": {
+            "organization_id": 27,
+            "name": "Accenture",
+            "slug": "accenture",
+            "linkedin_url": "https://www.linkedin.com/company/accenture",
+            "sumble_url": "https://sumble.com/l/org/Kf0YtJG2WF"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/jaymefishman"
+    },
+    "person_id": 2170116,
+    "sumble_url": "https://sumble.com/l/person/L0T3Sgu3UklXD",
+    "attributes": {
+      "name": "Jayme Fishman",
+      "current_employer": {
+        "organization_id": 1540,
+        "name": "Avalara",
+        "slug": "avalara",
+        "start_date": "2024-04",
+        "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Chief Strategy and Product Officer",
+          "start_date": "2024-04",
+          "duration": "2 years 7 months",
+          "description": "Oversee corporate and product strategy, mergers & acquisitions, and high-growth e-invoicing and financial services business units, while driving enterprise-wide digital transformation initiatives. Play a key leadership role in advancing artificial intelligence adoption, integration, and innovation to enhance operational efficiency, decision-making, and market competitiveness.",
+          "employer": {
+            "organization_id": 1540,
+            "name": "Avalara",
+            "slug": "avalara",
+            "linkedin_url": "https://www.linkedin.com/company/avalara/",
+            "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+          }
+        },
+        {
+          "title": "EVP / GM Indirect Tax",
+          "start_date": "2022-04",
+          "end_date": "2024-04",
+          "duration": "2 years 1 month",
+          "description": "GM-PRODUCT-M&A: Responsible for accelerating growth within Avalara's global portfolio of indirect tax offerings. Each business in the portfolio is led by a GM that owns the vision for winning the market, and the cross-functional efforts across: product, engineering, business development, marketing, and sales.\nI am responsible for the consolidated vision and execution across all the indirect businesses, the product organization, and corporate development.",
+          "employer": {
+            "organization_id": 1540,
+            "name": "Avalara",
+            "slug": "avalara",
+            "linkedin_url": "https://www.linkedin.com/company/avalara/",
+            "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+          }
+        },
+        {
+          "title": "EVP Corporate Development",
+          "start_date": "2020-08",
+          "end_date": "2022-04",
+          "duration": "1 year 9 months",
+          "description": "Oversee Avalara’s mergers and acquisitions strategy and manage the acquisitions process from due diligence through integration.",
+          "employer": {
+            "organization_id": 1540,
+            "name": "Avalara",
+            "slug": "avalara",
+            "linkedin_url": "https://www.linkedin.com/company/avalara/",
+            "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+          }
+        },
+        {
+          "title": "Advisory board member - FINTECH @ CSAIL",
+          "start_date": "2018-09",
+          "end_date": "2020-08",
+          "duration": "2 years",
+          "description": "FinTech@CSAIL brings together industry, thought leaders, innovators, academics, disruptive technology development, and startup companies that are reinventing global financial  services.  FinTech@CSAIL includes the world-class faculty of MIT CSAIL, who have pioneered the fields of secure computation, machine learning, artificial intelligence, data analytics, and risk management. The goal is to advance the state-of-the-art in collaboration with select industry partners to address the hardest problems facing the finance industry today.",
+          "employer": {
+            "organization_id": 949,
+            "name": "Massachusetts Institute of Technology",
+            "slug": "massachusetts-institute-of-technology",
+            "linkedin_url": "https://www.linkedin.com/school/mit/",
+            "sumble_url": "https://sumble.com/l/org/J1nbLUYEWRY"
+          }
+        },
+        {
+          "title": "Co-Founder",
+          "start_date": "2015-11",
+          "duration": "11 years",
+          "description": "We are an unofficial group of \"non-members\" comprised of like minded angels who may or may not invest in opportunities together.",
+          "employer": {
+            "name": "The Unofficial Syndicate",
+            "linkedin_url": "https://www.linkedin.com/company/10355120/"
+          }
+        },
+        {
+          "title": "President - Software Division",
+          "start_date": "2015-03",
+          "end_date": "2020-08",
+          "duration": "5 years 6 months",
+          "description": "Ryan is an award-winning global tax services firm, with the largest indirect and property tax practices in North America and the seventh largest corporate tax practice in the United States. With global headquarters in Dallas, Texas, the Firm provides a comprehensive range of state, local, federal, and international tax advisory and consulting services on a multi-jurisdictional basis, including audit defense, tax recovery, credits and incentives, tax process improvement and automation, tax appeals, tax compliance, and strategic planning. \n\nPresident Ryan's software division. Leads a team of dedicated tax and technology experts responsible for the continued development and support of the Firm’s expanding suite of software applications. Driving the growth of Ryan’s new proprietary software offering that includes PinPoint™, a powerful sales and use tax calculation engine and data warehousing application; RatePoint™, a single-source tax application for rate lookup and monitoring needs; FilePoint™, a sales and use tax compliance system that provides access to the largest body of electronic uploads in the market for sales and use tax filings; and ControlPoint™, a certificate management system for handling and sharing purchase and/or sales exemption certificates.",
+          "employer": {
+            "organization_id": 7264,
+            "name": "Ryan",
+            "slug": "ryan",
+            "linkedin_url": "https://www.linkedin.com/company/ryan/",
+            "sumble_url": "https://sumble.com/l/org/EODjf5B19rxQ"
+          }
+        },
+        {
+          "title": "Member Of The Board Of Advisors",
+          "start_date": "2015-02",
+          "end_date": "2018-09",
+          "duration": "3 years 8 months",
+          "employer": {
+            "organization_id": 7264,
+            "name": "Ryan",
+            "slug": "ryan",
+            "linkedin_url": "https://www.linkedin.com/company/ryan/",
+            "sumble_url": "https://sumble.com/l/org/EODjf5B19rxQ"
+          }
+        },
+        {
+          "title": "CEO",
+          "start_date": "2009-05",
+          "end_date": "2015-02",
+          "duration": "5 years 10 months",
+          "description": "*A Ryan, LLC spin-off that was re-acquired by Ryan in 2015*, Second Decimal was a technology company that transformed corporate tax departments through an innovative approach and design that combined the power of tax expertise and technology. Second Decimal infused the intellectual capital of the most seasoned tax and technology experts in the industry with a suite of intuitive and powerful software applications that exponentially improved accuracy, productivity, and processes. \n\nWith an integrated suite of workflow, tax calculation, and certificate management software products designed and supported by developers with corporate tax advisory experience, Second Decimal applications enabled and supported a strategic approach to automating your tax processes with accuracy and efficiency.",
+          "employer": {
+            "name": "Second Decimal, LLC (a Ryan spin-off that was subsequently re-acquired by Ryan)"
+          }
+        },
+        {
+          "title": "Principal",
+          "start_date": "2007-02",
+          "end_date": "2009-05",
+          "duration": "2 years 4 months",
+          "employer": {
+            "organization_id": 7264,
+            "name": "Ryan and Company",
+            "slug": "ryan",
+            "linkedin_url": "https://www.linkedin.com/company/ryan/",
+            "sumble_url": "https://sumble.com/l/org/EODjf5B19rxQ"
+          }
+        },
+        {
+          "title": "SVP Sales, Marketing, and Business Development",
+          "start_date": "2004-04",
+          "end_date": "2007-02",
+          "duration": "2 years 11 months",
+          "employer": {
+            "name": "Taxware, LP"
+          }
+        },
+        {
+          "title": "VP and General Counsel",
+          "start_date": "2003-03",
+          "end_date": "2004-04",
+          "duration": "1 year 2 months",
+          "employer": {
+            "name": "Taxware, LP"
+          }
+        },
+        {
+          "title": "General Counsel",
+          "start_date": "1999-12",
+          "end_date": "2003-03",
+          "duration": "3 years 4 months",
+          "employer": {
+            "name": "Taxware, LP"
+          }
+        },
+        {
+          "title": "Attorney",
+          "start_date": "1997-01",
+          "end_date": "1998-01",
+          "employer": {
+            "organization_id": 2947780,
+            "name": "Cook Yancey King & Galloway",
+            "slug": "cook-yancey-king-&-galloway",
+            "linkedin_url": "https://www.linkedin.com/company/cook-yancey-king-&-galloway/",
+            "sumble_url": "https://sumble.com/l/org/5c5cWTXQzxsaa"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/danny-fields-engineering"
+    },
+    "person_id": 2516683,
+    "sumble_url": "https://sumble.com/l/person/HCFwLoghlZIsv",
+    "attributes": {
+      "name": "Danny Fields",
+      "current_employer": {
+        "organization_id": 1540,
+        "name": "Avalara",
+        "slug": "avalara",
+        "start_date": "2025-09",
+        "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "EVP, Chief Technology and Customer Operations Officer",
+          "start_date": "2025-09",
+          "location": "San Francisco Bay Area",
+          "description": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 1540,
+            "name": "Avalara",
+            "slug": "avalara",
+            "linkedin_url": "https://www.linkedin.com/company/avalara",
+            "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2024-12",
+          "employer": {
+            "organization_id": 63364,
+            "name": "K1X, Inc.",
+            "slug": "k1x",
+            "linkedin_url": "https://www.linkedin.com/company/k1x",
+            "sumble_url": "https://sumble.com/l/org/CWmw5XxymDRd"
+          }
+        },
+        {
+          "title": "EVP Engineering and Chief Technology Officer",
+          "start_date": "2018-06",
+          "end_date": "2025-09",
+          "location": "San Francisco Bay Area",
+          "description": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 1540,
+            "name": "Avalara",
+            "slug": "avalara",
+            "linkedin_url": "https://www.linkedin.com/company/avalara",
+            "sumble_url": "https://sumble.com/l/org/5duTXQzxsaa"
+          }
+        },
+        {
+          "title": "SVP Engineering and Chief Software Development Officer",
+          "start_date": "2016-02",
+          "end_date": "2018-03",
+          "location": "San Francisco Bay Area",
+          "description": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 2283394,
+            "name": "MobileIron",
+            "slug": "mobileiron",
+            "linkedin_url": "https://www.linkedin.com/company/mobileiron",
+            "sumble_url": "https://sumble.com/l/org/GsSDfgo0lT0ZF"
+          }
+        },
+        {
+          "title": "Group Vice President Engineering, Oracle Service Cloud",
+          "start_date": "2015-09",
+          "end_date": "2016-02",
+          "location": "San Francisco Bay Area",
+          "description": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 31,
+            "name": "Oracle",
+            "slug": "oracle",
+            "linkedin_url": "https://www.linkedin.com/company/oracle",
+            "sumble_url": "https://sumble.com/l/org/8pcY81ano9"
+          }
+        },
+        {
+          "title": "Vice President Engineering, Oracle Service Cloud",
+          "start_date": "2012-03",
+          "end_date": "2015-08",
+          "employer": {
+            "organization_id": 31,
+            "name": "Oracle",
+            "slug": "oracle",
+            "linkedin_url": "https://www.linkedin.com/company/oracle",
+            "sumble_url": "https://sumble.com/l/org/8pcY81ano9"
+          }
+        },
+        {
+          "title": "Vice President Engineering, RightNow Service Cloud",
+          "start_date": "2007-08",
+          "end_date": "2012-02",
+          "employer": {
+            "organization_id": 1355439,
+            "name": "RightNow Technologies",
+            "slug": "rightnow",
+            "linkedin_url": "https://www.linkedin.com/company/rightnow",
+            "sumble_url": "https://sumble.com/l/org/yFszNUHCj8ANz"
+          }
+        },
+        {
+          "title": "Senior Director Engineering",
+          "start_date": "1990-07",
+          "end_date": "2007-07",
+          "location": "Ireland and San Francisco Bay Area",
+          "description": "Ireland and San Francisco Bay Area",
+          "employer": {
+            "organization_id": 31,
+            "name": "Oracle",
+            "slug": "oracle",
+            "linkedin_url": "https://www.linkedin.com/company/oracle",
+            "sumble_url": "https://sumble.com/l/org/8pcY81ano9"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/mjdyer"
+    },
+    "person_id": 226305455,
+    "sumble_url": "https://sumble.com/l/person/tQeCxhvoOyKtyO",
+    "attributes": {
+      "name": "Mike Dyer",
+      "current_employer": {
+        "organization_id": 3278,
+        "name": "The Washington Post",
+        "slug": "washington-post",
+        "start_date": "2025-12",
+        "sumble_url": "https://sumble.com/l/org/6M32ANrR2wv"
+      },
+      "experience": [
+        {
+          "title": "Chief Product Officer",
+          "start_date": "2025-12",
+          "location": "Washington, District of Columbia, United States",
+          "employer": {
+            "organization_id": 3278,
+            "name": "The Washington Post",
+            "slug": "washington-post",
+            "linkedin_url": "https://www.linkedin.com/company/washingtonpost",
+            "sumble_url": "https://sumble.com/l/org/6M32ANrR2wv"
+          }
+        },
+        {
+          "title": "Advisor",
+          "start_date": "2019-01",
+          "end_date": "2024-01",
+          "location": "New York, United States",
+          "description": "Experience, brand and growth advisor to hyperlocal platform focused on building the civic, economic and social ties that strengthen neighbors and neighborhoods.",
+          "employer": {
+            "organization_id": 110079,
+            "name": "Venn",
+            "slug": "venn",
+            "linkedin_url": "https://www.linkedin.com/company/venn-city",
+            "sumble_url": "https://sumble.com/l/org/Dm00vmGbePfx"
+          }
+        },
+        {
+          "title": "Founder and head of product and content",
+          "start_date": "2018-01",
+          "description": "Leader of a studio at the intersection of storytelling and next-gen media technologies—creating new IP for news and entertainment, and advising media tech start-ups on product/experience design and go-to-market. Specialists in product and CX; content strategy and design; and branding and positioning.",
+          "employer": {
+            "name": "Industrial Pattern & Model, Co."
+          }
+        },
+        {
+          "title": "Vice President, Global Head of Brand, Media, and New Technologies",
+          "start_date": "2017-01",
+          "end_date": "2018-01",
+          "location": "Santa Clara, California",
+          "description": "Leader of three global divisions: Brand, Media and New Technologies. Responsible for worldwide org across 40+ countries with oversight of: all global paid, earned and owned media; global brand campaigns and platforms; content and product partnerships and activations; and new product experience and D2C efforts worldwide.",
+          "employer": {
+            "organization_id": 74,
+            "name": "Intel Corporation",
+            "slug": "intel",
+            "linkedin_url": "https://www.linkedin.com/company/intel-corporation",
+            "sumble_url": "https://sumble.com/l/org/Qgyt9xUFoSM"
+          }
+        },
+        {
+          "title": "President/Publisher",
+          "start_date": "2015-01",
+          "end_date": "2017-01",
+          "location": "Greater New York City Area",
+          "description": "Chief executive of global digital media company. Led brand and business turn-around by repositioning products, brands and coverage to drive new consumer audiences and business lines. Rebuilt and led company to record audience growth and revenue with a consistent focus on developing breakthrough new products and experiences targeting the most valuable consumer behaviors.",
+          "employer": {
+            "organization_id": 70197,
+            "name": "The Daily Beast",
+            "slug": "daily-beast",
+            "linkedin_url": "https://www.linkedin.com/company/the-daily-beast",
+            "sumble_url": "https://sumble.com/l/org/BXnuR73rqxXe"
+          }
+        },
+        {
+          "title": "Managing Director, Chief Product and Strategy Officer",
+          "start_date": "2014-01",
+          "end_date": "2015-01",
+          "location": "new york, new york",
+          "employer": {
+            "organization_id": 70197,
+            "name": "The Daily Beast",
+            "slug": "daily-beast",
+            "linkedin_url": "https://www.linkedin.com/company/the-daily-beast",
+            "sumble_url": "https://sumble.com/l/org/BXnuR73rqxXe"
+          }
+        },
+        {
+          "title": "Chief Product Officer - Newsweek",
+          "start_date": "2012-12",
+          "end_date": "2014-05",
+          "location": "New York, NY",
+          "employer": {
+            "organization_id": 70197,
+            "name": "The Daily Beast",
+            "slug": "daily-beast",
+            "linkedin_url": "https://www.linkedin.com/company/the-daily-beast",
+            "sumble_url": "https://sumble.com/l/org/BXnuR73rqxXe"
+          }
+        },
+        {
+          "title": "SVP, Co-Director, Content and Service Design",
+          "start_date": "2011-01",
+          "end_date": "2012-01",
+          "description": "Founder of a pioneering digital marketing division focused on digital content, entertainment and organic audience growth, with a major focus on D2C innovation for blue-chip lifestyle and consumer product brands.",
+          "employer": {
+            "organization_id": 43543,
+            "name": "Hill Holliday",
+            "slug": "hill-holliday",
+            "linkedin_url": "https://www.linkedin.com/company/hill-holliday",
+            "sumble_url": "https://sumble.com/l/org/JCBObLUYEWRY"
+          }
+        },
+        {
+          "title": "VP, Media Design",
+          "start_date": "2009-01",
+          "end_date": "2011-01",
+          "employer": {
+            "organization_id": 43543,
+            "name": "Hill Holliday",
+            "slug": "hill-holliday",
+            "linkedin_url": "https://www.linkedin.com/company/hill-holliday",
+            "sumble_url": "https://sumble.com/l/org/JCBObLUYEWRY"
+          }
+        },
+        {
+          "title": "Emerging Media Strategist",
+          "start_date": "2008-03",
+          "end_date": "2009-07",
+          "employer": {
+            "organization_id": 43543,
+            "name": "Hill Holliday",
+            "slug": "hill-holliday",
+            "linkedin_url": "https://www.linkedin.com/company/hill-holliday",
+            "sumble_url": "https://sumble.com/l/org/JCBObLUYEWRY"
+          }
+        },
+        {
+          "title": "Assistant Director, Design and Marketing",
+          "start_date": "2005-01",
+          "end_date": "2008-01",
+          "description": "Creator of the university’s first all-digital marketing model for global philanthropy. Responsible for managing first-of-a-kind approach and internal/external consensus-building. Campaign raised $200M YOY (200X ROI), one of largest digital totals of 2000s.",
+          "employer": {
+            "organization_id": 949,
+            "name": "Massachusetts Institute of Technology",
+            "slug": "massachusetts-institute-of-technology",
+            "linkedin_url": "https://www.linkedin.com/school/mit",
+            "sumble_url": "https://sumble.com/l/org/J1nbLUYEWRY"
+          }
+        },
+        {
+          "title": "Campaign strategist",
+          "start_date": "2004-01",
+          "end_date": "2005-01",
+          "description": "Managed communications and get-out-the-vote operations for campaigns at the local, state and federal levels. Specialized in speechwriting, campaign messaging, local office development and candidate support.",
+          "employer": {
+            "name": "Various"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/rauchg"
+    },
+    "person_id": 18522201,
+    "sumble_url": "https://sumble.com/l/person/uYtp2zS643b5tp",
+    "attributes": {
+      "name": "Guillermo Rauch",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2020-04",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "CEO",
+          "start_date": "2020-04",
+          "duration": "5 years 8 months",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/malteubl"
+    },
+    "person_id": 20210523,
+    "sumble_url": "https://sumble.com/l/person/uYdm0AS643b5tp",
+    "attributes": {
+      "name": "Malte Ubl",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2022-03",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Executive Board Member",
+          "start_date": "2024-10",
+          "employer": {
+            "organization_id": 1827235,
+            "name": "MACH Alliance",
+            "slug": "machalliance",
+            "linkedin_url": "https://www.linkedin.com/company/machalliance",
+            "sumble_url": "https://sumble.com/l/org/KuFFX0YtJG2WF"
+          }
+        },
+        {
+          "title": "Chief Technology Officer",
+          "start_date": "2022-03",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Principal Software Engineer and Engineering Director",
+          "start_date": "2010-10",
+          "end_date": "2022-03",
+          "description": "2018 Principal Engineer 2016 Senior Staff Software Engineer 2014 Staff Software Engineer 2012 Senior Software Engineer",
+          "employer": {
+            "organization_id": 59,
+            "name": "Google",
+            "slug": "google",
+            "linkedin_url": "https://www.linkedin.com/company/google",
+            "sumble_url": "https://sumble.com/l/org/hP9G8kllDg"
+          }
+        },
+        {
+          "title": "Curator",
+          "start_date": "2009-08",
+          "employer": {
+            "organization_id": 4244571,
+            "name": "JSConf.eu",
+            "slug": "jsconf-eu",
+            "linkedin_url": "https://www.linkedin.com/company/jsconf.eu",
+            "sumble_url": "https://sumble.com/l/org/krtGPHL9w1JTj"
+          }
+        },
+        {
+          "title": "Technical Director",
+          "start_date": "2008-10",
+          "end_date": "2010-09",
+          "employer": {
+            "organization_id": 2295707,
+            "name": "SinnerSchrader",
+            "slug": "sinnerschrader",
+            "linkedin_url": "https://www.linkedin.com/company/sinnerschrader",
+            "sumble_url": "https://sumble.com/l/org/KPAyj0YtJG2WF"
+          }
+        },
+        {
+          "title": "CEO",
+          "start_date": "2007-08",
+          "end_date": "2008-08",
+          "location": "Greater Hamburg Area",
+          "employer": {
+            "name": "YUR.tv AG"
+          }
+        },
+        {
+          "title": "Management / Software Engineering",
+          "start_date": "1999-07",
+          "end_date": "2008-09",
+          "employer": {
+            "name": "Schaffhausen ITC Solutions GmbH"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/jeannedewitt"
+    },
+    "person_id": 4683573,
+    "sumble_url": "https://sumble.com/l/person/OQE4HF7rWsmJi",
+    "attributes": {
+      "name": "Jeanne DeWitt Grosser",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2025-03",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Chief Operating Officer",
+          "start_date": "2025-03",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Advisor",
+          "start_date": "2024-10",
+          "employer": {
+            "organization_id": 2510565,
+            "name": "Rox",
+            "slug": "rox-ai",
+            "linkedin_url": "https://www.linkedin.com/company/rox-ai",
+            "sumble_url": "https://sumble.com/l/org/b5GROXO60ECdd"
+          }
+        },
+        {
+          "title": "Chief Business Officer",
+          "start_date": "2024-01",
+          "end_date": "2025-03",
+          "employer": {
+            "organization_id": 330446,
+            "name": "Stripe",
+            "slug": "stripe",
+            "linkedin_url": "https://www.linkedin.com/company/stripe",
+            "sumble_url": "https://sumble.com/l/org/cue1iAviSXWup"
+          }
+        },
+        {
+          "title": "Advisor",
+          "start_date": "2023-09",
+          "end_date": "2025-03",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2023-06",
+          "location": "Washington, District of Columbia, United States",
+          "employer": {
+            "organization_id": 4040,
+            "name": "Upside",
+            "slug": "upside-9",
+            "linkedin_url": "https://www.linkedin.com/company/getupside",
+            "sumble_url": "https://sumble.com/l/org/EOjZf5B19rxQ"
+          }
+        },
+        {
+          "title": "Global Head of Partnerships",
+          "start_date": "2022-11",
+          "end_date": "2024-01",
+          "employer": {
+            "organization_id": 330446,
+            "name": "Stripe",
+            "slug": "stripe",
+            "linkedin_url": "https://www.linkedin.com/company/stripe",
+            "sumble_url": "https://sumble.com/l/org/cue1iAviSXWup"
+          }
+        },
+        {
+          "title": "Advisor",
+          "start_date": "2022-09",
+          "end_date": "2023-09",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 3730,
+            "name": "Notion",
+            "slug": "notion-labs",
+            "linkedin_url": "https://www.linkedin.com/company/notionhq",
+            "sumble_url": "https://sumble.com/l/org/EOqpf5B19rxQ"
+          }
+        },
+        {
+          "title": "Limited Partner",
+          "start_date": "2022-08",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 3023003,
+            "name": "Operator Collective 🔆",
+            "slug": "operator-collective",
+            "linkedin_url": "https://www.linkedin.com/company/operator-collective",
+            "sumble_url": "https://sumble.com/l/org/sPiRMyAzm6y1r"
+          }
+        },
+        {
+          "title": "Head of Americas Revenue & Growth",
+          "start_date": "2016-02",
+          "end_date": "2022-11",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 330446,
+            "name": "Stripe",
+            "slug": "stripe",
+            "linkedin_url": "https://www.linkedin.com/company/stripe",
+            "sumble_url": "https://sumble.com/l/org/cue1iAviSXWup"
+          }
+        },
+        {
+          "title": "Chief Revenue Officer",
+          "start_date": "2014-07",
+          "end_date": "2015-10",
+          "location": "San Francisco, CA",
+          "employer": {
+            "organization_id": 8733,
+            "name": "Dialpad",
+            "slug": "dialpad",
+            "linkedin_url": "https://www.linkedin.com/company/dialpad",
+            "sumble_url": "https://sumble.com/l/org/APOd4aHNhJGg"
+          }
+        },
+        {
+          "title": "Director of Google Workplace SMB & Mid-Market Sales, Americas",
+          "start_date": "2013-01",
+          "end_date": "2014-06",
+          "employer": {
+            "organization_id": 59,
+            "name": "Google",
+            "slug": "google",
+            "linkedin_url": "https://www.linkedin.com/company/google",
+            "sumble_url": "https://sumble.com/l/org/hP9G8kllDg"
+          }
+        },
+        {
+          "title": "Head of Google Workplace SMB & Mid-Market Sales - Japan & Asia Pacific",
+          "start_date": "2011-07",
+          "end_date": "2013-01",
+          "location": "Greater Sydney Area",
+          "employer": {
+            "organization_id": 59,
+            "name": "Google",
+            "slug": "google",
+            "linkedin_url": "https://www.linkedin.com/company/google",
+            "sumble_url": "https://sumble.com/l/org/hP9G8kllDg"
+          }
+        },
+        {
+          "title": "Google Workplace SMB Sales & Operations Senior Manager",
+          "start_date": "2010-07",
+          "end_date": "2011-07",
+          "employer": {
+            "organization_id": 59,
+            "name": "Google",
+            "slug": "google",
+            "linkedin_url": "https://www.linkedin.com/company/google",
+            "sumble_url": "https://sumble.com/l/org/hP9G8kllDg"
+          }
+        },
+        {
+          "title": "Product Management Intern, Emerging Technology Group",
+          "start_date": "2009-01",
+          "end_date": "2009-01",
+          "employer": {
+            "organization_id": 171,
+            "name": "Cisco",
+            "slug": "cisco-systems",
+            "linkedin_url": "https://www.linkedin.com/company/cisco",
+            "sumble_url": "https://sumble.com/l/org/IaBjSW95e7j"
+          }
+        },
+        {
+          "title": "Consumer Operations Manager",
+          "start_date": "2004-06",
+          "end_date": "2008-08",
+          "employer": {
+            "organization_id": 59,
+            "name": "Google",
+            "slug": "google",
+            "linkedin_url": "https://www.linkedin.com/company/google",
+            "sumble_url": "https://sumble.com/l/org/hP9G8kllDg"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/tomocchino"
+    },
+    "person_id": 45787693,
+    "sumble_url": "https://sumble.com/l/person/uALqfES643b5tp",
+    "attributes": {
+      "name": "Tom Occhino",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2023-09",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Chief Product Officer",
+          "start_date": "2023-09",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Vice President of Engineering, Frameworks",
+          "start_date": "2023-03",
+          "end_date": "2023-09",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Engineering Director",
+          "start_date": "2018-06",
+          "end_date": "2021-06",
+          "location": "Menlo Park, California, United States",
+          "description": "I oversee the React group, which includes the React Core, React Native, and Relay projects, as well as the Web Core team, responsible for the core of facebook.com.",
+          "employer": {
+            "organization_id": 89,
+            "name": "Facebook",
+            "slug": "meta-dd1502f2",
+            "linkedin_url": "https://www.linkedin.com/company/facebook",
+            "sumble_url": "https://sumble.com/l/org/KHq0YtJG2WF"
+          }
+        },
+        {
+          "title": "Engineering Manager",
+          "start_date": "2012-07",
+          "end_date": "2018-06",
+          "location": "Menlo Park, California, United States",
+          "employer": {
+            "organization_id": 89,
+            "name": "Facebook",
+            "slug": "meta-dd1502f2",
+            "linkedin_url": "https://www.linkedin.com/company/facebook",
+            "sumble_url": "https://sumble.com/l/org/KHq0YtJG2WF"
+          }
+        },
+        {
+          "title": "Software Engineer",
+          "start_date": "2009-01",
+          "end_date": "2012-06",
+          "location": "Menlo Park, California, United States",
+          "employer": {
+            "organization_id": 89,
+            "name": "Facebook",
+            "slug": "meta-dd1502f2",
+            "linkedin_url": "https://www.linkedin.com/company/facebook",
+            "sumble_url": "https://sumble.com/l/org/KHq0YtJG2WF"
+          }
+        },
+        {
+          "title": "Frontend Developer",
+          "start_date": "2007-10",
+          "end_date": "2009-01",
+          "location": "Geneva, Geneva, Switzerland",
+          "employer": {
+            "name": "Fairtilizer",
+            "linkedin_url": "https://www.linkedin.com/company/fairtilizer"
+          }
+        },
+        {
+          "title": "Frontend Developer",
+          "start_date": "2007-06",
+          "end_date": "2009-01",
+          "employer": {
+            "name": "Mootools",
+            "linkedin_url": "https://www.linkedin.com/company/mootools"
+          }
+        },
+        {
+          "title": "Frontend Developer",
+          "start_date": "2004-09",
+          "end_date": "2007-10",
+          "location": "Orchard Park, New York, United States",
+          "employer": {
+            "name": "Mg3 Webworks",
+            "linkedin_url": "https://www.linkedin.com/company/mg3-webworks"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/nbogaty"
+    },
+    "person_id": 76419368,
+    "sumble_url": "https://sumble.com/l/person/UKRpraEaAsMA81",
+    "attributes": {
+      "name": "Nick Bogaty",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2026-01",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Chief Revenue Officer",
+          "start_date": "2026-01",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Vice President, Adobe Express, Enterprise",
+          "start_date": "2024-08",
+          "end_date": "2026-01",
+          "location": "San Francisco Bay Area",
+          "description": "I run the enterprise business for Adobe Express. Express is used by companies around the world to easily create beautifully designed stand-out content. Join us, we're hiring!",
+          "employer": {
+            "organization_id": 235,
+            "name": "Adobe",
+            "slug": "adobe",
+            "linkedin_url": "https://www.linkedin.com/company/adobe",
+            "sumble_url": "https://sumble.com/l/org/UxYK9qdND2O"
+          }
+        },
+        {
+          "title": "Chief Revenue Officer",
+          "start_date": "2022-07",
+          "end_date": "2024-08",
+          "location": "San Francisco Bay Area",
+          "description": "I ran sales and post-sales for Instabug, the leader in mobile app performance. Instabug is used by engineering and product teams to debug, collect user feedback and improve performance for mobile apps. Pinterest, Okta, Adobe, Southwest Airlines, Dream11, General Motors, T-Mobile and many others rely on Instabug. I joined Instabug immediately following its Series B fundraise from Accel and Insight to build an Enterprise GTM. That included recruiting and hiring a sales team, enablement, creation of artifacts like a first meeting deck and demo, identification and targeting of companies/personas, outbound pipeline generation cadence and excellence, forecasting, sales process structure, value-selling, establishing technical and business criteria for PoCs and budget justification. Built from the ground up. Enterprise Results (y/y): + 70% Sales Growth + 60% ARPA + 45 pts. NDR + 100% Pipeline Growth + 85% RepVue Score",
+          "employer": {
+            "organization_id": 87557,
+            "name": "Instabug",
+            "slug": "instabug",
+            "linkedin_url": "https://www.linkedin.com/company/luciq",
+            "sumble_url": "https://sumble.com/l/org/BgmGR73rqxXe"
+          }
+        },
+        {
+          "title": "Chief Revenue & Customer Officer",
+          "start_date": "2020-08",
+          "end_date": "2022-07",
+          "location": "San Francisco",
+          "description": "I joined AppDynamics prior to our record $3.7bn acquisition by Cisco in March 2017. During my time at AppDynamics we scaled the business from $120m to $600m in Annual Recurring Revenue. After overhauling the services and customer success teams as Chief Customer Officer resulting in the increase of Net Dollar Retention by 15 pts, I took over as Chief Revenue Officer while retaining my post-sales duties. My sales and post-sales organization was on order of 1250 employees. As CRO, I increased ARR from $400m to $600m in 2 years while reducing expenses in a drive toward profitability.",
+          "employer": {
+            "organization_id": 11341,
+            "name": "AppDynamics",
+            "slug": "appdynamics",
+            "linkedin_url": "https://www.linkedin.com/company/appdynamics",
+            "sumble_url": "https://sumble.com/l/org/yHkTUHCj8ANz"
+          }
+        },
+        {
+          "title": "Chief Customer Officer",
+          "start_date": "2019-08",
+          "end_date": "2020-08",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 11341,
+            "name": "AppDynamics",
+            "slug": "appdynamics",
+            "linkedin_url": "https://www.linkedin.com/company/appdynamics",
+            "sumble_url": "https://sumble.com/l/org/yHkTUHCj8ANz"
+          }
+        },
+        {
+          "title": "Vice President, Services & Customer Success",
+          "start_date": "2016-10",
+          "end_date": "2019-08",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "organization_id": 11341,
+            "name": "AppDynamics",
+            "slug": "appdynamics",
+            "linkedin_url": "https://www.linkedin.com/company/appdynamics",
+            "sumble_url": "https://sumble.com/l/org/yHkTUHCj8ANz"
+          }
+        },
+        {
+          "title": "General Manager, Digital Publishing",
+          "start_date": "2013-11",
+          "end_date": "2016-09",
+          "location": "San Francisco Bay Area",
+          "description": "I was the GM and co-founder of Digital Publishing Suite (DPS) at Adobe. DPS was the largest home-grown product created at Adobe since Acrobat growing to $50m ARR in 3 years. DPS allowed graphic designers to create interactive publications for mobile devices. We launched the product with Wired Magazine on the day of Apple's introduction of the iPad (launch video below). I ran product, marketing and sales for DPS including personally executing multi-million dollar contracts with Conde Nast, Time, Meredith Corp and others.",
+          "employer": {
+            "organization_id": 235,
+            "name": "Adobe",
+            "slug": "adobe",
+            "linkedin_url": "https://www.linkedin.com/company/adobe",
+            "sumble_url": "https://sumble.com/l/org/UxYK9qdND2O"
+          }
+        },
+        {
+          "title": "Senior Director, Digital Publishing",
+          "start_date": "2012-12",
+          "end_date": "2013-11",
+          "location": "Greater New York City Area",
+          "employer": {
+            "organization_id": 235,
+            "name": "Adobe",
+            "slug": "adobe",
+            "linkedin_url": "https://www.linkedin.com/company/adobe",
+            "sumble_url": "https://sumble.com/l/org/UxYK9qdND2O"
+          }
+        },
+        {
+          "title": "Director, Digital Publishing",
+          "start_date": "2010-12",
+          "end_date": "2012-12",
+          "location": "Greater New York City Area",
+          "employer": {
+            "organization_id": 235,
+            "name": "Adobe",
+            "slug": "adobe",
+            "linkedin_url": "https://www.linkedin.com/company/adobe",
+            "sumble_url": "https://sumble.com/l/org/UxYK9qdND2O"
+          }
+        },
+        {
+          "title": "Senior Manager, Digital Publishing",
+          "start_date": "2007-09",
+          "end_date": "2010-12",
+          "location": "Greater New York City Area",
+          "description": "Joined Adobe to monetize their electronic book business under Adobe Digital Editions. Created Adobe Content Server 4 which was a digital rights management system for electronic books. Awarded patent (US8793193B2) on supporting technology.",
+          "employer": {
+            "organization_id": 235,
+            "name": "Adobe",
+            "slug": "adobe",
+            "linkedin_url": "https://www.linkedin.com/company/adobe",
+            "sumble_url": "https://sumble.com/l/org/UxYK9qdND2O"
+          }
+        },
+        {
+          "title": "Executive Director",
+          "start_date": "2002-09",
+          "end_date": "2007-09",
+          "location": "Greater New York City Area",
+          "description": "I ran the International Digital Publishing Forum (IDPF) which was a standards organization that made the EPUB file format. EPUB is to electronic books what the MP3 file format is to digital music. It is used by the Amazon Kindle and Apple's iBooks application. The EPUB file format is now maintained by the W3C.",
+          "employer": {
+            "name": "International Digital Publishing Forum"
+          }
+        },
+        {
+          "title": "Chief Executive Officer",
+          "start_date": "1999-08",
+          "end_date": "2002-09",
+          "location": "Greater New York City Area",
+          "description": "Started this company which was a marketplace exchange for intellectual property rights.",
+          "employer": {
+            "name": "rightsworld.com"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/mitchellh"
+    },
+    "person_id": 295095634,
+    "sumble_url": "https://sumble.com/l/person/PGVIuGiskNtE07",
+    "attributes": {
+      "name": "Mitchell Hashimoto",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2026-03",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Co-Founder",
+          "start_date": "2026-05",
+          "description": "We are building the multiplexer for all work.",
+          "employer": {
+            "name": "Superlogical",
+            "linkedin_url": "https://www.linkedin.com/company/superlogical"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2026-03",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Founder and CTO",
+          "start_date": "2016-06",
+          "end_date": "2021-07",
+          "location": "San Francisco Bay Area",
+          "description": "Founded HashiCorp and changed roles from CEO to CTO in 2016 until July 2021. During this time, HashiCorp grew to nearly 1,500 employees, product downloads grew to over 100 million downloads per year, and we launched numerous new products. By the end of my tenure as CTO, we had over 1,700 enterprise customers including nearly 30% of the Fortune 500.",
+          "employer": {
+            "organization_id": 1586,
+            "name": "HashiCorp",
+            "slug": "hashicorp",
+            "linkedin_url": "https://www.linkedin.com/company/hashicorp",
+            "sumble_url": "https://sumble.com/l/org/Uv0K9qdND2O"
+          }
+        },
+        {
+          "title": "Founder",
+          "start_date": "2012-11",
+          "end_date": "2023-12",
+          "location": "San Francisco Bay Area",
+          "description": "Founded HashiCorp and changed roles from CTO to an individual contributor in 2021. HashiCorp makes a set of tools that are downloaded millions of times every month: Vagrant, Packer, Consul, Terraform, Vault, Nomad, Waypoint, and Boundary. These tools are used almost universally by tech companies worldwide and span multiple professional categories from developers to operators/IT as well as InfoSec.",
+          "employer": {
+            "organization_id": 1586,
+            "name": "HashiCorp",
+            "slug": "hashicorp",
+            "linkedin_url": "https://www.linkedin.com/company/hashicorp",
+            "sumble_url": "https://sumble.com/l/org/Uv0K9qdND2O"
+          }
+        },
+        {
+          "title": "Founder and CEO",
+          "start_date": "2012-11",
+          "end_date": "2016-06",
+          "location": "San Francisco Bay Area",
+          "description": "Founded HashiCorp with Armon Dadgar and operated as CEO for almost four years, participating in every role along the way. During this time, HashiCorp grew from one employee to over 40, one open source tool to eight, zero dollars in revenue to seven figures in annually recurring revenue.",
+          "employer": {
+            "organization_id": 1586,
+            "name": "HashiCorp",
+            "slug": "hashicorp",
+            "linkedin_url": "https://www.linkedin.com/company/hashicorp",
+            "sumble_url": "https://sumble.com/l/org/Uv0K9qdND2O"
+          }
+        },
+        {
+          "title": "Operations Engineer",
+          "start_date": "2010-10",
+          "end_date": "2012-11",
+          "location": "San Francisco, CA",
+          "description": "Designed and built the automation and tooling around infrastructure management from the ground up. In charge of monitoring, scalability, and reliability of the overall website. The tools built were built around Puppet, Python, Ruby, and Bash. Scaled from 1QPS at 200msec median response to 2000QPS at 20msec median response, processing over 100MM+ API requests per day.",
+          "employer": {
+            "organization_id": 109295,
+            "name": "Kiip",
+            "slug": "kiip",
+            "linkedin_url": "https://www.linkedin.com/company/kiip",
+            "sumble_url": "https://sumble.com/l/org/k2DgHL9w1JTj"
+          }
+        },
+        {
+          "title": "Developer",
+          "start_date": "2008-03",
+          "end_date": "2011-03",
+          "description": "Web developer which worked with many startups at various stages. I helped plan the architecture to scale sites from inception to having millions of active users. Specialized in Ruby-based web development, flash development, and frontend Javascript work.",
+          "employer": {
+            "name": "CitrusByte",
+            "linkedin_url": "https://www.linkedin.com/company/citrusbyte"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/sstledger"
+    },
+    "person_id": 254695531,
+    "sumble_url": "https://sumble.com/l/person/DSNxVO6lfpvdYh",
+    "attributes": {
+      "name": "Susan St. Ledger",
+      "current_employer": {
+        "organization_id": 23462,
+        "name": "Vercel",
+        "slug": "vercel",
+        "start_date": "2025-12",
+        "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+      },
+      "experience": [
+        {
+          "title": "Board Member",
+          "start_date": "2025-12",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "President, Worldwide Field Operations",
+          "start_date": "2023-07",
+          "end_date": "2025-08",
+          "description": "Oversees all aspects of the customer journey and maximize the value customers receive from our product suite — from initial deployment to customer and partner success, renewal, and expansion",
+          "employer": {
+            "organization_id": 1586,
+            "name": "HashiCorp",
+            "slug": "hashicorp",
+            "linkedin_url": "https://www.linkedin.com/company/hashicorp",
+            "sumble_url": "https://sumble.com/l/org/Uv0K9qdND2O"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2023-05",
+          "employer": {
+            "organization_id": 2762,
+            "name": "Klaviyo",
+            "slug": "klaviyo",
+            "linkedin_url": "https://www.linkedin.com/company/klaviyo",
+            "sumble_url": "https://sumble.com/l/org/1Xns3r4V35y"
+          }
+        },
+        {
+          "title": "Strategic Advisor",
+          "start_date": "2023-04",
+          "employer": {
+            "organization_id": 15617,
+            "name": "Brex",
+            "slug": "brex-5",
+            "linkedin_url": "https://www.linkedin.com/company/brexhq",
+            "sumble_url": "https://sumble.com/l/org/MOpEDtIgGSbe"
+          }
+        },
+        {
+          "title": "President, Worldwide Field Operations",
+          "start_date": "2021-02",
+          "end_date": "2023-07",
+          "location": "San Francisco Bay Area",
+          "description": "Okta is the leading independent identity provider. The Okta Identity Cloud enables organizations to securely connect the right people to the right technologies at the right time. With more than 7,000 pre-built integrations to applications and infrastructure providers, Okta provides simple and secure access to people and organizations everywhere, giving them the confidence to reach their full potential. More than 10,000 organizations, including JetBlue, Nordstrom, Siemens, Slack, T-Mobile, Takeda, Teach for America, and Twilio, trust Okta to help protect the identities of their workforces and customers. I’m responsible for all aspects of the Okta customer journey, from initial brand awareness to deployment, customer and partner success, renewal and expansion — ensuring organizations maximize the value of the Okta Identity Cloud to unleash their full potential. My team includes worldwide sales, customer success and support, professional services, partner and channel ecosystems, customer solutions, marketing and brand, and GTM strategy and operations.",
+          "employer": {
+            "organization_id": 731,
+            "name": "Okta, Inc.",
+            "slug": "okta",
+            "linkedin_url": "https://www.linkedin.com/company/okta-inc-",
+            "sumble_url": "https://sumble.com/l/org/UPUK9qdND2O"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2018-03",
+          "end_date": "2023-03",
+          "employer": {
+            "organization_id": 1586,
+            "name": "HashiCorp",
+            "slug": "hashicorp",
+            "linkedin_url": "https://www.linkedin.com/company/hashicorp",
+            "sumble_url": "https://sumble.com/l/org/Uv0K9qdND2O"
+          }
+        },
+        {
+          "title": "President, Worldwide Field Operations",
+          "start_date": "2017-10",
+          "end_date": "2021-02",
+          "location": "San Francisco Bay Area",
+          "description": "In October 2017, I was appointed President of Worldwide Field Operations to oversee global sales, customer success and marketing.",
+          "employer": {
+            "name": "Splunk",
+            "linkedin_url": "https://www.linkedin.com/company/20226"
+          }
+        },
+        {
+          "title": "Chief Revenue Officer",
+          "start_date": "2016-05",
+          "end_date": "2021-02",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "name": "Splunk",
+            "linkedin_url": "https://www.linkedin.com/company/20226"
+          }
+        },
+        {
+          "title": "Chief Revenue Officer, Marketing Cloud",
+          "start_date": "2012-08",
+          "end_date": "2016-03",
+          "location": "San Francisco Bay Area",
+          "employer": {
+            "name": "salesforce.com",
+            "linkedin_url": "https://www.linkedin.com/company/3185"
+          }
+        },
+        {
+          "title": "President, Buddy Media",
+          "start_date": "2012-03",
+          "end_date": "2012-08",
+          "employer": {
+            "name": "salesforce.com",
+            "linkedin_url": "https://www.linkedin.com/company/3185"
+          }
+        },
+        {
+          "title": "President",
+          "start_date": "2012-03",
+          "end_date": "2012-08",
+          "location": "New York City",
+          "description": "Buddy Media was acquired by Salesforce.com.",
+          "employer": {
+            "name": "Buddy Media"
+          }
+        },
+        {
+          "title": "Senior Vice President, Strategic Sales",
+          "start_date": "2006-02",
+          "end_date": "2012-02",
+          "employer": {
+            "name": "salesforce.com",
+            "linkedin_url": "https://www.linkedin.com/company/3185"
+          }
+        },
+        {
+          "title": "Senior Vice President, Global Services",
+          "start_date": "2004-11",
+          "end_date": "2006-02",
+          "employer": {
+            "name": "salesforce.com",
+            "linkedin_url": "https://www.linkedin.com/company/3185"
+          }
+        },
+        {
+          "title": "Vice President Global Services Sales",
+          "start_date": "1991-01",
+          "end_date": "2004-01",
+          "employer": {
+            "name": "Sun Microsystems",
+            "linkedin_url": "https://www.linkedin.com/company/1062"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/steffantomlinson"
+    },
+    "person_id": 64665659,
+    "sumble_url": "https://sumble.com/l/person/OnWHhAF7rWsmJi",
+    "attributes": {
+      "name": "Steffan Tomlinson",
+      "current_employer": {
+        "organization_id": 330446,
+        "name": "Stripe",
+        "slug": "stripe",
+        "start_date": "2023-09",
+        "sumble_url": "https://sumble.com/l/org/cue1iAviSXWup"
+      },
+      "experience": [
+        {
+          "title": "Board Member",
+          "start_date": "2025-07",
+          "location": "New York, New York, United States",
+          "employer": {
+            "organization_id": 531358,
+            "name": "Cyera",
+            "slug": "cyera",
+            "linkedin_url": "https://www.linkedin.com/company/cyera",
+            "sumble_url": "https://sumble.com/l/org/4hOssueBf5YN8"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2024-12",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Chief Financial Officer",
+          "start_date": "2023-09",
+          "location": "South San Francisco, California, United States",
+          "employer": {
+            "organization_id": 330446,
+            "name": "Stripe",
+            "slug": "stripe",
+            "linkedin_url": "https://www.linkedin.com/company/stripe",
+            "sumble_url": "https://sumble.com/l/org/cue1iAviSXWup"
+          }
+        },
+        {
+          "title": "Chief Financial Officer",
+          "start_date": "2020-06",
+          "end_date": "2023-08",
+          "location": "Mountain View, California, United States",
+          "employer": {
+            "organization_id": 2251,
+            "name": "Confluent, an Ibm Company",
+            "slug": "confluent",
+            "linkedin_url": "https://www.linkedin.com/company/confluent",
+            "sumble_url": "https://sumble.com/l/org/J3ebLUYEWRY"
+          }
+        },
+        {
+          "title": "Chief Financial Officer, Google Cloud & Technical Infrastructure",
+          "start_date": "2019-04",
+          "end_date": "2020-06",
+          "location": "Mountain View, California, United States",
+          "employer": {
+            "organization_id": 59,
+            "name": "Google",
+            "slug": "google",
+            "linkedin_url": "https://www.linkedin.com/company/google",
+            "sumble_url": "https://sumble.com/l/org/hP9G8kllDg"
+          }
+        },
+        {
+          "title": "Board Member, Audit & Compensation Committees",
+          "start_date": "2017-05",
+          "end_date": "2021-10",
+          "location": "Santa Monica, California, United States",
+          "employer": {
+            "organization_id": 7288,
+            "name": "Cornerstone Ondemand",
+            "slug": "cornerstone-ondemand",
+            "linkedin_url": "https://www.linkedin.com/company/cornerstoneondemand",
+            "sumble_url": "https://sumble.com/l/org/1UTvs3r4V35y"
+          }
+        },
+        {
+          "title": "Board Member, Audit Committee Chair",
+          "start_date": "2016-02",
+          "end_date": "2024-03",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 4135,
+            "name": "Eventbrite",
+            "slug": "eventbrite",
+            "linkedin_url": "https://www.linkedin.com/company/eventbrite",
+            "sumble_url": "https://sumble.com/l/org/toCIGaW04tLo"
+          }
+        },
+        {
+          "title": "Board Member, Audit Committee",
+          "start_date": "2014-09",
+          "end_date": "2015-04",
+          "location": "San Francisco, California, United States",
+          "employer": {
+            "organization_id": 10724,
+            "name": "Riverbed Technology",
+            "slug": "riverbed-technology",
+            "linkedin_url": "https://www.linkedin.com/company/riverbed-technology",
+            "sumble_url": "https://sumble.com/l/org/TyoQm0TgkRrD"
+          }
+        },
+        {
+          "title": "Board Member, Audit Committee",
+          "start_date": "2013-01",
+          "end_date": "2016-06",
+          "location": "King of Prussia, Pennsylvania, United States",
+          "employer": {
+            "organization_id": 12890,
+            "name": "Qlik",
+            "slug": "qlik",
+            "linkedin_url": "https://www.linkedin.com/company/qlik",
+            "sumble_url": "https://sumble.com/l/org/mKMz1E0OrVQL"
+          }
+        },
+        {
+          "title": "Chief Financial Officer, Executive Vice President",
+          "start_date": "2012-02",
+          "end_date": "2018-03",
+          "location": "Santa Clara, California, United States",
+          "employer": {
+            "organization_id": 114,
+            "name": "Palo Alto Networks",
+            "slug": "palo-alto-networks",
+            "linkedin_url": "https://www.linkedin.com/company/palo-alto-networks",
+            "sumble_url": "https://sumble.com/l/org/51gTXQzxsaa"
+          }
+        },
+        {
+          "title": "Chief Financial Officer",
+          "start_date": "2011-09",
+          "end_date": "2012-01",
+          "location": "Santa Clara, California, United States",
+          "employer": {
+            "organization_id": 2230,
+            "name": "Arista Networks",
+            "slug": "arista-networks",
+            "linkedin_url": "https://www.linkedin.com/company/arista-networks-inc",
+            "sumble_url": "https://sumble.com/l/org/T6qm0TgkRrD"
+          }
+        },
+        {
+          "title": "Partner, Cao Silver Lake Kraftwerk",
+          "start_date": "2011-04",
+          "end_date": "2011-09",
+          "location": "Menlo Park, California, United States",
+          "employer": {
+            "organization_id": 973091,
+            "name": "Silver Lake",
+            "slug": "silver-lake",
+            "linkedin_url": "https://www.linkedin.com/company/silver-lake",
+            "sumble_url": "https://sumble.com/l/org/wtsWUJZoug46M"
+          }
+        },
+        {
+          "title": "Chief Financial Officer",
+          "start_date": "2005-09",
+          "end_date": "2011-03",
+          "location": "Alviso, California, United States",
+          "employer": {
+            "organization_id": 233978,
+            "name": "Hpe Aruba Networking",
+            "slug": "web-tech-aruba",
+            "linkedin_url": "https://www.linkedin.com/company/aruba-a-hewlett-packard-enterprise-company",
+            "sumble_url": "https://sumble.com/l/org/511gaTXQzxsaa"
+          }
+        },
+        {
+          "title": "Chief Financial Officer",
+          "start_date": "2000-01",
+          "end_date": "2005-01",
+          "location": "Santa Clara, California, United States",
+          "employer": {
+            "name": "Peribit Networks Inc.",
+            "linkedin_url": "https://www.linkedin.com/company/peribit-networks-inc-"
+          }
+        },
+        {
+          "title": "Director Financial Planning & Analysis",
+          "start_date": "1998-01",
+          "end_date": "2000-01",
+          "employer": {
+            "name": "Excite@home",
+            "linkedin_url": "https://www.linkedin.com/company/excite-home"
+          }
+        },
+        {
+          "title": "Finance: Analyst & Manager",
+          "start_date": "1994-01",
+          "end_date": "1998-01",
+          "location": "Austin, Texas, United States",
+          "employer": {
+            "organization_id": 31,
+            "name": "Oracle",
+            "slug": "oracle",
+            "linkedin_url": "https://www.linkedin.com/company/oracle",
+            "sumble_url": "https://sumble.com/l/org/8pcY81ano9"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/amitto"
+    },
+    "person_id": 164274226,
+    "sumble_url": "https://sumble.com/l/person/WbJ6V54sbBzGNV",
+    "attributes": {
+      "name": "Amit Agarwal",
+      "current_employer": {
+        "organization_id": 3283926,
+        "name": "Standard Template Labs",
+        "slug": "standard-template-labs",
+        "start_date": "2025-09",
+        "sumble_url": "https://sumble.com/l/org/1PDqLs3r4V35y"
+      },
+      "experience": [
+        {
+          "title": "Founder / CEO",
+          "start_date": "2025-09",
+          "location": "New York, New York, United States",
+          "employer": {
+            "organization_id": 3283926,
+            "name": "Standard Template Labs",
+            "slug": "standard-template-labs",
+            "linkedin_url": "https://www.linkedin.com/company/stlabs-ai",
+            "sumble_url": "https://sumble.com/l/org/1PDqLs3r4V35y"
+          }
+        },
+        {
+          "title": "Partner",
+          "start_date": "2025-01",
+          "employer": {
+            "organization_id": 1189093,
+            "name": "ICONIQ Capital",
+            "slug": "iconiq-capital",
+            "linkedin_url": "https://www.linkedin.com/company/iconiq-capital-llc",
+            "sumble_url": "https://sumble.com/l/org/yF9IdUHCj8ANz"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2025-01",
+          "employer": {
+            "organization_id": 1416,
+            "name": "Datadog",
+            "slug": "datadog",
+            "linkedin_url": "https://www.linkedin.com/company/datadog",
+            "sumble_url": "https://sumble.com/l/org/5iATXQzxsaa"
+          }
+        },
+        {
+          "title": "President",
+          "start_date": "2022-08",
+          "end_date": "2024-12",
+          "location": "New York, United States",
+          "employer": {
+            "organization_id": 1416,
+            "name": "Datadog",
+            "slug": "datadog",
+            "linkedin_url": "https://www.linkedin.com/company/datadog",
+            "sumble_url": "https://sumble.com/l/org/5iATXQzxsaa"
+          }
+        },
+        {
+          "title": "Chief Product Officer",
+          "start_date": "2012-04",
+          "end_date": "2022-08",
+          "location": "New York, United States",
+          "employer": {
+            "organization_id": 1416,
+            "name": "Datadog",
+            "slug": "datadog",
+            "linkedin_url": "https://www.linkedin.com/company/datadog",
+            "sumble_url": "https://sumble.com/l/org/5iATXQzxsaa"
+          }
+        },
+        {
+          "title": "Director, Product Management",
+          "start_date": "2006-01",
+          "end_date": "2012-04",
+          "location": "Aliso Viejo, California",
+          "employer": {
+            "organization_id": 8719,
+            "name": "Quest Software",
+            "slug": "quest-software",
+            "linkedin_url": "https://www.linkedin.com/company/quest-software",
+            "sumble_url": "https://sumble.com/l/org/TyzYm0TgkRrD"
+          }
+        },
+        {
+          "title": "Product Manager",
+          "start_date": "2004-01",
+          "end_date": "2005-12",
+          "employer": {
+            "name": "DataMirror",
+            "linkedin_url": "https://www.linkedin.com/company/datamirror"
+          }
+        },
+        {
+          "title": "Product Manager",
+          "start_date": "2003-01",
+          "end_date": "2004-01",
+          "employer": {
+            "organization_id": 513332,
+            "name": "Embarcadero Technologies",
+            "slug": "embarcadero-technologies",
+            "linkedin_url": "https://www.linkedin.com/company/embarcadero-technologies",
+            "sumble_url": "https://sumble.com/l/org/1KhTns3r4V35y"
+          }
+        },
+        {
+          "title": "Sr Developer",
+          "start_date": "2001-01",
+          "end_date": "2003-01",
+          "employer": {
+            "organization_id": 513332,
+            "name": "Embarcadero Technologies",
+            "slug": "embarcadero-technologies",
+            "linkedin_url": "https://www.linkedin.com/company/embarcadero-technologies",
+            "sumble_url": "https://sumble.com/l/org/1KhTns3r4V35y"
+          }
+        },
+        {
+          "title": "Software Developer",
+          "start_date": "2001-01",
+          "end_date": "2001-01",
+          "employer": {
+            "name": "Voxar AG",
+            "linkedin_url": "https://www.linkedin.com/company/voxar-ag"
+          }
+        },
+        {
+          "title": "Software Developer",
+          "start_date": "1999-01",
+          "end_date": "2001-01",
+          "employer": {
+            "organization_id": 1784494,
+            "name": "Merge Healthcare, an IBM Company",
+            "slug": "merge-by-merative",
+            "linkedin_url": "https://www.linkedin.com/company/merge-by-merative",
+            "sumble_url": "https://sumble.com/l/org/EVdHqf5B19rxQ"
+          }
+        },
+        {
+          "title": "Software Developer",
+          "start_date": "1998-01",
+          "end_date": "1999-01",
+          "employer": {
+            "organization_id": 53,
+            "name": "IBM",
+            "slug": "ibm",
+            "linkedin_url": "https://www.linkedin.com/company/ibm",
+            "sumble_url": "https://sumble.com/l/org/A04aHNhJGg"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/danielmarklevine"
+    },
+    "person_id": 254038263,
+    "sumble_url": "https://sumble.com/l/person/1wpa29rRwTGXky",
+    "attributes": {
+      "name": "Dan Levine",
+      "current_employer": {
+        "organization_id": 422231,
+        "name": "Accel",
+        "slug": "accel-fintech",
+        "start_date": "2026-05",
+        "sumble_url": "https://sumble.com/l/org/sKlvoyAzm6y1r"
+      },
+      "experience": [
+        {
+          "title": "Partner",
+          "start_date": "2026-05",
+          "description": "No longer leading new investments at Accel. Sitting on boards and continuing to work with existing investments. I sit on the Board of Sentry, Scale, Mux, Gem, Vercel, ReadMe, Sprig, Whimsical, Val Town, Minoan, and Kernel. I work with the teams at Monarch, Thinking Machines, Altinity, Cartwheel, Flint, Flipturn, Myxt, Paper, Shorebird, and vlt.",
+          "employer": {
+            "organization_id": 422231,
+            "name": "Accel",
+            "slug": "accel-fintech",
+            "linkedin_url": "https://www.linkedin.com/company/accel-vc",
+            "sumble_url": "https://sumble.com/l/org/sKlvoyAzm6y1r"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2026-04",
+          "employer": {
+            "organization_id": 3640105,
+            "name": "Paper",
+            "slug": "paper-dot-design",
+            "linkedin_url": "https://www.linkedin.com/company/paper-dot-design",
+            "sumble_url": "https://sumble.com/l/org/RbEJzMZTfybNg"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2025-10",
+          "employer": {
+            "name": "Kernel",
+            "linkedin_url": "https://www.linkedin.com/company/106032660"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2023-01",
+          "employer": {
+            "name": "Minoan",
+            "linkedin_url": "https://www.linkedin.com/company/34959050"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2022-08",
+          "employer": {
+            "name": "Val Town",
+            "linkedin_url": "https://www.linkedin.com/company/104683521"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2021-11",
+          "employer": {
+            "name": "Whimsical",
+            "linkedin_url": "https://www.linkedin.com/company/11210949"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2021-06",
+          "end_date": "2025-06",
+          "location": "Washington DC",
+          "employer": {
+            "organization_id": 574979,
+            "name": "National Venture Capital Association",
+            "slug": "national-venture-capital-association",
+            "linkedin_url": "https://www.linkedin.com/company/118544",
+            "sumble_url": "https://sumble.com/l/org/APbJk4aHNhJGg"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2020-11",
+          "employer": {
+            "name": "Sprig",
+            "linkedin_url": "https://www.linkedin.com/company/18717471"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2019-08",
+          "end_date": "2025-12",
+          "description": "Acquired by Vercel",
+          "employer": {
+            "name": "EdgeDB",
+            "linkedin_url": "https://www.linkedin.com/company/46428485"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2019-04",
+          "employer": {
+            "organization_id": 975283,
+            "name": "ReadMe",
+            "slug": "readme",
+            "linkedin_url": "https://www.linkedin.com/company/4844608",
+            "sumble_url": "https://sumble.com/l/org/RqZ6JMZTfybNg"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2018-10",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2017-08",
+          "employer": {
+            "name": "Gem",
+            "linkedin_url": "https://www.linkedin.com/company/18373097"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2016-12",
+          "employer": {
+            "name": "Mux",
+            "linkedin_url": "https://www.linkedin.com/company/7793078"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2016-08",
+          "employer": {
+            "organization_id": 8796,
+            "name": "Scale AI",
+            "slug": "scaleai",
+            "linkedin_url": "https://www.linkedin.com/company/scaleai",
+            "sumble_url": "https://sumble.com/l/org/6eTt2ANrR2wv"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2015-06",
+          "employer": {
+            "organization_id": 506552,
+            "name": "Sentry (sentry.io)",
+            "slug": "getsentry",
+            "linkedin_url": "https://www.linkedin.com/company/getsentry",
+            "sumble_url": "https://sumble.com/l/org/QoU55t9xUFoSM"
+          }
+        },
+        {
+          "title": "Partner",
+          "start_date": "2015-01",
+          "end_date": "2026-05",
+          "employer": {
+            "organization_id": 422231,
+            "name": "Accel",
+            "slug": "accel-fintech",
+            "linkedin_url": "https://www.linkedin.com/company/accel-vc",
+            "sumble_url": "https://sumble.com/l/org/sKlvoyAzm6y1r"
+          }
+        },
+        {
+          "title": "Platform",
+          "start_date": "2012-11",
+          "end_date": "2014-12",
+          "location": "San Francisco Bay Area",
+          "description": "I worked with developers and 3rd parties to integrate Dropbox into their products and promote those integrations. I also advocated on behalf of those folks internally at Dropbox!",
+          "employer": {
+            "name": "Dropbox",
+            "linkedin_url": "https://www.linkedin.com/company/167251"
+          }
+        },
+        {
+          "title": "Associate",
+          "start_date": "2010-10",
+          "end_date": "2012-12",
+          "description": "I met with entrepreneurs, explored what they were working on, gave or got some useful pointers and possibly invested.",
+          "employer": {
+            "organization_id": 422231,
+            "name": "Accel",
+            "slug": "accel-fintech",
+            "linkedin_url": "https://www.linkedin.com/company/accel-vc",
+            "sumble_url": "https://sumble.com/l/org/sKlvoyAzm6y1r"
+          }
+        },
+        {
+          "title": "Founder, CEO",
+          "start_date": "2010-06",
+          "end_date": "2010-09",
+          "description": "A Y Combinator-backed analytics company.",
+          "employer": {
+            "name": "Chartio",
+            "linkedin_url": "https://www.linkedin.com/company/1812235"
+          }
+        },
+        {
+          "title": "Founder",
+          "start_date": "2010-01",
+          "end_date": "2010-01",
+          "employer": {
+            "name": "YCombinator"
+          }
+        },
+        {
+          "title": "Data Engineer",
+          "start_date": "2009-06",
+          "end_date": "2010-06",
+          "employer": {
+            "name": "TechCrunch",
+            "linkedin_url": "https://www.linkedin.com/company/85562"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/reidchristian"
+    },
+    "person_id": 108104935,
+    "sumble_url": "https://sumble.com/l/person/t0bQKMvoOyKtyO",
+    "attributes": {
+      "name": "Reid Christian",
+      "current_employer": {
+        "organization_id": 1765963,
+        "name": "CRV",
+        "slug": "crvvc",
+        "start_date": "2017-09",
+        "sumble_url": "https://sumble.com/l/org/0uLpzkD6aRja2"
+      },
+      "experience": [
+        {
+          "title": "Investor",
+          "start_date": "2026-02",
+          "description": "Sole founder Thais is building an AI lab, solely focused on ending AI slop",
+          "employer": {
+            "organization_id": 4063691,
+            "name": "Taste Labs",
+            "slug": "taste-ai-labs",
+            "linkedin_url": "https://www.linkedin.com/company/taste-ai-labs",
+            "sumble_url": "https://sumble.com/l/org/am2Q6pApfK3ia"
+          }
+        },
+        {
+          "title": "Series A Investor",
+          "start_date": "2026-01",
+          "description": "AI for pharma. Surbhi, the GOAT of life sciences tech is back to building",
+          "employer": {
+            "organization_id": 2792301,
+            "name": "Collate",
+            "slug": "collate-software",
+            "linkedin_url": "https://www.linkedin.com/company/collate-software",
+            "sumble_url": "https://sumble.com/l/org/sW3RMyAzm6y1r"
+          }
+        },
+        {
+          "title": "Investor",
+          "start_date": "2025-09",
+          "description": "From google scale networks to tailscale, from google scale compute to exe. Crawshaw built both by hand",
+          "employer": {
+            "organization_id": 3705055,
+            "name": "exe.dev",
+            "slug": "ssh-exe-dev",
+            "linkedin_url": "https://www.linkedin.com/company/ssh-exe-dev",
+            "sumble_url": "https://sumble.com/l/org/hOI1S9G8kllDg"
+          }
+        },
+        {
+          "title": "Board Member",
+          "start_date": "2025-01",
+          "description": "AI for Insurance. Arjun & Sambhav are brokering the adoption of premium AI for this massive industry",
+          "employer": {
+            "organization_id": 1749072,
+            "name": "Fulcrum",
+            "slug": "fulcrumtechincorporated",
+            "linkedin_url": "https://www.linkedin.com/company/fulcrumtechincorporated",
+            "sumble_url": "https://sumble.com/l/org/5kay9TXQzxsaa"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2025-01",
+          "description": "The human computing company. Barely human, Hassaan & Quinn are bridging the emotional gap in AI",
+          "employer": {
+            "organization_id": 751769,
+            "name": "Tavus",
+            "slug": "tavus-io",
+            "linkedin_url": "https://www.linkedin.com/company/tavus-io",
+            "sumble_url": "https://sumble.com/l/org/JtKQgbLUYEWRY"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2024-01",
+          "description": "AI code is multiplying like rabbits. Harjot & Gur recognized independent review is becoming the bottleneck",
+          "employer": {
+            "organization_id": 1030216,
+            "name": "CodeRabbit",
+            "slug": "coderabbitai",
+            "linkedin_url": "https://www.linkedin.com/company/coderabbitai",
+            "sumble_url": "https://sumble.com/l/org/9dg8knZVHGOm5"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2024-01",
+          "description": "Browser automation for web agents. Paul Klein IV. He has a legacy to live up to and he's doing it",
+          "employer": {
+            "organization_id": 1889068,
+            "name": "Browserbase",
+            "slug": "browserbasehq",
+            "linkedin_url": "https://www.linkedin.com/company/browserbasehq",
+            "sumble_url": "https://sumble.com/l/org/5H9enTXQzxsaa"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2024-01",
+          "description": "The legend of bootstrapjs, diffs.com, trees.software and now code.storage. Jacob is far from @fat on x",
+          "employer": {
+            "name": "Pierre Computer Company",
+            "linkedin_url": "https://www.linkedin.com/company/pierrecomputer"
+          }
+        },
+        {
+          "title": "Investor",
+          "start_date": "2023-01",
+          "description": "Vuln mgmt. Rishi is the only entrepreneur in security more obsessed with design than airport billboards",
+          "employer": {
+            "organization_id": 1349158,
+            "name": "ProjectDiscovery",
+            "slug": "projectdiscovery",
+            "linkedin_url": "https://www.linkedin.com/company/projectdiscovery",
+            "sumble_url": "https://sumble.com/l/org/XLwixZDmPEZGz"
+          }
+        },
+        {
+          "title": "Investor",
+          "start_date": "2023-01",
+          "description": "Authentication + user management. Two unlikely siblings, just like founders Colin Sidoti + Braden Sidoti",
+          "employer": {
+            "organization_id": 1270901,
+            "name": "Clerk.com",
+            "slug": "clerkinc",
+            "linkedin_url": "https://www.linkedin.com/company/clerkinc",
+            "sumble_url": "https://sumble.com/l/org/aQ9WFpApfK3ia"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2022-01",
+          "description": "Sort of a VPN. Avery & Carney have taste & obsession around serving networks, it's serving them well",
+          "employer": {
+            "organization_id": 86612,
+            "name": "Tailscale",
+            "slug": "tailscale",
+            "linkedin_url": "https://www.linkedin.com/company/tailscale",
+            "sumble_url": "https://sumble.com/l/org/TNPom0TgkRrD"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2020-01",
+          "description": "SMB software. SMB is hard and execution is paramount. Jordi & Bernat are execution machines",
+          "employer": {
+            "organization_id": 40644,
+            "name": "Factorial HR",
+            "slug": "factorial",
+            "linkedin_url": "https://www.linkedin.com/company/factorialai",
+            "sumble_url": "https://sumble.com/l/org/1ACzs3r4V35y"
+          }
+        },
+        {
+          "title": "Investor",
+          "start_date": "2019-03",
+          "description": "Fertility benefits. NEVER bet against Tammy, in fact, bet on her. I did.",
+          "employer": {
+            "organization_id": 14539,
+            "name": "Carrot Fertility",
+            "slug": "carrot-fertility",
+            "linkedin_url": "https://www.linkedin.com/company/carrot-fertility",
+            "sumble_url": "https://sumble.com/l/org/8W0fcY81ano9"
+          }
+        },
+        {
+          "title": "Investor",
+          "start_date": "2019-01",
+          "description": "API development. Abhinav recognized AI is an API phenomenon before the industry did",
+          "employer": {
+            "organization_id": 393663,
+            "name": "Postman",
+            "slug": "postman",
+            "linkedin_url": "https://www.linkedin.com/company/postman-platform",
+            "sumble_url": "https://sumble.com/l/org/aJrDApApfK3ia"
+          }
+        },
+        {
+          "title": "General Partner",
+          "start_date": "2017-09",
+          "location": "San Francisco Bay Area",
+          "description": "CRV (Charles River Ventures) is an early-stage venture capital firm backing 1,000 startups over 55 years, including Doordash, HubSpot, Mercury, Periodic, Skild, Twitter, Vercel",
+          "employer": {
+            "organization_id": 1765963,
+            "name": "CRV",
+            "slug": "crvvc",
+            "linkedin_url": "https://www.linkedin.com/company/crvvc",
+            "sumble_url": "https://sumble.com/l/org/0uLpzkD6aRja2"
+          }
+        },
+        {
+          "title": "Board",
+          "start_date": "2017-01",
+          "description": "The AI Cloud. Guillermo Rauch: the Lionel Messi of web development (both Argentinian)",
+          "employer": {
+            "organization_id": 23462,
+            "name": "Vercel",
+            "slug": "vercel",
+            "linkedin_url": "https://www.linkedin.com/company/vercel",
+            "sumble_url": "https://sumble.com/l/org/50h2TXQzxsaa"
+          }
+        },
+        {
+          "title": "Venture Investor",
+          "start_date": "2015-07",
+          "end_date": "2017-07",
+          "location": "Greater Boston",
+          "description": "Battery Ventures is a global, tech-focused venture capital and private equity firm investing in IT infrastructure, application software, e-commerce & digital media. Companies/Rounds I worked on: OpsGenie, Collibra, Catchpoint, Cohesity",
+          "employer": {
+            "organization_id": 973050,
+            "name": "Battery Ventures",
+            "slug": "battery-ventures",
+            "linkedin_url": "https://www.linkedin.com/company/battery-ventures",
+            "sumble_url": "https://sumble.com/l/org/rEJC0BWXHswy6"
+          }
+        },
+        {
+          "title": "Startup Athlete",
+          "start_date": "2015-01",
+          "end_date": "2015-01",
+          "description": "SaaS platform that powers the creation and exchange of unique, rich product content between brand manufacturers and their retail partners. Salsify has raised $250 million over five rounds of funding from Warburg Pincus, Matrix Partners, North Bridge, _Underscore.VC and Venrock. Responsibilities included: -\"Running around\" helping the company grow -Fundraising, BD & Strategy -Marketing Operations / Sales Enablement",
+          "employer": {
+            "organization_id": 20064,
+            "name": "Salsify",
+            "slug": "salsify",
+            "linkedin_url": "https://www.linkedin.com/company/salsify",
+            "sumble_url": "https://sumble.com/l/org/XL8pZDmPEZGz"
+          }
+        },
+        {
+          "title": "Growth Equity Associate",
+          "start_date": "2012-01",
+          "end_date": "2015-01",
+          "description": "Symmetric Capital is a venture capital and private equity firm investing in software, technology-enabled services and healthcare companies. The firm was founded in 2007 and is led by a group of former Summit Partners investors.",
+          "employer": {
+            "name": "Symmetric Capital"
+          }
+        },
+        {
+          "title": "Investment Banking Summer Analyst",
+          "start_date": "2011-01",
+          "end_date": "2011-01",
+          "description": "Financial Institutions Group.",
+          "employer": {
+            "organization_id": 1756704,
+            "name": "RBC Capital Markets",
+            "slug": "rbc-capital-markets",
+            "linkedin_url": "https://www.linkedin.com/company/rbc-capital-markets",
+            "sumble_url": "https://sumble.com/l/org/GT65hgo0lT0ZF"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "input": {
+      "linkedin_url": "https://www.linkedin.com/in/jordwalke"
+    },
+    "person_id": 108997108,
+    "sumble_url": "https://sumble.com/l/person/Lao32bgu3UklXD",
+    "attributes": {
+      "name": "Jordan Walke",
+      "current_employer": {
+        "organization_id": 525592,
+        "name": "Replit",
+        "slug": "repl-it",
+        "start_date": "2025-04",
+        "sumble_url": "https://sumble.com/l/org/4hqDvueBf5YN8"
+      },
+      "experience": [
+        {
+          "title": "Software Generator",
+          "start_date": "2025-04",
+          "duration": "7 months",
+          "employer": {
+            "organization_id": 525592,
+            "name": "Replit",
+            "slug": "repl-it",
+            "linkedin_url": "https://www.linkedin.com/company/repl-it",
+            "sumble_url": "https://sumble.com/l/org/4hqDvueBf5YN8"
+          }
+        },
+        {
+          "title": "Software Engineer",
+          "start_date": "2010-09",
+          "end_date": "2020-01",
+          "duration": "9 years 5 months",
+          "employer": {
+            "organization_id": 89,
+            "name": "Facebook",
+            "slug": "meta-dd1502f2",
+            "linkedin_url": "https://www.linkedin.com/company/facebook",
+            "sumble_url": "https://sumble.com/l/org/KHq0YtJG2WF"
+          }
+        }
+      ]
+    }
+  }
+]

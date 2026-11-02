@@ -1,29 +1,90 @@
-Id,FirstName,LastName,Email,Title,AccountId,OwnerId,LinkedIn_URL__c,Intro_Program__c,Employment_Status__c
-003Sb0000090001AAA,Owen,Fischer,owen.fischer@alderfinch.example,Chief Information Officer,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/owen-fischer,,Current
-003Sb0000090002AAA,Grace,Liu,grace.liu@fenwickrx.example,Chief Technology Officer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/grace-liu,,Current
-003Sb0000090003AAA,Priyanka,Rao,priyanka.rao@haldenlogistics.example,Chief Technology Officer,001Sb0000070003AAA,005Sb0000050002AAA,https://linkedin.example/in/priyanka-rao,,Current
-003Sb0000090004AAA,Arjun,Mehta,arjun.mehta@granitetrust.example,Chief Information Officer,001Sb0000070004AAA,005Sb0000050001AAA,https://linkedin.example/in/arjun-mehta,,Current
-003Sb0000090005AAA,Tom,Becker,tom.becker@stonebridge.example,VP Engineering,001Sb0000070005AAA,005Sb0000050002AAA,https://linkedin.example/in/tom-becker,,Current
-003Sb0000090006AAA,Julian,Wright,julian.wright@summitmutual.example,Chief Technology Officer,001Sb0000070006AAA,005Sb0000050001AAA,https://linkedin.example/in/julian-wright,,Current
-003Sb0000090007AAA,Samuel,Okoro,samuel.okoro@orbishealth.example,Chief Information Officer,001Sb0000070007AAA,005Sb0000050002AAA,https://linkedin.example/in/samuel-okoro,,Current
-003Sb0000090008AAA,Isabel,Ortega,isabel.ortega@harborline.example,Chief Information Officer,001Sb0000070008AAA,005Sb0000050002AAA,https://linkedin.example/in/isabel-ortega,,Current
-003Sb0000090009AAA,Ethan,Cole,ethan.cole@cascadehome.example,VP Platform Engineering,001Sb0000070009AAA,005Sb0000050002AAA,https://linkedin.example/in/ethan-cole,Opted in,Current
-003Sb0000090010AAA,Leah,Morgan,leah.morgan@brightwell.example,Chief Information Officer,001Sb0000070010AAA,005Sb0000050001AAA,https://linkedin.example/in/leah-morgan,Opted in,Current
-003Sb0000090011AAA,Daniel,Brooks,daniel.brooks@halvorsen.example,Chief Technology Officer,001Sb0000070011AAA,005Sb0000050002AAA,https://linkedin.example/in/daniel-brooks,,Current
-003Sb0000090012AAA,Hannah,Park,hannah.park@orchardpine.example,Chief Technology Officer,001Sb0000070012AAA,005Sb0000050001AAA,https://linkedin.example/in/hannah-park,,Current
-003Sb0000090013AAA,Victor,Hale,victor.hale@northfield.example,SVP Engineering,001Sb0000070013AAA,005Sb0000050002AAA,https://linkedin.example/in/victor-hale,,Current
-003Sb0000090014AAA,Nadia,Rahman,nadia.rahman@pinecrest.example,Chief Technology Officer,001Sb0000070014AAA,005Sb0000050001AAA,https://linkedin.example/in/nadia-rahman,,Current
-003Sb0000090015AAA,Ravi,Menon,ravi.menon@tallis.example,Chief Information Officer,001Sb0000070015AAA,005Sb0000050002AAA,https://linkedin.example/in/ravi-menon,,Current
-003Sb0000090016AAA,Marco,Silva,marco.silva@kestrel.example,VP Engineering,001Sb0000070016AAA,005Sb0000050001AAA,https://linkedin.example/in/marco-silva,,Current
-003Sb0000090017AAA,Sofia,Marchetti,sofia.marchetti@meridian.example,Chief Technology Officer,001Sb0000070017AAA,005Sb0000050001AAA,https://linkedin.example/in/sofia-marchetti,,Current
-003Sb0000090018AAA,Amara,Okafor,amara.okafor@larkspur.example,Chief Technology Officer,001Sb0000070018AAA,005Sb0000050002AAA,https://linkedin.example/in/amara-okafor,,Current
-003Sb0000090019AAA,Sam,Ortiz,sam.ortiz@alderfinch.example,Director of Engineering,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/sam-ortiz,,Current
-003Sb0000090021AAA,Mei,Tanaka,mei.tanaka@fenwickrx.example,Senior Software Engineer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/mei-tanaka,,Current
-003Sb0000090022AAA,Rajat,Taneja,,"President, Technology",001Sb0000070019AAA,005Sb0000050001AAA,https://linkedin.example/in/rajat-taneja,,Current
-003Sb0000090023AAA,Jason,Morris,,Chief Technology and Information Officer,001Sb0000070020AAA,005Sb0000050002AAA,https://linkedin.example/in/jason-morris,,Current
-003Sb0000090024AAA,Prem,Natarajan,,"EVP, Chief Scientist and Head of Enterprise AI",001Sb0000070021AAA,005Sb0000050001AAA,https://linkedin.example/in/prem-natarajan,,Current
-003Sb0000090025AAA,Dennis,Howard,,"Chief Technology, Operations and Data Officer",001Sb0000070022AAA,005Sb0000050001AAA,https://linkedin.example/in/dennis-howard,Opted in,Current
-003Sb0000090026AAA,Srini,Venkatesan,,Chief Technology Officer,001Sb0000070023AAA,005Sb0000050001AAA,https://linkedin.example/in/srini-venkatesan,Opted in,Current
-003Sb0000090027AAA,Fiona,Tan,,Chief Technology Officer,001Sb0000070024AAA,005Sb0000050002AAA,https://linkedin.example/in/fiona-tan,Opted in,Current
-003Sb0000090028AAA,Suresh,Kumar,,"EVP, Global CTO and Chief Development Officer",001Sb0000070025AAA,005Sb0000050002AAA,https://linkedin.example/in/suresh-kumar,Opted in,Current
-003Sb0000090029AAA,June,Yang,,Board Director,001Sb0000070026AAA,005Sb0000050001AAA,https://linkedin.example/in/june-yang,Opted in,Current
+Id,FirstName,LastName,Email,Title,AccountId,OwnerId,LinkedIn_URL__c,Intro_Program__c,Employment_Status__c,MailingCity,MailingState,MailingLatitude,MailingLongitude,HasOptedOutOfEmail
+003Sb0000090001AAA,Owen,Fischer,owen.fischer@alderfinch.example,Chief Information Officer,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/owen-fischer,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090002AAA,Grace,Liu,grace.liu@fenwickrx.example,Chief Technology Officer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/grace-liu,,Current,Chicago,IL,41.8781,-87.6298,false
+003Sb0000090003AAA,Priyanka,Rao,priyanka.rao@haldenlogistics.example,Chief Technology Officer,001Sb0000070003AAA,005Sb0000050002AAA,https://linkedin.example/in/priyanka-rao,,Current,Memphis,TN,35.1495,-90.049,false
+003Sb0000090004AAA,Arjun,Mehta,arjun.mehta@granitetrust.example,Chief Information Officer,001Sb0000070004AAA,005Sb0000050001AAA,https://linkedin.example/in/arjun-mehta,,Current,Boston,MA,42.3601,-71.0589,false
+003Sb0000090005AAA,Tom,Becker,tom.becker@stonebridge.example,VP Engineering,001Sb0000070005AAA,005Sb0000050002AAA,https://linkedin.example/in/tom-becker,,Current,Denver,CO,39.7392,-104.9903,false
+003Sb0000090006AAA,Julian,Wright,julian.wright@summitmutual.example,Chief Technology Officer,001Sb0000070006AAA,005Sb0000050001AAA,https://linkedin.example/in/julian-wright,,Current,Hartford,CT,41.7658,-72.6734,false
+003Sb0000090007AAA,Samuel,Okoro,samuel.okoro@orbishealth.example,Chief Information Officer,001Sb0000070007AAA,005Sb0000050002AAA,https://linkedin.example/in/samuel-okoro,,Current,Nashville,TN,36.1627,-86.7816,false
+003Sb0000090008AAA,Isabel,Ortega,isabel.ortega@harborline.example,Chief Information Officer,001Sb0000070008AAA,005Sb0000050002AAA,https://linkedin.example/in/isabel-ortega,,Current,San Diego,CA,32.7157,-117.1611,true
+003Sb0000090009AAA,Ethan,Cole,ethan.cole@cascadehome.example,VP Platform Engineering,001Sb0000070009AAA,005Sb0000050002AAA,https://linkedin.example/in/ethan-cole,Opted in,Current,Seattle,WA,47.6062,-122.3321,false
+003Sb0000090010AAA,Leah,Morgan,leah.morgan@brightwell.example,Chief Information Officer,001Sb0000070010AAA,005Sb0000050001AAA,https://linkedin.example/in/leah-morgan,Opted in,Current,San Francisco,CA,37.7749,-122.4194,false
+003Sb0000090011AAA,Daniel,Brooks,daniel.brooks@halvorsen.example,Chief Technology Officer,001Sb0000070011AAA,005Sb0000050002AAA,https://linkedin.example/in/daniel-brooks,,Current,Las Vegas,NV,36.1699,-115.1398,false
+003Sb0000090012AAA,Hannah,Park,hannah.park@orchardpine.example,Chief Technology Officer,001Sb0000070012AAA,005Sb0000050001AAA,https://linkedin.example/in/hannah-park,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090013AAA,Victor,Hale,victor.hale@northfield.example,SVP Engineering,001Sb0000070013AAA,005Sb0000050002AAA,https://linkedin.example/in/victor-hale,,Current,Minneapolis,MN,44.9778,-93.265,false
+003Sb0000090014AAA,Nadia,Rahman,nadia.rahman@pinecrest.example,Chief Technology Officer,001Sb0000070014AAA,005Sb0000050001AAA,https://linkedin.example/in/nadia-rahman,,Current,Charlotte,NC,35.2271,-80.8431,false
+003Sb0000090015AAA,Ravi,Menon,ravi.menon@tallis.example,Chief Information Officer,001Sb0000070015AAA,005Sb0000050002AAA,https://linkedin.example/in/ravi-menon,,Current,Jersey City,NJ,40.7178,-74.0431,false
+003Sb0000090016AAA,Marco,Silva,marco.silva@kestrel.example,VP Engineering,001Sb0000070016AAA,005Sb0000050001AAA,https://linkedin.example/in/marco-silva,,Current,Palo Alto,CA,37.4419,-122.143,false
+003Sb0000090017AAA,Sofia,Marchetti,sofia.marchetti@meridian.example,Chief Technology Officer,001Sb0000070017AAA,005Sb0000050001AAA,https://linkedin.example/in/sofia-marchetti,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090018AAA,Amara,Okafor,amara.okafor@larkspur.example,Chief Technology Officer,001Sb0000070018AAA,005Sb0000050002AAA,https://linkedin.example/in/amara-okafor,,Current,Los Angeles,CA,34.0522,-118.2437,false
+003Sb0000090019AAA,Sam,Ortiz,sam.ortiz@alderfinch.example,Director of Engineering,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/sam-ortiz,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090021AAA,Mei,Tanaka,mei.tanaka@fenwickrx.example,Senior Software Engineer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/mei-tanaka,,Current,Chicago,IL,41.8781,-87.6298,false
+003Sb0000090022AAA,Rajat,Taneja,,"President, Technology",001Sb0000070019AAA,005Sb0000050001AAA,https://linkedin.example/in/rajat-taneja,,Current,,,,,false
+003Sb0000090023AAA,Jason,Morris,,Chief Technology and Information Officer,001Sb0000070020AAA,005Sb0000050002AAA,https://www.linkedin.com/in/jason-morris-b53b4b6,,Current,Bentonville,AR,36.3729,-94.2088,false
+003Sb0000090024AAA,Prem,Natarajan,,"EVP, Chief Scientist and Head of Enterprise AI",001Sb0000070021AAA,005Sb0000050001AAA,https://www.linkedin.com/in/natarajan/,,Current,,,,,false
+003Sb0000090025AAA,Dennis,Howard,,"Chief Technology, Operations and Data Officer",001Sb0000070022AAA,005Sb0000050001AAA,https://linkedin.example/in/dennis-howard,Opted in,Current,,,,,false
+003Sb0000090026AAA,Srini,Venkatesan,,Chief Technology Officer,001Sb0000070023AAA,005Sb0000050001AAA,https://linkedin.example/in/srini-venkatesan,Opted in,Current,,,,,false
+003Sb0000090027AAA,Fiona,Tan,,Chief Technology Officer,001Sb0000070024AAA,005Sb0000050002AAA,https://linkedin.example/in/fiona-tan,Opted in,Current,,,,,false
+003Sb0000090028AAA,Suresh,Kumar,,"EVP, Global CTO and Chief Development Officer",001Sb0000070025AAA,005Sb0000050002AAA,https://linkedin.example/in/suresh-kumar,Opted in,Current,,,,,false
+003Sb0000090029AAA,June,Yang,,Board Director,001Sb0000070026AAA,005Sb0000050001AAA,https://linkedin.example/in/june-yang,Opted in,Current,,,,,false
+003Sb0000090030AAA,Elena,Vasquez,elena.vasquez@orchardpine.example,VP Digital Commerce,001Sb0000070012AAA,005Sb0000050001AAA,https://linkedin.example/in/elena-vasquez,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090031AAA,Theo,Grant,theo.grant@alderfinch.example,SVP Digital Commerce,001Sb0000070001AAA,005Sb0000050001AAA,https://linkedin.example/in/theo-grant,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090032AAA,Naomi,Feld,naomi.feld@larkspur.example,Director of Personalization,001Sb0000070018AAA,005Sb0000050002AAA,https://linkedin.example/in/naomi-feld,,Current,New York,NY,40.7128,-74.006,false
+003Sb0000090033AAA,Kenji,Watanabe,kenji.watanabe@halvorsen.example,VP Engineering,001Sb0000070011AAA,005Sb0000050002AAA,https://linkedin.example/in/kenji-watanabe,,Current,Las Vegas,NV,36.1699,-115.1398,false
+003Sb0000090034AAA,Adaeze,Nwosu,adaeze.nwosu@meridian.example,VP Platform Engineering,001Sb0000070017AAA,005Sb0000050001AAA,https://linkedin.example/in/adaeze-nwosu,,Current,San Francisco,CA,37.7749,-122.4194,false
+003Sb0000090035AAA,Lucas,Berg,,Head of AI Platform,001Sb0000070010AAA,005Sb0000050001AAA,https://linkedin.example/in/lucas-berg,,Current,San Francisco,CA,37.7749,-122.4194,false
+003Sb0000090036AAA,Imani,Carter,imani.carter@kestrel.example,Chief Information Security Officer,001Sb0000070016AAA,005Sb0000050001AAA,https://linkedin.example/in/imani-carter,,Current,Palo Alto,CA,37.4419,-122.143,false
+003Sb0000090037AAA,Diego,Alvarez,diego.alvarez@orbishealth.example,VP Developer Productivity,001Sb0000070007AAA,005Sb0000050002AAA,https://linkedin.example/in/diego-alvarez,,Current,San Jose,CA,37.3382,-121.8863,false
+003Sb0000090038AAA,Hye-jin,Choi,hye-jin.choi@pinecrest.example,Director of Platform Engineering,001Sb0000070014AAA,005Sb0000050001AAA,https://linkedin.example/in/hye-jin-choi,,Current,Oakland,CA,37.8044,-122.2712,false
+003Sb0000090039AAA,Patrick,Dunne,patrick.dunne@fenwickrx.example,EVP & Chief Digital Officer,001Sb0000070002AAA,005Sb0000050002AAA,https://linkedin.example/in/patrick-dunne,,Current,Chicago,IL,41.8781,-87.6298,false
+003Sb0000090040AAA,Olivia,Hart,olivia.hart@halvorsen.example,Chief Marketing Officer,001Sb0000070011AAA,005Sb0000050002AAA,https://linkedin.example/in/olivia-hart,,Current,Las Vegas,NV,36.1699,-115.1398,false
+003Sb0000090041AAA,Ben,Adler,ben.adler@granitetrust.example,VP Engineering,001Sb0000070004AAA,005Sb0000050001AAA,https://linkedin.example/in/ben-adler,,Former,Boston,MA,42.3601,-71.0589,false
+003Sb0000090042AAA,Jim,Beam,,CTO,001Sb0000070020AAA,005Sb0000050002AAA,https://www.linkedin.com/in/jim-beam-4b13b5a7,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090043AAA,Mike,Hughes,,SVP & Chief Information Security Officer,001Sb0000070020AAA,005Sb0000050002AAA,https://www.linkedin.com/in/mike-hughes-a418a85,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090044AAA,Chandhu,Nair,,Chief AI Officer,001Sb0000070027AAA,005Sb0000050002AAA,https://www.linkedin.com/in/chandhunair,,Current,Charlotte,NC,35.2272,-80.8431,false
+003Sb0000090045AAA,Mike,McNamara,,"Executive Vice President, Chief Information and Digital Officer",001Sb0000070027AAA,005Sb0000050002AAA,https://www.linkedin.com/in/mike-mcnamara-04598226,,Current,Minneapolis,MN,44.9773,-93.2655,false
+003Sb0000090046AAA,Prat,Vemana,,Executive Vice President Chief Information and Product Officer,001Sb0000070027AAA,005Sb0000050002AAA,https://www.linkedin.com/in/pratvemana,,Current,Atlanta,GA,33.7545,-84.3898,false
+003Sb0000090047AAA,Adam,Mishler,,"SVP, Global Chief Information Security Officer",001Sb0000070028AAA,005Sb0000050002AAA,https://www.linkedin.com/in/adamjmishler,,Current,Wayzata,MN,44.9708,-93.5119,false
+003Sb0000090048AAA,Adam,Sand,,"Sr. Vice President, Chief Technology Officer",001Sb0000070028AAA,005Sb0000050002AAA,https://www.linkedin.com/in/adamsand,,Current,Minneapolis,MN,44.9773,-93.2655,false
+003Sb0000090049AAA,Amy,Williams,,"Sr Vice President, Chief Product and Experience Design Officer",001Sb0000070028AAA,005Sb0000050002AAA,https://www.linkedin.com/in/amy-williams-06677718,,Current,Stillwater,MN,45.0559,-92.8076,false
+003Sb0000090050AAA,Marc,Varner,,Corp VP and Global CISO,001Sb0000070029AAA,005Sb0000050002AAA,https://www.linkedin.com/in/marc-varner,,Current,La Grange,KY,38.4076,-85.3788,false
+003Sb0000090051AAA,Seemantini,Godbole,,"Executive Vice President, Chief Information and AI Officer",001Sb0000070029AAA,005Sb0000050002AAA,https://www.linkedin.com/in/seemantini-godbole-241a4a1,,Current,,,,,false
+003Sb0000090052AAA,Kelly,Garcia,,Chief Technology Officer,001Sb0000070030AAA,005Sb0000050002AAA,https://www.linkedin.com/in/kelly-garcia-b882a48,,Current,Novi,MI,42.4806,-83.4755,false
+003Sb0000090053AAA,Mark,Martynus,,Senior Vice President - Consumer Technology & Digital Product,001Sb0000070030AAA,005Sb0000050002AAA,https://www.linkedin.com/in/markmartynus,,Current,Aurora,IL,41.7572,-88.3148,false
+003Sb0000090054AAA,Oscar,Moncada,,"SVP of IT Infrastructure, Architecture, Cloud, and Security",001Sb0000070030AAA,005Sb0000050002AAA,https://www.linkedin.com/in/oscardmoncada,,Current,Austin,TX,30.2649,-97.7474,false
+003Sb0000090055AAA,Oscar,Mederos,,Chief Information Security Officer,001Sb0000070031AAA,005Sb0000050002AAA,https://www.linkedin.com/in/oscarmederos,,Current,Miami,FL,25.7742,-80.1936,false
+003Sb0000090056AAA,Yunyan,Wang,,Chief Technology Officer,001Sb0000070031AAA,005Sb0000050002AAA,https://www.linkedin.com/in/yunyanwang,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090057AAA,Subash,Narasimhan,,Vice President of Software Engineering,001Sb0000070031AAA,005Sb0000050002AAA,https://www.linkedin.com/in/subash-narasimhan-b1094112,,Current,Boston,MA,42.3588,-71.0578,false
+003Sb0000090058AAA,Andres,Vives,,Visa’s Chief Data Officer,001Sb0000070019AAA,005Sb0000050001AAA,https://www.linkedin.com/in/andres-vives-28770755,,Current,,,,,false
+003Sb0000090059AAA,Don,Hobson,,Chief Information Officer,001Sb0000070019AAA,005Sb0000050001AAA,https://www.linkedin.com/in/donhobson,,Current,Houston,TX,29.7589,-95.3677,false
+003Sb0000090060AAA,Amy,Lenander,,Chief Data Officer,001Sb0000070021AAA,005Sb0000050001AAA,https://www.linkedin.com/in/amylenander,,Current,Washington,DC,38.8951,-77.0364,false
+003Sb0000090061AAA,Awah,Teh,,Chief Technology Officer & Head of Data Platforms,001Sb0000070021AAA,005Sb0000050001AAA,https://www.linkedin.com/in/awahteh,,Current,Los Angeles,CA,34.0537,-118.2428,false
+003Sb0000090062AAA,Badri,Rajagopalan,,"Chief Architect, Capital One Cyber Security",001Sb0000070021AAA,005Sb0000050001AAA,https://www.linkedin.com/in/badriram,,Current,Chicago,IL,41.8756,-87.6244,false
+003Sb0000090063AAA,Alin,D'Silva,,Chief Information Officer | Corporate Enterprise Technology and Finance,001Sb0000070032AAA,005Sb0000050001AAA,https://www.linkedin.com/in/alindsilva,,Current,New York,NY,40.7127,-74.006,false
+003Sb0000090064AAA,Chris,Gifford,,American Express - Chief Data Officer,001Sb0000070032AAA,005Sb0000050001AAA,https://www.linkedin.com/in/christiangifford,,Current,Scottsdale,AZ,33.4942,-111.926,false
+003Sb0000090065AAA,Gary,Kensey,,"EVP and CIO, Global Services Group & Corporate Technology",001Sb0000070032AAA,005Sb0000050001AAA,https://www.linkedin.com/in/garykensey,,Current,New York,NY,40.7127,-74.006,false
+003Sb0000090066AAA,Bill,Freitas,,"CTO, Head of Technology",001Sb0000070033AAA,005Sb0000050001AAA,https://www.linkedin.com/in/wtfreitas,,Current,Boston,MA,42.3588,-71.0578,false
+003Sb0000090067AAA,Dave,Danneker,,Chief Information Security Architect,001Sb0000070033AAA,005Sb0000050001AAA,https://www.linkedin.com/in/dave-danneker-5407201,,Current,Mansfield,MA,42.0334,-71.2189,false
+003Sb0000090068AAA,Eric,Emerson,,CIO - Brokerage Recordkeeping Technology,001Sb0000070033AAA,005Sb0000050001AAA,https://www.linkedin.com/in/ericjemerson,,Current,Boston,MA,42.3588,-71.0578,false
+003Sb0000090069AAA,Ann,Barron-DiCamillo,,"Executive Vice President, Chief Information Security Officer",001Sb0000070034AAA,005Sb0000050001AAA,https://www.linkedin.com/in/ann-barron-dicamillo-46286b50,,Current,Minneapolis,MN,44.9773,-93.2655,false
+003Sb0000090070AAA,Hanlin,Tang,,CTO - Neural Networks,001Sb0000070035AAA,005Sb0000050002AAA,https://www.linkedin.com/in/hanlintang,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090071AAA,Jason,Pohl,,Built-On CTO,001Sb0000070035AAA,005Sb0000050002AAA,https://www.linkedin.com/in/jasonpohl,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090072AAA,Matei,Zaharia,,CTO & Cofounder,001Sb0000070035AAA,005Sb0000050002AAA,https://www.linkedin.com/in/mateizaharia,,Current,Berkeley,CA,37.8708,-122.2729,false
+003Sb0000090073AAA,AJ,Shipley,,Chief Product Officer,001Sb0000070036AAA,005Sb0000050001AAA,https://www.linkedin.com/in/aj-shipley,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090074AAA,Adam,Zoller,,Chief Information Security Officer,001Sb0000070036AAA,005Sb0000050001AAA,https://www.linkedin.com/in/adam-zoller,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090075AAA,Anna,Hoang,,"Senior Vice President, Chief Scientist",001Sb0000070036AAA,005Sb0000050001AAA,https://www.linkedin.com/in/anna-hoang-70a33a339,,Current,Irvine,CA,33.6857,-117.826,false
+003Sb0000090076AAA,Bartley,Richardson,,Chief Ai and Autonomous Systems Officer,001Sb0000070036AAA,005Sb0000050001AAA,https://www.linkedin.com/in/bartleyrichardson,,Current,Alexandria,VA,38.8051,-77.047,false
+003Sb0000090077AAA,Dean,Crutchfield,,Chief Information Security Officer,001Sb0000070037AAA,005Sb0000050002AAA,https://www.linkedin.com/in/dean-crutchfield-16912a2,,Current,Austin,TX,30.2649,-97.7474,false
+003Sb0000090078AAA,Mike,Miller,,"Chief Product Officer and COO, International",001Sb0000070037AAA,005Sb0000050002AAA,https://www.linkedin.com/in/micmil,,Current,Boston,MA,42.3588,-71.0578,false
+003Sb0000090079AAA,Mona,Breed,,Chief Information Officer,001Sb0000070037AAA,005Sb0000050002AAA,https://www.linkedin.com/in/mona-breed-20371b,,Current,Dallas,TX,32.7763,-96.7969,false
+003Sb0000090080AAA,Alexis,L.,,Co-founder & CTO,001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/alexislequoc,,Current,New York,NY,40.7127,-74.006,false
+003Sb0000090081AAA,Yanbing,Li,,Chief Product Officer,001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/yanbingli,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090082AAA,Bharat,Sajnani,,"Senior Vice President, Head of Corp Development, Hyperscalers, Startups, Fde, and Ai Tooling",001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/bsaj,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090083AAA,Bianca,Lankford,,"Vice President Engineering (Security, Sr E, Threat Detection & Trust)",001Sb0000070038AAA,005Sb0000050001AAA,https://www.linkedin.com/in/biancalankford,,Current,Knoxville,TN,35.9604,-83.921,false
+003Sb0000090084AAA,Amit,Zavery,,"President, Chief Product Officer, and Chief Operating Officer",001Sb0000070039AAA,005Sb0000050001AAA,https://www.linkedin.com/in/amitzavery,,Current,Redwood City,CA,37.4863,-122.2325,false
+003Sb0000090085AAA,Ben,De Bont,,Ciso,001Sb0000070039AAA,005Sb0000050001AAA,https://www.linkedin.com/in/bendebont,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090086AAA,Adam,Geller,,Chief Product Officer,001Sb0000070040AAA,005Sb0000050002AAA,https://www.linkedin.com/in/adamgeller55,,Current,San Francisco,CA,37.7879,-122.4075,false
+003Sb0000090087AAA,Kailash,Kailash,,Chief Architect and Founder,001Sb0000070040AAA,005Sb0000050002AAA,https://www.linkedin.com/in/kailash-kailash-85295518,,Current,San Jose,CA,37.3362,-121.8906,false
+003Sb0000090088AAA,Levi,Bolourie,,Corporate Chief Information Security Officer (CISO),001Sb0000070040AAA,005Sb0000050002AAA,https://www.linkedin.com/in/levi-bolourie,,Current,,,,,false
+003Sb0000090089AAA,Helen,London,,Chief Information Security Officer,001Sb0000070041AAA,005Sb0000050001AAA,https://www.linkedin.com/in/henri-susila-6b593071,,Current,,,,,false
+003Sb0000090090AAA,Lee,Klarich,,Chief Product & Technology Officer and Board Member,001Sb0000070041AAA,005Sb0000050001AAA,https://www.linkedin.com/in/leeklarich,,Current,Los Gatos,CA,37.2266,-121.9747,false

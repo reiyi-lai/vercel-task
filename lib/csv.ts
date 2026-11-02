@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "csv-parse/sync";
 import type { Snapshot } from "./data";
+import type { SumblePerson } from "./sumble";
 
 // Maps the sample exports (Salesforce, TeamLink, Clay, Vercel, Seatbook CSVs) onto the database tables.
 // Used by scripts/seed.ts to build supabase/seed.sql, and by tests to run derive.ts without a database.
@@ -17,7 +18,14 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
   const contacts = read("salesforce/Contact.csv").map((r) => ({
     id: r.Id, first_name: r.FirstName, last_name: r.LastName, email: str(r.Email), title: str(r.Title), account_id: str(r.AccountId),
     owner_id: str(r.OwnerId), linkedin_url: str(r.LinkedIn_URL__c), intro_program: str(r.Intro_Program__c), employment_status: str(r.Employment_Status__c),
+    mailing_city: str(r.MailingCity), mailing_state: str(r.MailingState), mailing_latitude: num(r.MailingLatitude), mailing_longitude: num(r.MailingLongitude),
+    has_opted_out_of_email: bool(r.HasOptedOutOfEmail),
   }));
+
+  // Work histories fetched by scripts/sumble-warm-contacts.ts, keyed by the LinkedIn URL Sumble was asked about.
+  const sumble = JSON.parse(readFileSync(join(root, "sumble/warm_contacts_experience.json"), "utf8")) as SumblePerson[];
+  const sequences = JSON.parse(readFileSync(join(root, "connector_info/event_sequences.json"), "utf8")) as Record<string, Snapshot["event_briefs"][number]["sequence"]>;
+  const experience = new Map(sumble.map((p) => [p.input!.linkedin_url, p.attributes?.experience ?? null]));
 
   return {
     users: read("salesforce/User.csv").map((r) => ({
@@ -25,8 +33,9 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
     })),
     accounts: read("salesforce/Account.csv").map((r) => ({
       id: r.Id, name: r.Name, website: str(r.Website), industry: str(r.Industry), employees: num(r.NumberOfEmployees), type: str(r.Type),
-      owner_id: str(r.OwnerId), target_account: bool(r.Target_Account__c), icp_tier: str(r.ICP_Tier__c), vertical: str(r.Vertical__c),
+      owner_id: str(r.OwnerId), target_account: bool(r.Target_Account__c), icp_tier: str(r.ICP_Tier__c), segment: str(r.Segment__c) as Snapshot["accounts"][number]["segment"], vertical: str(r.Vertical__c),
       horizontals: list(r.Horizontal_Themes__c), est_first_year_value: num(r.Est_First_Year_Value__c),
+      nextjs_job_posts: num(r.NextJS_Job_Posts__c),
     })),
     contacts,
     opportunities: read("salesforce/Opportunity.csv").map((r) => ({
@@ -65,9 +74,22 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
       key_contact_title: str(r["Key Contact Title"]), key_contact_id: contacts.find((c) => c.email === r["Key Contact Email"])?.id ?? null,
     })),
     events: read("connector_info/events.csv").map((r) => ({
-      campaign_id: r["Campaign ID"], slug: r.Slug, short_name: r["Short Name"], program: str(r.Program), seats: Number(r.Seats),
+      campaign_id: r["Campaign ID"], slug: r.Slug, short_name: r["Short Name"], program: str(r.Program), seats: num(r.Seats),
       host_user_ids: list(r["Host User IDs"]), slack_channel: str(r["Slack Channel"]),
     })),
+    event_briefs: read("connector_info/event_briefs.csv").map((r) => {
+      type Brief = Snapshot["event_briefs"][number];
+      return {
+        campaign_id: r["Campaign ID"], format: str(r.Format), location: str(r.Location), purpose: str(r.Purpose),
+        verticals: list(r.Verticals), themes: list(r.Themes), personas: list(r.Personas),
+        geography: r.Geography as Brief["geography"], city: str(r.City), radius_miles: num(r["Radius Miles"]),
+        min_seniority: r["Min Seniority"] as Brief["min_seniority"], seniority_mode: r["Seniority Mode"] as Brief["seniority_mode"],
+        segment: r.Segment as Brief["segment"], tiers: list(r.Tiers), tier_mode: r["Tier Mode"] as Brief["tier_mode"],
+        objective: r.Objective as Brief["objective"], account_weight: Number(r["Account Weight"]), search_scope: r["Search Scope"] as Brief["search_scope"],
+        target_guests: Number(r["Target Guests"]), acceptance_rate: Number(r["Acceptance Rate"]), approval_rate: Number(r["Approval Rate"]),
+        sequence: sequences[r["Campaign ID"]] ?? [],
+      };
+    }),
     connector_confirmations: read("connector_info/connector_confirmations.csv").map((r) => ({
       asked_at: ts(r["Asked At"]), method: r.Method as Snapshot["connector_confirmations"][number]["method"], asked_to: str(r["Asked To"]),
       target_contact_id: r["Target Contact ID"], connector_ref: r["Connector Ref"], answer: str(r.Answer),
@@ -77,5 +99,20 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
       connector_name: r.Connector, connector_type: str(r["Connector type"]), monthly_cap: Number(r["Monthly intro cap"]),
       used: Number(r["Asks used this month"]), resets: str(r.Resets),
     })),
+    warm_contacts: read("connector_info/warm_contacts.csv").map((r) => ({
+      name: r.Name, title: str(r.Title), company: str(r.Company), sumble_org_id: num(r["Sumble Org ID"]), linkedin_url: str(r["LinkedIn URL"]),
+      warm_type: r["Warm Type"] as Snapshot["warm_contacts"][number]["warm_type"], route: r.Route, source: str(r.Source),
+      experience: experience.get(r["LinkedIn URL"]) ?? null,
+    })),
+    candidates: [], // imported in the app, not seeded
+    // Signals for the fictional accounts; real accounts fetch live ones on their account plan.
+    account_signals: read("connector_info/sample_signals.csv").map((r) => ({
+      account_id: r["Account ID"], category: r.Category as Snapshot["account_signals"][number]["category"], theme: str(r.Theme), title: r.Title,
+      detail: str(r.Detail), signal_date: r.Date, url: null, source: "Sample data", person_linkedin_url: str(r["Person LinkedIn URL"]),
+    })),
+    invitation_selections: [], // chosen in the app
+    found_executives: [], // found in the app
+    outreach: [], // run in the app
+    slack_alerts: [],
   };
 }
