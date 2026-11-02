@@ -39,7 +39,7 @@ Visa is a real target account. Its signals are cleared on purpose, so you can se
 
 ## Architecture
 
-![Seatbook architecture: everything that writes sits left of Supabase Postgres, everything that reads sits right of it](Architecture-Diagram.png)
+![Seatbook architecture: everything that writes sits left of Supabase Postgres, everything that reads sits right of it](Architecture-Diagram-1.png)
 
 ## External API Integrations
 
