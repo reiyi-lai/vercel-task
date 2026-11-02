@@ -9,7 +9,7 @@ export default function EventHeader({ event, page }: { event: Event; page: "Over
     <PageHeader crumbs={[{ label: event.short_name, href: `/events/${event.slug}` }, { label: page }]}>
       <h1 className="text-heading-32">{event.name}</h1>
       <p className="mt-1 text-label-13 text-gray-900">
-        {[event.date, event.location, event.seats && `${event.seats} seats`, event.hosts && `Hosts: ${event.hosts}`].filter(Boolean).join(" · ")}
+        {[event.date, event.location].filter(Boolean).join(" · ")}
       </p>
     </PageHeader>
   );

@@ -84,8 +84,7 @@ export function eventDetails(s: Snapshot, slug: string) {
     ...ev,
     name: campaign.name,
     date: formatDates(campaign.start_date!, campaign.end_date),
-    daysOut: Math.round((Date.parse(campaign.start_date!) - AS_OF.getTime()) / 86_400_000),
-    hosts: ev.host_user_ids.map((id) => `${fullName(user.get(id)!)} (${user.get(id)!.title})`).join(", "),
+    daysOut: Math.round((Date.parse(campaign.start_date!) - AS_OF.getTime()) / 86_400_000)
   };
 }
 
