@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui";
-import { startSequence } from "./[candidateId]/outreach-actions";
+import { startSequence } from "./outreach-actions";
 
 // Starts the event's outreach sequence for a candidate straight from the Candidates list: step 1 falls due today and
 // its sender gets the Slack card.

@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { Page, Section, Status } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventDetails, vercelUsage } from "@/lib/derive";
-import { accountPlan, isEnterpriseCustomer } from "@/lib/qualify";
-import EventHeader, { candidateCount } from "../event-header";
+import { eventAccounts } from "@/lib/qualify";
+import EventHeader from "../event-header";
 
 type Props = PageProps<"/events/[eventId]/accounts">;
 
@@ -29,16 +29,12 @@ async function Accounts({ params }: Pick<Props, "params">) {
   const brief = event && s.events.find((b) => b.campaign_id === event.campaign_id);
   if (!event || !brief) notFound();
   const basePath = `/events/${event.slug}`;
-  // The ABM target accounts (Target_Account__c), minus Enterprise customers, who aren't invited through this flow.
-  const plans = s.accounts.filter((a) => a.target_account && !isEnterpriseCustomer(s, a)).map((a) => accountPlan(s, a, brief));
-  const count = (p: (typeof plans)[number], status: string) => p.executives.filter((e) => e.status === status).length;
-  const fits = plans.filter((p) => !p.excluded).sort((x, y) => count(y, "Qualified") - count(x, "Qualified") || count(y, "Review") - count(x, "Review"));
-  const excluded = plans.filter((p) => p.excluded);
+  const { fits, excluded } = eventAccounts(s, brief);
   const selected = fits.reduce((n, p) => n + p.executives.filter((e) => e.selected).length, 0);
 
   return (
     <>
-      <EventHeader event={event} active="accounts" candidates={candidateCount(s, event.campaign_id)} />
+      <EventHeader event={event} page="Accounts" />
       <Page>
         <Section
           title="Accounts"

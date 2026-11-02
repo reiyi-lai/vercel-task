@@ -122,19 +122,19 @@ export function TabLinks({ items, variant = "underline" }: { items: { label: Rea
 }
 
 // Full-width page header band, as in the Vercel dashboard. Crumbs without href are plain text (no dead links).
-export function PageHeader({ crumbs, children, aside, tabs }: { crumbs: { label: string; href?: string }[]; children: ReactNode; aside?: ReactNode; tabs?: ReactNode }) {
+export function PageHeader({ crumbs, children, aside, tabs }: { crumbs?: { label: string; href?: string }[]; children: ReactNode; aside?: ReactNode; tabs?: ReactNode }) {
   return (
     <div className="border-b border-gray-alpha-400 bg-background-100">
       <div className="mx-auto max-w-[1200px] px-4 pt-8 sm:px-6">
-        <nav aria-label="Breadcrumb" className="text-label-13 text-gray-900">
+        {crumbs && <nav aria-label="Breadcrumb" className="mb-3 text-label-13 text-gray-900">
           {crumbs.map((c, i) => (
             <span key={c.label}>
               {i > 0 && <span aria-hidden className="px-1.5 text-gray-500">/</span>}
               {c.href ? <Link href={c.href} className="hover:text-gray-1000 hover:underline">{c.label}</Link> : c.label}
             </span>
           ))}
-        </nav>
-        <div className="mt-3 flex flex-wrap items-start justify-between gap-6 pb-6">
+        </nav>}
+        <div className="flex flex-wrap items-start justify-between gap-6 pb-6">
           <div className="min-w-0">{children}</div>
           {aside}
         </div>
@@ -151,6 +151,15 @@ export function Modal({ ref, title, onClose, children }: { ref: Ref<HTMLDialogEl
       <h3 className="text-heading-20">{title}</h3>
       {children}
     </dialog>
+  );
+}
+
+// A count against its target as a bar, e.g. guests accepted out of the brief's goal. fill is a token background class.
+export function Meter({ label, n, of, fill }: { label: string; n: number; of: number; fill: string }) {
+  return (
+    <div role="progressbar" aria-label={label} aria-valuenow={n} aria-valuemin={0} aria-valuemax={of} className="h-2 overflow-hidden rounded-full bg-gray-200">
+      <div className={`h-full rounded-full ${fill}`} style={{ width: `${Math.min(100, of ? (n / of) * 100 : 100)}%` }} />
+    </div>
   );
 }
 

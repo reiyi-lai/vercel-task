@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useId, useState, useTransition, type ReactNode } from "react";
 import { Button, Status, TabLinks } from "@/components/ui";
 import { CITIES, GEOGRAPHY, OBJECTIVES, OUTREACH_LEADS, SENIORITY, THEMES, TIERS, VERTICALS, outreachVolume } from "@/lib/brief";
@@ -16,14 +15,12 @@ const isDate = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Dat
 type Props = {
   brief: EventBrief;
   event: { slug: string; startDate: string; endDate: string | null; seats: number | null };
-  events: { slug: string; name: string }[];
   confirmed: number; // guests already confirmed in Salesforce
 };
 
 // The Event Brief: the event's details, who the agent should find, how many to invite, and the outreach sequence.
 // Dates and capacity live on the Salesforce campaign and the event; the rest on the brief. A one-day event has no end date.
-export default function BriefForm({ brief, event, events, confirmed }: Props) {
-  const router = useRouter();
+export default function BriefForm({ brief, event, confirmed }: Props) {
   const initial = { brief, date: event.startDate, endDate: event.endDate ?? "", seats: event.seats?.toString() ?? "", guests: brief.target_guests.toString() };
   const [saved, setSaved] = useState(initial);
   const [b, setB] = useState(brief);
@@ -63,23 +60,6 @@ export default function BriefForm({ brief, event, events, confirmed }: Props) {
   return (
     <div className="space-y-4">
       <div className="material-medium space-y-6 p-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-label-12 font-medium uppercase tracking-wide text-gray-900">Event Prospecting / Setup</p>
-            <h2 className="mt-1 text-heading-24">Event Brief</h2>
-          </div>
-          <label className="block w-full space-y-1.5 sm:w-96">
-            <span className="text-label-13 text-gray-900">Event</span>
-            <select
-              className={control}
-              value={event.slug}
-              onChange={(e) => (!dirty || confirm("Discard unsaved changes to this brief?")) && router.push(`/events/${e.target.value}/brief`)}
-            >
-              {events.map((e) => <option key={e.slug} value={e.slug}>{e.name}</option>)}
-            </select>
-          </label>
-        </div>
-
         <div className="grid gap-4 rounded-xl bg-gray-100 p-4 sm:grid-cols-2">
           <Detail label="Format">
             <input className={control} value={b.format ?? ""} onChange={(e) => set({ format: e.target.value || null })} />

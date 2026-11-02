@@ -6,7 +6,7 @@ import { Avatar, Badge, Page, PageHeader, PersonName, Section, Status } from "@/
 import { relevantTheme } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
 import { eventDetails, formatDate, vercelUsage } from "@/lib/derive";
-import { accountPlan } from "@/lib/qualify";
+import { accountPlan, eventAccounts } from "@/lib/qualify";
 import { profileKey } from "@/lib/sumble";
 import { AddToCrm, FindExecutives, RefreshSignals, SelectExecutive } from "./controls";
 
@@ -45,6 +45,12 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
   const usage = vercelUsage(s, account.id);
   const live = !account.website?.endsWith(".example");
   const inCrm = new Set(contacts.flatMap((c) => (c.linkedin_url ? [profileKey(c.linkedin_url)] : [])));
+  // Previous and next in the Accounts list's order, so the BDR can work through the accounts without going back to it.
+  const order = eventAccounts(s, brief).fits.map((p) => p.account);
+  const at = order.findIndex((a) => a.id === account.id);
+  const [prev, next] = at < 0 ? [] : [order[at - 1], order[at + 1]];
+  const candidates = s.candidates.filter((x) => x.campaign_id === event.campaign_id).length;
+  const base = `/events/${event.slug}`;
 
   const signalRow = (x: (typeof plan.signals)[number]) => (
     <li key={`${x.source}${x.title}`} className="grid gap-2 px-5 py-4 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
@@ -71,7 +77,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
   return (
     <>
       <PageHeader
-        crumbs={[{ label: "All Events" }, { label: event.short_name, href: `/events/${event.slug}/brief` }, { label: "Accounts", href: `/events/${event.slug}/accounts` }, { label: account.name }]}
+        crumbs={[{ label: event.short_name, href: base }, { label: "Accounts", href: `${base}/accounts` }, { label: account.name }]}
         aside={plan.excluded ? <Status color="red">Outside the brief: {plan.excluded}</Status> : <Status color={plan.state.color}>{plan.state.label}</Status>}
       >
         <h1 className="text-heading-32">{account.name}</h1>
@@ -83,6 +89,12 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
       </PageHeader>
 
       <Page>
+        <nav aria-label="Accounts" className="-mb-4 flex flex-wrap items-center justify-between gap-3 text-label-13">
+          {prev ? <Link href={`${base}/accounts/${prev.id}`} className="text-gray-900 hover:text-gray-1000">← {prev.name}</Link> : <span />}
+          <Link href={`${base}/candidates`} className="font-medium text-blue-900 hover:underline">{candidates} {candidates === 1 ? "candidate" : "candidates"} added · Go to Candidates →</Link>
+          {next ? <Link href={`${base}/accounts/${next.id}`} className="text-gray-900 hover:text-gray-1000">{next.name} →</Link> : <span />}
+        </nav>
+
         <Block title="Vercel Usage" source="Vercel teams and billing">
           {usage.teams.length ? (
             <p className="text-copy-13">
@@ -181,7 +193,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
                     {e.status !== "Excluded" && (
                       <>
                         <SelectExecutive campaignId={event.campaign_id} contactId={c.id} name={`${c.first_name} ${c.last_name}`} selected={e.selected} />
-                        <Link href={`/events/${event.slug}/candidates/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
+                        <Link href={`/events/${event.slug}/candidates?candidate=${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
                       </>
                     )}
                   </div>

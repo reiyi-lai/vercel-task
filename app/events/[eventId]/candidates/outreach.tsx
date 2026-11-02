@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore, useTransition } from "react";
 import { Button, Section, Status, type DotColor } from "@/components/ui";
 import type { Candidate } from "@/lib/data";
 import { gmailDraft, type StepStatus } from "@/lib/sequence";
-import FindEmail from "../find-email";
+import FindEmail from "./find-email";
 import { markSent, saveDraft, setOutcome, startSequence } from "./outreach-actions";
 
 export type StepView = {

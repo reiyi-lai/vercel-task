@@ -16,6 +16,8 @@ export const gmailDraft = (to: string | null, subject: string, body: string) =>
 const DAY = 86_400_000;
 // The calendar day a moment falls on in the business time zone, as a day count, so "today" means the team's today.
 const dayOf = (d: Date) => Date.parse(d.toLocaleDateString("en-CA", { timeZone: TIMEZONE })) / DAY;
+// Calendar days from today until a date ("2026-11-19"), counted in the business time zone; negative once it's past.
+export const daysUntil = (date: string, now = new Date()) => Date.parse(date) / DAY - dayOf(now);
 export const shortDate = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: TIMEZONE });
 export type StepStatus = "Sent" | "Due" | "Overdue" | "Upcoming" | "Stopped";
 

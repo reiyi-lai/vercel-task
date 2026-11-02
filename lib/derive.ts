@@ -1,4 +1,4 @@
-import { progress } from "./sequence";
+import { daysUntil, progress } from "./sequence";
 import type { Activity, Contact, Snapshot } from "./data";
 import { AS_OF } from "./rules";
 
@@ -62,6 +62,17 @@ export function vercelUsage(s: Snapshot, accountId: string) {
   return { teams, activeUsers: sum("active_users_30d"), monthlySpend: sum("monthly_spend") };
 }
 
+// Every event with its start date and days until it: upcoming first, soonest at the top; past events after, most
+// recent first. The order of All Events and the sidebar.
+export function eventsByDate(s: Snapshot, now = new Date()) {
+  return s.events
+    .map((e) => {
+      const start = s.campaigns.find((c) => c.id === e.campaign_id)!.start_date!;
+      return { e, start, days: daysUntil(start, now) };
+    })
+    .sort((a, b) => Number(a.days < 0) - Number(b.days < 0) || (a.days < 0 ? b.start.localeCompare(a.start) : a.start.localeCompare(b.start)));
+}
+
 // An event's details for its header. Kept apart from the pipeline, which depends on today's date, so pages without it
 // can prerender.
 export function eventDetails(s: Snapshot, slug: string) {
@@ -96,7 +107,7 @@ export function eventOverview(s: Snapshot, slug: string) {
         id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals,
         // Who runs the outreach: the assigned BDR on a BDR-led event, otherwise the account's AE. null until assigned.
         owner: brief?.outreach_lead === "bdr" ? (bdr_id ? fullName(user.get(bdr_id)!) : null) : k.owner_id ? fullName(user.get(k.owner_id)!) : null, outcome: o?.outcome ?? null, started: !!o?.started_at,
-        detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates/${id}`,
+        detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates?candidate=${id}`,
       };
     });
   const responded = (outcome: string) => cards.filter((c) => c.outcome === outcome);

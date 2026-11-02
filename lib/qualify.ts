@@ -129,3 +129,14 @@ export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
       .sort((x, y) => Number(!x.persona) - Number(!y.persona) || ORDER.indexOf(x.status) - ORDER.indexOf(y.status)),
   };
 }
+
+// The event's account list: target accounts (Target_Account__c) minus Enterprise customers, who aren't invited through
+// this flow. Those that fit the brief come first, most qualified executives first; the rest carry why they don't fit.
+export function eventAccounts(s: Snapshot, b: EventBrief) {
+  const plans = s.accounts.filter((a) => a.target_account && !isEnterpriseCustomer(s, a)).map((a) => accountPlan(s, a, b));
+  const count = (p: (typeof plans)[number], status: string) => p.executives.filter((e) => e.status === status).length;
+  return {
+    fits: plans.filter((p) => !p.excluded).sort((x, y) => count(y, "Qualified") - count(x, "Qualified") || count(y, "Review") - count(x, "Review")),
+    excluded: plans.filter((p) => p.excluded),
+  };
+}

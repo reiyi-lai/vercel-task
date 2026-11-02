@@ -5,16 +5,16 @@ import { connection } from "next/server";
 import { Suspense } from "react";
 import { Avatar, Page, PersonName, Section, Status } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { eventOverview, formatDate } from "@/lib/derive";
+import { eventOverview } from "@/lib/derive";
 import { qualifyContact } from "@/lib/qualify";
 import { progress } from "@/lib/sequence";
 import { assignAe, assignBdr } from "../accounts/[accountId]/actions";
-import EventHeader, { candidateCount } from "../event-header";
+import EventHeader from "../event-header";
 import Assign from "./assign";
 import { RemoveCheckbox, RemoveSelected, RemoveSelection } from "./remove";
 import FindEmail from "./find-email";
 import StartSequence from "./start-sequence";
-import SendReminders from "./send-reminders";
+import CandidatePanel from "./candidate-panel";
 
 type Props = PageProps<"/events/[eventId]/candidates">;
 
@@ -24,13 +24,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: event && `Candidates · ${event.short_name}` };
 }
 
-export default function CandidatesPage({ params }: Props) {
-  return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><Candidates params={params} /></Suspense>;
+export default function CandidatesPage({ params, searchParams }: Props) {
+  return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><Candidates params={params} searchParams={searchParams} /></Suspense>;
 }
 
-// Everyone selected to invite on this event's account plans, with their outreach status and the Slack alerts.
-async function Candidates({ params }: Pick<Props, "params">) {
+// Everyone selected to invite on this event's account plans, with their owners and outreach status. ?candidate=<id>
+// opens that candidate's invitation plan in a panel over the list.
+async function Candidates({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
   const { eventId } = await params;
+  const open = (await searchParams).candidate;
   await connection(); // outreach status depends on today's date, so render at request time
   const s = await loadSnapshot();
   const o = eventOverview(s, eventId);
@@ -40,7 +42,6 @@ async function Candidates({ params }: Pick<Props, "params">) {
   const people = (title: string) => s.users.filter((u) => u.title === title).map((u) => ({ id: u.id, name: `${u.first_name} ${u.last_name}` }));
   const aes = people("Account Executive");
   const bdrs = people("BDR");
-  const alerts = s.slack_alerts.filter((a) => a.campaign_id === event.campaign_id).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 10);
   const selected = s.candidates
     .filter((x) => x.campaign_id === event.campaign_id)
     .map((x) => {
@@ -50,15 +51,15 @@ async function Candidates({ params }: Pick<Props, "params">) {
         account: s.accounts.find((a) => a.id === contact.account_id)!,
         bdrId: x.bdr_id,
         qualified: qualifyContact(s, contact, brief),
-        outreach: progress(brief.sequence, s.candidates.find((o) => o.campaign_id === event.campaign_id && o.contact_id === contact.id)),
-        started: !!s.candidates.find((o) => o.campaign_id === event.campaign_id && o.contact_id === contact.id)?.started_at,
+        outreach: progress(brief.sequence, x),
+        started: !!x.started_at,
       };
     })
     .sort((a, b) => a.account.name.localeCompare(b.account.name) || a.contact.last_name.localeCompare(b.contact.last_name));
 
   return (
     <>
-      <EventHeader event={event} active="candidates" candidates={candidateCount(s, event.campaign_id)} />
+      <EventHeader event={event} page="Candidates" />
       <Page>
         <RemoveSelection>
           <Section
@@ -69,7 +70,7 @@ async function Candidates({ params }: Pick<Props, "params">) {
             {selected.length ? (
               <ul className="material-base divide-y divide-gray-alpha-400">
                 {selected.map(({ contact: c, account, bdrId, qualified, outreach, started }) => (
-                  <li key={c.id} className="grid items-start gap-3 px-5 py-4 xl:grid-cols-[minmax(0,1fr)_150px_140px_140px_200px_120px] xl:gap-5">
+                  <li key={c.id} className={`grid items-start gap-3 px-5 py-4 xl:grid-cols-[minmax(0,1fr)_150px_140px_140px_200px_120px] xl:gap-5 ${c.id === open ? "bg-gray-100" : ""}`}>
                     <div className="flex min-w-0 items-center gap-3">
                       <RemoveCheckbox id={c.id} name={`${c.first_name} ${c.last_name}`} />
                       <Avatar name={`${c.first_name} ${c.last_name}`} />
@@ -104,7 +105,7 @@ async function Candidates({ params }: Pick<Props, "params">) {
                       <Status color={outreach.color}><span className="text-label-12">{outreach.text}</span></Status>
                     </div>
                     <div className="flex flex-col items-start gap-2 xl:justify-self-end">
-                      <Link href={`/events/${event.slug}/candidates/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
+                      <Link href={`?candidate=${c.id}`} scroll={false} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
                       {!c.email && c.linkedin_url && !c.linkedin_url.includes("linkedin.example") && <FindEmail contactId={c.id} />}
                       {c.email && !started && <StartSequence campaignId={event.campaign_id} contactId={c.id} />}
                     </div>
@@ -118,27 +119,8 @@ async function Candidates({ params }: Pick<Props, "params">) {
             )}
           </Section>
         </RemoveSelection>
-
-        <Section
-          title="Slack Alerts"
-          description={process.env.SLACK_WEBHOOK_URL ? "Also posted to Slack." : "Shown here only: add SLACK_WEBHOOK_URL to post them to Slack."}
-          aside={<SendReminders campaignId={event.campaign_id} />}
-        >
-          {alerts.length ? (
-            <ul className="material-base divide-y divide-gray-alpha-400">
-              {alerts.map((a) => (
-                <li key={a.id} className="grid gap-1 px-5 py-3 sm:grid-cols-[160px_1fr_auto] sm:gap-6">
-                  <p className="text-label-13 font-medium">{a.recipient}</p>
-                  <p className="text-copy-13">{a.text}</p>
-                  <p className="text-label-12 text-gray-900">{formatDate(a.created_at)}{a.posted && " · Slack"}</p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">No alerts yet. They appear when a sequence starts, a candidate responds, or steps fall due.</p>
-          )}
-        </Section>
       </Page>
+      {typeof open === "string" && <CandidatePanel s={s} event={brief} contactId={open} close={`/events/${event.slug}/candidates`} />}
     </>
   );
 }

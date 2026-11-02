@@ -54,7 +54,7 @@ const siteUrl = () =>
 
 // The Slack card for a step that's due: who it's for, the drafted copy, and buttons to mark it sent as drafted, open a
 // Gmail draft of it (email steps, when the link fits Slack's 3,000-character limit), or edit it in Seatbook, which opens
-// that step on the invitation page. Mark Sent carries "campaignId|contactId|step".
+// that step in the candidate's panel. Mark Sent carries "campaignId|contactId|step".
 export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false) {
   const step = s.events.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const by = sender(s, campaignId, step, c)!; // cards are only sent for started sequences, whose senders are assigned
@@ -73,7 +73,7 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
       elements: [
         { type: "button", style: "primary", text: { type: "plain_text", text: "Mark Sent" }, action_id: "mark_sent", value },
         ...(gmail && gmail.length <= 3000 ? [{ type: "button", text: { type: "plain_text", text: "Open in Gmail" }, action_id: "gmail", url: gmail }] : []),
-        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/candidates/${c.id}#step-${index + 1}` },
+        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/candidates?candidate=${c.id}#step-${index + 1}` },
       ],
     },
   ];
@@ -89,9 +89,9 @@ export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: num
   ];
 }
 
-// A Slack card for each unsent step in the event with one of these statuses, to its sender: due or overdue on demand
-// and at 9am, due today at 4pm.
-export async function sendReminders(campaignId: string, statuses: StepStatus[] = ["Due", "Overdue"]) {
+// A Slack card for each unsent step in the event with one of these statuses, to its sender: due or overdue at 9am,
+// due today at 4pm (Vercel Cron).
+export async function sendReminders(campaignId: string, statuses: StepStatus[]) {
   const s = await loadSnapshot();
   const brief = s.events.find((b) => b.campaign_id === campaignId);
   if (!brief) return { error: "No such event." };
@@ -105,4 +105,29 @@ export async function sendReminders(campaignId: string, statuses: StepStatus[] =
     }
   }, expireFromRoute);
   return { error, sent: due.length };
+}
+
+// One AE's or BDR's queue across every event: the steps they send that are due or overdue (overdue first), replies on
+// their candidates to answer, and their candidates whose sequence hasn't started. "Their" candidates: the AE owns the
+// account, or the BDR is assigned for the event.
+export function myQueue(s: Snapshot, userId: string, now = new Date()) {
+  const rows = s.events.flatMap((e) =>
+    s.candidates.filter((x) => x.campaign_id === e.campaign_id).map((x) => {
+      const c = s.contacts.find((k) => k.id === x.contact_id)!;
+      return { e, x, c, account: s.accounts.find((a) => a.id === c.account_id)!.name, mine: c.owner_id === userId || x.bdr_id === userId };
+    })
+  );
+  const due = rows
+    .filter(({ x }) => x.started_at && !x.outcome)
+    .flatMap((r) =>
+      schedule(r.e.sequence, r.x, now)
+        .filter((st) => (st.status === "Due" || st.status === "Overdue") && sender(s, r.e.campaign_id, st.step, r.c)?.id === userId)
+        .map((st) => ({ ...r, step: st, copy: draftCopy(s, r.e.campaign_id, r.c, st.index) }))
+    )
+    .sort((a, b) => Number(b.step.status === "Overdue") - Number(a.step.status === "Overdue") || a.step.due!.getTime() - b.step.due!.getTime());
+  return {
+    due,
+    replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"),
+    toStart: rows.filter((r) => r.mine && !r.x.started_at),
+  };
 }

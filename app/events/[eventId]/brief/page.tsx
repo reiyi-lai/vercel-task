@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { Page } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventDetails } from "@/lib/derive";
-import EventHeader, { candidateCount } from "../event-header";
+import EventHeader from "../event-header";
 import BriefForm from "./brief-form";
 
 type Props = PageProps<"/events/[eventId]/brief">;
@@ -30,13 +30,12 @@ async function Brief({ params }: Pick<Props, "params">) {
 
   return (
     <>
-      <EventHeader event={event} active="brief" candidates={candidateCount(s, event.campaign_id)} />
+      <EventHeader event={event} page="Brief" />
       <Page>
         <BriefForm
           key={event.slug}
           brief={brief}
           event={{ slug: event.slug, startDate: campaign.start_date!, endDate: campaign.end_date, seats: event.seats }}
-          events={s.events.map((e) => ({ slug: e.slug, name: s.campaigns.find((c) => c.id === e.campaign_id)!.name }))}
           confirmed={confirmed}
         />
       </Page>

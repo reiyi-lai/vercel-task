@@ -1,14 +1,6 @@
 import { loadSnapshot } from "@/lib/data";
 import { sendReminders } from "@/lib/outreach";
 
-// POST { campaignId }: a Slack card for each due or overdue step in one event, from the Candidates page.
-export async function POST(req: Request) {
-  const { campaignId } = await req.json();
-  if (typeof campaignId !== "string") return Response.json({ error: "campaignId is required" }, { status: 400 });
-  const result = await sendReminders(campaignId);
-  return Response.json(result, { status: result.error ? 500 : 200 });
-}
-
 // GET ?run=morning|afternoon: Vercel Cron, scheduled in vercel.json (times in lib/rules.ts's TIMEZONE). At 9am, every
 // unsent step that's due or overdue gets a card, so an overdue step is pinged each morning until it's marked sent.
 // At 4pm, steps due today and still unsent get a second ping. Vercel sends CRON_SECRET as a bearer token.

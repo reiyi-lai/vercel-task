@@ -3,11 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Page, Section, Status } from "@/components/ui";
+import { Meter, Page, Section, Status } from "@/components/ui";
 import { outreachVolume } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
-import { eventOverview } from "@/lib/derive";
-import EventHeader, { candidateCount } from "./event-header";
+import { eventOverview, formatDate } from "@/lib/derive";
+import EventHeader from "./event-header";
 import Pipeline from "./pipeline";
 import { eventProgress } from "@/lib/sequence";
 
@@ -39,10 +39,11 @@ async function EventOverview({ params }: Pick<Props, "params">) {
     { label: "Guests Accepted", n: p.accepted, of: brief.target_guests, note: `${p.confirmedInSalesforce} confirmed in Salesforce`, fill: "bg-green-700" },
   ];
   const basePath = `/events/${event.slug}`;
+  const alerts = s.slack_alerts.filter((a) => a.campaign_id === event.campaign_id).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 8);
 
   return (
     <>
-      <EventHeader event={event} active="overview" candidates={candidateCount(s, event.campaign_id)} />
+      <EventHeader event={event} page="Overview" />
 
       <Page>
         <Section
@@ -57,9 +58,7 @@ async function EventOverview({ params }: Pick<Props, "params">) {
                   {x.n}
                   <span className="text-heading-20 text-gray-900"> / {x.of}</span>
                 </p>
-                <div role="progressbar" aria-label={x.label} aria-valuenow={x.n} aria-valuemin={0} aria-valuemax={x.of} className="h-2 overflow-hidden rounded-full bg-gray-200">
-                  <div className={`h-full rounded-full ${x.fill}`} style={{ width: `${Math.min(100, x.of ? (x.n / x.of) * 100 : 100)}%` }} />
-                </div>
+                <Meter label={x.label} n={x.n} of={x.of} fill={x.fill} />
                 <p className="text-label-12 text-gray-900">{x.note}</p>
               </div>
             ))}
@@ -73,6 +72,22 @@ async function EventOverview({ params }: Pick<Props, "params">) {
         </Section>
 
         <Pipeline columns={pipeline} bdrLed={brief.outreach_lead === "bdr"} />
+
+        <Section title="Recent Activity" description={process.env.SLACK_WEBHOOK_URL ? "Alerts sent to AEs and BDRs, also posted to Slack." : "Alerts for AEs and BDRs. Add SLACK_WEBHOOK_URL to post them to Slack."}>
+          {alerts.length ? (
+            <ul className="material-base divide-y divide-gray-alpha-400">
+              {alerts.map((a) => (
+                <li key={a.id} className="grid gap-1 px-5 py-3 sm:grid-cols-[160px_1fr_auto] sm:gap-6">
+                  <p className="text-label-13 font-medium">{a.recipient}</p>
+                  <p className="text-copy-13">{a.text}</p>
+                  <p className="text-label-12 text-gray-900">{formatDate(a.created_at)}{a.posted && " · Slack"}</p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">No activity yet. Alerts appear when a sequence starts, a step falls due, or a candidate responds.</p>
+          )}
+        </Section>
       </Page>
     </>
   );

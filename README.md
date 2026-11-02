@@ -14,10 +14,16 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 | **4. Sequence Outreach** | Follow-ups slip. Nobody knows who owns which step. | **Candidates** shows list of selected candidates for that event across all accounts, and allows assigning of AEs/BDRs. Outreach sequence shows each step with drafts and has live Slack integration via Slack webhook (currently configured to Rachel's personal Slack workspace `vercel-trial`). |
 | 5. Track progress | No single view of how complete event preparation is. | **Overview** shows progress against the specified goals in Event Brief and a Kanban board tracking pipeline. |
 
+## Who Uses It
+
+- **Head of Marketing:** **All Events** shows overview of statistics and dates for all events, clicking on each event card also reveals **Overview** of each event.
+- **Marketing:** Each event in the sidebar, in workflow order: **Brief**, **Accounts**, **Candidates** with root page showing progress for that event.
+- **AEs/BDRs:** **My Outreach** lists their steps due across every event (with the draft, Open in Gmail and Mark Sent), candidates ready to start, and emails to replies to answer. Slack pings them about the same steps at 9am and 4pm.
+
 ## Sample Flow
 
-1. **Brief.** Select the brief for **Las Vegas Grand Prix**. Check the target verticals, personas, seniority, location and guest target.
-2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**.
+1. **Brief.** In the sidebar, open **Las Vegas GP**, then **Brief**. Check the target verticals, personas, seniority, location and guest target.
+2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**. On any account plan, **← / →** steps through the accounts in order.
 3. **Account plan: Signals.** Click either buttons. They can run at the same time, but will take a while till you can refresh.
    - Clicking **Refresh Sumble Signals** loads new leaders hired and recent job post summaries. You can 'Add to CRM' the executives you deem relevant.
    - Clicking **Research AI Initiatives** uses Claude to search the web for Visa's AI projects via three categories: Internal Software; Retail/Agentic Commerce; Financial Services.
@@ -29,11 +35,12 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
    - The candidates you've selected across all accounts for this event appear here.
    - Clicking **Find Email** fetches a missing email for that candidate via Sumble if needed.
    - **Start Sequence** kickstarts the outreach sequence, which involves a message to the respective AE/BDR via Slack.
-6. **Per Candidate Invitation** (click **Invitation Plan →**).
+6. **Invitation plan** (click **Invitation Plan →**; it opens as a panel over the Candidates list).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.
    - Temporary setup: **Mark Sent** once it goes out. Candidate outcome can be updated via **Replied, Accepted or Declined**.
-7. **Overview.** View overview of invitation pipeline with shortlisted, invited and accepted counts against the targets. The pipeline board shows each candidate's stage and owner.
+7. **Overview.** View overview of invitation pipeline with shortlisted, invited and accepted counts against the targets. The pipeline board shows each candidate's stage and owner, and Recent Activity lists the Slack alerts.
+8. **My Outreach.** Pick who you're viewing as (an AE or BDR) to see their queue across all events.
 
 ## Architecture
 
@@ -49,7 +56,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 | Add to CRM | Sumble | The person's current title and location (about 4 credits). | `api.sumble.com/v9/people` |
 | Find Email | Sumble | Reveals a work email (10 credits). | `api.sumble.com/v9/people` |
 | Start Sequence, Mark Sent, outcomes | Slack | Posts a card or alert to the team channel. | Incoming webhook: `hooks.slack.com/services/…` (set as `SLACK_WEBHOOK_URL`)<br>Seatbook posts a message to the webhook, which drops it into the channel. Clicking **Mark Sent** in Slack calls back to Seatbook at `/api/slack/interactions`. |
-| Send Reminders, plus a daily schedule | Slack | Reminds senders of steps due or overdue, at 9am and 4pm Pacific. | API route: `/api/outreach/reminders`, then the Slack webhook<br>Vercel Cron calls the reminders route twice a day. It finds steps due or overdue and posts a card for each to the webhook. |
+| Daily reminders (Vercel Cron) | Slack | Reminds senders of steps due or overdue, at 9am and 4pm Pacific. | API route: `/api/outreach/reminders`, then the Slack webhook<br>Vercel Cron calls the reminders route twice a day. It finds steps due or overdue and posts a card for each to the webhook. |
 
 All Sumble calls are `POST`s with the API key. 
 
