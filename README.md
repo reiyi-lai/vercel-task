@@ -16,7 +16,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 ## Sample Flow
 
-1. **Brief.** Select the brief for **Las Vegas Grand Prix**. Check the target verticals, personas, seniority, location and guest target. This event is **AE-led**, so no BDR is needed.
+1. **Brief.** Select the brief for **Las Vegas Grand Prix**. Check the target verticals, personas, seniority, location and guest target.
 2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**.
 3. **Account plan: Signals.** Click either buttons. They can run at the same time, but will take a while till you can refresh.
    - Clicking **Refresh Sumble Signals** loads new leaders hired and recent job post summaries. You can 'Add to CRM' the executives you deem relevant.
