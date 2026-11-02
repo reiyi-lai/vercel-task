@@ -37,6 +37,10 @@ Visa is a real target account. Its signals are cleared on purpose, so you can se
    - Temporary setup: **Mark Sent** once it goes out. Candidate outcome can be updated via **Replied, Accepted or Declined**.
 7. **Overview.** View overview of invitation pipeline with shortlisted, invited and accepted counts against the targets. The pipeline board shows each candidate's stage and owner.
 
+## Architecture
+
+![Seatbook architecture: everything that writes sits left of Supabase Postgres, everything that reads sits right of it](Architecture-Diagram.png)
+
 ## External API Integrations
 
 | Button | Service | What it does | Endpoint / Webhook URL |
