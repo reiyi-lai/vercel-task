@@ -4,14 +4,13 @@ This platform, Seatbook, helps fill executive seats at Vercel events (an F1 suit
 
 ## Problems it solves
 
-| Stage | The problem today | What Seatbook does |
+| Stage | Problem | What our build solves |
 |---|---|---|
-| 1. Define Event | Event context usually lives within Marketing and in docs or across Slack. | Single **Event Brief** page identifies for all stakeholders i.e. AEs/BDRs: target personas, seniority, location criteria, ideal outreach sequence (i.e. AE- or BDR- lead, with specified follow-up days) etc. |
-| 2. Pick Accounts | Hard to quickly identify which target accounts from Vercel's TAM suit this event. | **Accounts** filters Vercel's target accounts in Salesforce by event requirements and shows existing Vercel Pro usage. |
-| 3. Find the Right Executives | The CRM may still lack the right execs, or has stale titles. | **Find Executives** searches Sumble for that account's target personas, defined in Event Brief. ––> **Result**: List of real executives with LinkedIn profile URL that user can select to add to CRM and Executives list for that account. |
-| 4. Gather Account Context | Generic invites get ignored. | **Signals** show new leaders (and allow adding them directly to CRM), job posts and relevant AI initiatives to personalise the invite. |
-| 5. Sequence Outreach | Follow-ups slip. Nobody knows who owns which step. | **Candidates** shows list of selected candidates for that event across all accounts, and allows assigning of AEs/BDRs. Outreach sequence shows each step with drafts and has live Slack integration via Slack webhook (currently configured to Rachel's personal Slack workspace `vercel-trial`). |
-| 6. Track progress | No single view of how complete event preparation is. | **Overview** shows progress against the specified goals in Event Brief and a Kanban board tracking pipeline. |
+| 1. Pick Accounts | Hard to quickly identify which target accounts from Vercel's TAM suit this event. | **Event Brief** page allows Marketing to define here: target personas, seniority, candidate location criteria, ideal outreach sequence (i.e. AE- or BDR- lead, with specified follow-up days) etc. <br> <br> **Accounts** filters Vercel's target accounts in Salesforce by event requirements and shows existing Vercel Pro usage. |
+| 2. Gather Context on Account / Contacts | Account context is spread across Salesforce, billing data, LinkedIn and the news, so invites end up generic and get ignored. | Each **Account** page shows Vercel Pro usage, past account interaction (Salesforce), event attendance (Salesforce campaign) – along with **Signals** showing new leaders (and allow adding them directly to CRM), job posts and relevant AI initiatives to identify context for each account / executive. |
+| 3. Identify the Right Executives | Executives are scattered across the CRM with no view of who fits this event, and the right ones may be missing or have stale titles. | Under Account page, **Executives** consolidates executives across entire account with context on whether they align with this event, i.e. Qualified, Review or Excluded (e.g. matches persona, below seniority, outside location). <br> <br> **Find Executives** searches Sumble for that account's target personas, defined in Event Brief. <br> <br> **Result**: List of real executives with LinkedIn profile URL that user can select to add to CRM and Executives list for that account. |
+| 4. Sequence Outreach | Follow-ups slip. Nobody knows who owns which step. | **Candidates** shows list of selected candidates for that event across all accounts, and allows assigning of AEs/BDRs. Outreach sequence shows each step with drafts and has live Slack integration via Slack webhook (currently configured to Rachel's personal Slack workspace `vercel-trial`). |
+| 5. Track progress | No single view of how complete event preparation is. | **Overview** shows progress against the specified goals in Event Brief and a Kanban board tracking pipeline. |
 
 ## Sample Flow
 
