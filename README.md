@@ -16,10 +16,8 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 ## Sample Flow
 
-Visa is a real target account. Its signals are cleared on purpose, so you can see them being generated.
-
-1. **Brief.** Open the Las Vegas Grand Prix brief. Check the target verticals, personas, seniority, location and guest target. This event is **AE-led**, so no BDR is needed.
-2. **Accounts.** Find the account row for Visa. Click **Open Plan**.
+1. **Brief.** Select the brief for **Las Vegas Grand Prix**. Check the target verticals, personas, seniority, location and guest target. This event is **AE-led**, so no BDR is needed.
+2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**.
 3. **Account plan: Signals.** Click either buttons. They can run at the same time, but will take a while till you can refresh.
    - Clicking **Refresh Sumble Signals** loads new leaders hired and recent job post summaries. You can 'Add to CRM' the executives you deem relevant.
    - Clicking **Research AI Initiatives** uses Claude to search the web for Visa's AI projects via three categories: Internal Software; Retail/Agentic Commerce; Financial Services.
