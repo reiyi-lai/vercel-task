@@ -1,13 +1,15 @@
 "use client";
 
 import { useId, useState, useTransition, type ReactNode } from "react";
-import { Button, Status, TabLinks } from "@/components/ui";
-import { CITIES, GEOGRAPHY, OBJECTIVES, OUTREACH_LEADS, SENIORITY, THEMES, TIERS, VERTICALS, outreachVolume } from "@/lib/brief";
+import { Button, Status } from "@/components/ui";
+import { CITIES, GEOGRAPHY, LEAD_SENDER, OUTREACH_LEADS, SENDER_LABEL, SENIORITY, THEMES, TIERS, VERTICALS, outreachVolume } from "@/lib/brief";
 import type { EventBrief, SequenceStep } from "@/lib/data";
 import { PLACEHOLDERS } from "@/lib/sequence";
-import { saveBrief } from "./actions";
+import { createEvent, saveBrief } from "./actions";
 
-const control = "h-9 w-full rounded-lg bg-background-100 px-3 text-label-14 shadow-border";
+// box: sized by its caller (inline controls); control: full width.
+const box = "h-9 rounded-lg bg-background-100 px-3 text-label-14 shadow-border";
+const control = `${box} w-full`;
 const toggle = (list: string[], x: string) => (list.includes(x) ? list.filter((y) => y !== x) : [...list, x]);
 const wholeNumber = (v: string) => /^\d+$/.test(v) && Number(v) >= 1;
 const isDate = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Date.parse(d));
@@ -16,11 +18,12 @@ type Props = {
   brief: EventBrief;
   event: { slug: string; startDate: string; endDate: string | null; seats: number | null };
   confirmed: number; // guests already confirmed in Salesforce
+  create?: boolean; // a new event: also asks for its name, and Save creates it
 };
 
 // The Event Brief: the event's details, who the agent should find, how many to invite, and the outreach sequence.
 // Dates and capacity live on the Salesforce campaign and the event; the rest on the brief. A one-day event has no end date.
-export default function BriefForm({ brief, event, confirmed }: Props) {
+export default function BriefForm({ brief, event, confirmed, create }: Props) {
   const initial = { brief, date: event.startDate, endDate: event.endDate ?? "", seats: event.seats?.toString() ?? "", guests: brief.target_guests.toString() };
   const [saved, setSaved] = useState(initial);
   const [b, setB] = useState(brief);
@@ -29,13 +32,16 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
   const [seats, setSeats] = useState(initial.seats);
   const [guests, setGuests] = useState(initial.guests);
   const [personas, setPersonas] = useState(brief.personas.join(", "));
+  const [name, setName] = useState("");
+  const [shortName, setShortName] = useState("");
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
   const set = (patch: Partial<EventBrief>) => setB({ ...b, ...patch });
   const current = { brief: b, date, endDate, seats, guests };
-  const dirty = JSON.stringify(current) !== JSON.stringify(saved);
+  const dirty = create || JSON.stringify(current) !== JSON.stringify(saved);
   const invalid =
-    !isDate(date) ? "Enter a valid start date."
+    create && (!name.trim() || !shortName.trim()) ? "Enter the event’s name and short name."
+    : !isDate(date) ? "Enter a valid start date."
     : endDate && (!isDate(endDate) || endDate < date) ? "The end date must be on or after the start date."
     : seats && !wholeNumber(seats) ? "Capacity must be a whole number of seats."
     : !wholeNumber(guests) ? "Target confirmed guests must be a whole number."
@@ -44,7 +50,8 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
 
   const save = () =>
     startTransition(async () => {
-      const err = await saveBrief(b, { date, endDate: endDate || null, seats: seats ? Number(seats) : null });
+      const details = { date, endDate: endDate || null, seats: seats ? Number(seats) : null };
+      const err = create ? await createEvent(b, details, { name, shortName }) : await saveBrief(b, details);
       setError(err);
       if (!err) setSaved(current);
     });
@@ -61,6 +68,16 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
     <div className="space-y-4">
       <div className="material-medium space-y-6 p-6">
         <div className="grid gap-4 rounded-xl bg-gray-100 p-4 sm:grid-cols-2">
+          {create && (
+            <>
+              <Detail label="Event Name">
+                <input required placeholder="e.g. Las Vegas Grand Prix — Executive Suite" className={control} value={name} onChange={(e) => setName(e.target.value)} />
+              </Detail>
+              <Detail label="Short Name">
+                <input required placeholder="e.g. Las Vegas GP" className={control} value={shortName} onChange={(e) => setShortName(e.target.value)} />
+              </Detail>
+            </>
+          )}
           <Detail label="Format">
             <input className={control} value={b.format ?? ""} onChange={(e) => set({ format: e.target.value || null })} />
           </Detail>
@@ -136,18 +153,11 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
                   {t}
                 </label>
               ))}
-              <Segmented options={[["prefer", "Prioritize Selected"], ["only", "Only Selected Tiers"]]} value={b.tier_mode} onChange={(tier_mode) => set({ tier_mode })} />
             </div>
           </Field>
         </Group>
 
-        <Group n="02" title="Prioritization">
-          <Field label="Primary Commercial Objective">
-            <Radios options={OBJECTIVES} value={b.objective} onChange={(objective) => set({ objective })} />
-          </Field>
-        </Group>
-
-        <Group n="03" title="Attendance & Outreach Planning">
+        <Group n="02" title="Attendance & Outreach Planning">
           <div className="grid gap-5 sm:grid-cols-3">
             <label className="block space-y-2">
               <span className="text-label-13 font-medium">Target Confirmed Guests</span>
@@ -177,40 +187,43 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
           </div>
         </Group>
 
-        <Group n="04" title="Outreach Sequence">
+        <Group n="03" title="Outreach Sequence">
           <Radios
             options={OUTREACH_LEADS}
             value={b.outreach_lead}
-            // AE-led means no BDR at all, so any BDR steps move to the AE.
-            onChange={(outreach_lead) => set({ outreach_lead, ...(outreach_lead === "ae" && { sequence: b.sequence.map((x) => ({ ...x, sender: "AE" as const })) }) })}
+            // The lead sets who sends every step.
+            onChange={(outreach_lead) => set({ outreach_lead, sequence: b.sequence.map((x) => ({ ...x, sender: LEAD_SENDER[outreach_lead] })) })}
           />
           <p className="text-label-12 text-gray-900">Placeholders: {PLACEHOLDERS.map((x) => `{${x}}`).join(" ")}</p>
           <ol className="space-y-3">
             {b.sequence.map((step, i) => {
               const setStep = (patch: Partial<SequenceStep>) => set({ sequence: b.sequence.map((x, j) => (j === i ? { ...x, ...patch } : x)) });
               return (
-                <li key={i} className="space-y-2 rounded-xl p-4 shadow-border">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-label-14 font-medium">Step {i + 1}</span>
+                <li key={i} className="space-y-4 rounded-xl p-4 shadow-border">
+                  <div className="flex flex-wrap items-start gap-2">
+                    <span className="flex h-9 items-center text-label-14 font-medium">Step {i + 1}</span>
                     <label className="flex items-center gap-1.5 text-label-13 text-gray-900">
                       Day
-                      <input type="number" min={0} value={step.day} onChange={(e) => setStep({ day: Number(e.target.value) })} className={`${control} w-20`} />
+                      <input type="number" min={0} value={step.day} onChange={(e) => setStep({ day: Number(e.target.value) })} className={`${box} w-20`} />
                     </label>
-                    <select aria-label="Channel" value={step.channel} onChange={(e) => setStep({ channel: e.target.value as SequenceStep["channel"] })} className={`${control} w-32`}>
+                    <select aria-label="Channel" value={step.channel} onChange={(e) => setStep({ channel: e.target.value as SequenceStep["channel"] })} className={`${box} w-32`}>
                       {["Email", "LinkedIn", "Phone"].map((c) => <option key={c}>{c}</option>)}
                     </select>
-                    {b.outreach_lead !== "ae" && (
-                      <select aria-label="Sender" value={step.sender} onChange={(e) => setStep({ sender: e.target.value as SequenceStep["sender"] })} className={`${control} w-28`}>
-                        <option value="AE">From AE</option>
-                        <option value="BDR">From BDR</option>
-                      </select>
-                    )}
+                    <p className="flex h-9 items-center text-label-13 text-gray-900">{SENDER_LABEL[step.sender]}</p>
+                    {/* The exec is named once, on the first Exec step; later ones show who it is. */}
+                    {step.sender === "Exec" && (b.sequence.findIndex((x) => x.sender === "Exec") === i ? (
+                      <input aria-label="Vercel Exec’s name" placeholder="Vercel Exec’s name…" value={b.exec_name ?? ""} onChange={(e) => set({ exec_name: e.target.value || null })} className={`${box} w-56`} />
+                    ) : (
+                      <p className="flex h-9 items-center text-label-13 text-gray-900">·&nbsp;<span className="text-gray-1000">{b.exec_name || "Exec named in Step 1"}</span></p>
+                    ))}
                     <Button className="ml-auto" onClick={() => set({ sequence: b.sequence.filter((_, j) => j !== i) })}>Remove</Button>
                   </div>
-                  {step.channel === "Email" && (
-                    <input aria-label="Subject" placeholder="Subject" value={step.subject} onChange={(e) => setStep({ subject: e.target.value })} className={control} />
-                  )}
-                  <textarea aria-label="Message" rows={5} value={step.body} onChange={(e) => setStep({ body: e.target.value })} className="w-full rounded-lg bg-background-100 px-3 py-2 text-copy-13 shadow-border" />
+                  <div className="space-y-2">
+                    {step.channel === "Email" && (
+                      <input aria-label="Subject" placeholder="Subject" value={step.subject} onChange={(e) => setStep({ subject: e.target.value })} className={control} />
+                    )}
+                    <textarea aria-label="Message" rows={5} value={step.body} onChange={(e) => setStep({ body: e.target.value })} className="w-full rounded-lg bg-background-100 px-3 py-2 text-copy-13 shadow-border" />
+                  </div>
                 </li>
               );
             })}
@@ -218,7 +231,7 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
           <Button
             onClick={() => {
               const last = b.sequence.at(-1);
-              set({ sequence: [...b.sequence, { day: (last?.day ?? -3) + 3, channel: "Email", sender: b.outreach_lead === "ae" ? "AE" : last?.sender ?? "AE", subject: "", body: "Hi {first_name},\n\n\n\n{sender_first_name}" }] });
+              set({ sequence: [...b.sequence, { day: (last?.day ?? -3) + 3, channel: "Email", sender: LEAD_SENDER[b.outreach_lead], subject: "", body: "Hi {first_name},\n\n\n\n{sender_first_name}" }] });
             }}
           >
             Add Step
@@ -228,15 +241,17 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
 
       <div className="material-medium sticky bottom-4 flex flex-wrap items-center justify-between gap-3 px-4 py-3">
         {error || invalid ? (
-          <p className="text-label-13 text-red-900">{error ?? invalid}</p>
+          <p className={`text-label-13 ${error || !create ? "text-red-900" : "text-gray-900"}`}>{error ?? invalid}</p>
         ) : dirty ? (
           <Status color="amber">Unsaved changes</Status>
         ) : (
           <Status color="green">Saved</Status>
         )}
         <div className="flex gap-2">
-          {dirty && <Button onClick={discard} disabled={pending}>Discard</Button>}
-          <Button variant="primary" onClick={save} disabled={!dirty || pending || !!invalid}>{pending ? "Saving…" : "Save Brief"}</Button>
+          {dirty && !create && <Button onClick={discard} disabled={pending}>Discard</Button>}
+          <Button variant="primary" onClick={save} disabled={!dirty || pending || !!invalid}>
+            {create ? (pending ? "Creating…" : "Create Event") : pending ? "Saving…" : "Save Brief"}
+          </Button>
         </div>
       </div>
     </div>
@@ -313,14 +328,6 @@ function Radios<T extends string>({ options, value, onChange }: { options: Recor
           </span>
         </label>
       ))}
-    </div>
-  );
-}
-
-function Segmented<T extends string>({ options, value, onChange }: { options: [T, string][]; value: T; onChange: (v: T) => void }) {
-  return (
-    <div className="inline-block">
-      <TabLinks variant="segmented" items={options.map(([v, label]) => ({ label, active: v === value, onClick: () => onChange(v) }))} />
     </div>
   );
 }
