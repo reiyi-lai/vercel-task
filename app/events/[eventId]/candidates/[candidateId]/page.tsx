@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { Avatar, Badge, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { accountInteractions, vercelUsage } from "@/lib/derive";
-import { draftCopy, sender } from "@/lib/outreach";
+import { draftCopy, execName, sender } from "@/lib/outreach";
 import { schedule, shortDate } from "@/lib/sequence";
 import Outreach from "../outreach";
 
@@ -46,7 +46,10 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
     // The copy that went out once sent; before that, the saved edit or the template filled in.
     const copy = done?.body ? { subject: done.subject ?? "", body: done.body } : draftCopy(s, event.campaign_id, target, index);
     return {
-      index, day: step.day, channel: step.channel, sender: by ? `${by.first_name} ${by.last_name}` : `${step.sender} unassigned`, ...copy,
+      index, day: step.day, channel: step.channel, ...copy,
+      sender: step.sender === "Exec"
+        ? `${execName(s, event.campaign_id, target) ?? "Exec unassigned"} (draft by ${by ? by.first_name : "AE"})`
+        : by ? `${by.first_name} ${by.last_name}` : `${step.sender} unassigned`,
       edited: !done && !!outreach?.drafts?.[index],
       status, due: day(due), sent: day(sent) && `${day(sent)}${done?.by ? ` by ${done.by} in Slack` : ""}`,
     };

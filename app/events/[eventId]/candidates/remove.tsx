@@ -1,26 +1,15 @@
 "use client";
 
-import { createContext, use, useRef, useState, useTransition, type ReactNode } from "react";
+import { useRef, useState, useTransition } from "react";
+import { useSelection } from "@/components/selection";
 import { Button, Modal } from "@/components/ui";
 import { removeCandidates } from "../accounts/[accountId]/actions";
 
-// Multi-select on the Candidates list: rows tick into a shared set, and Remove Selected confirms in a modal. Removing
-// deletes their outreach too, so re-selecting starts the sequence over.
-const Selection = createContext<{ ids: Set<string>; toggle: (id: string) => void; clear: () => void } | null>(null);
-
-export function RemoveSelection({ children }: { children: ReactNode }) {
-  const [ids, setIds] = useState(new Set<string>());
-  const toggle = (id: string) => setIds((s) => (s.has(id) ? new Set([...s].filter((x) => x !== id)) : new Set(s).add(id)));
-  return <Selection value={{ ids, toggle, clear: () => setIds(new Set()) }}>{children}</Selection>;
-}
-
-export function RemoveCheckbox({ id, name }: { id: string; name: string }) {
-  const { ids, toggle } = use(Selection)!;
-  return <input type="checkbox" aria-label={`Select ${name}`} className="size-4 shrink-0 accent-gray-1000" checked={ids.has(id)} onChange={() => toggle(id)} />;
-}
+// Remove Selected on the Candidates list confirms in a modal. Removing deletes their outreach too, so re-selecting
+// starts the sequence over.
 
 export function RemoveSelected({ campaignId, candidates }: { campaignId: string; candidates: { id: string; name: string; started: boolean }[] }) {
-  const { ids, clear } = use(Selection)!;
+  const { ids, clear } = useSelection();
   const dialog = useRef<HTMLDialogElement>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();

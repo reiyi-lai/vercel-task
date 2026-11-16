@@ -1,7 +1,7 @@
 "use server";
 
 import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
-import { recordSent, sender, stepCard } from "@/lib/outreach";
+import { execName, recordSent, sender, stepCard } from "@/lib/outreach";
 import { notify } from "@/lib/slack";
 import { ok, write } from "@/lib/write";
 
@@ -23,7 +23,8 @@ export async function startSequence(campaignId: string, contactId: string) {
   const first = brief.sequence[0];
   if (!first) return "This event has no sequence yet: add steps on the Brief.";
   const missing = brief.sequence.find((step) => !sender(s, campaignId, step, c));
-  if (missing) return `Assign ${missing.sender === "AE" ? "an AE" : "a BDR"} first.`;
+  if (missing) return `Assign ${missing.sender === "Exec" ? "an AE" : "a BDR"} first.`;
+  if (brief.sequence.some((step) => step.sender === "Exec") && !execName(s, campaignId, c)) return "Add the exec signing off first.";
   return write(async (db) => {
     ok(await db.from(TABLES.candidates).update({ started_at: new Date().toISOString(), sent: [], outcome: null, outcome_at: null }).eq("campaign_id", campaignId).eq("contact_id", contactId));
     // Step 1 is due now: its card, with the drafted copy and Mark Sent / Edit buttons, goes to its sender.

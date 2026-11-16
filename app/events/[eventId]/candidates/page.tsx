@@ -6,12 +6,14 @@ import { Suspense } from "react";
 import { Avatar, Page, PersonName, Section, Status } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventOverview } from "@/lib/derive";
+import { OUTREACH_LEADS, sentByBdr } from "@/lib/brief";
 import { qualifyContact } from "@/lib/qualify";
 import { progress } from "@/lib/sequence";
 import { assignAe, assignBdr } from "../accounts/[accountId]/actions";
 import EventHeader from "../event-header";
 import Assign from "./assign";
-import { RemoveCheckbox, RemoveSelected, RemoveSelection } from "./remove";
+import { SelectCheckbox, SelectionProvider } from "@/components/selection";
+import { RemoveSelected } from "./remove";
 import FindEmail from "./find-email";
 import StartSequence from "./start-sequence";
 
@@ -47,6 +49,7 @@ async function Candidates({ params }: Pick<Props, "params">) {
         contact,
         account: s.accounts.find((a) => a.id === contact.account_id)!,
         bdrId: x.bdr_id,
+        execName: x.exec_name ?? brief.exec_name,
         qualified: qualifyContact(s, contact, brief),
         outreach: progress(brief.sequence, x),
         started: !!x.started_at,
@@ -58,18 +61,18 @@ async function Candidates({ params }: Pick<Props, "params">) {
     <>
       <EventHeader event={event} page="Candidates" />
       <Page>
-        <RemoveSelection>
+        <SelectionProvider>
           <Section
             aside={<RemoveSelected campaignId={event.campaign_id} candidates={selected.map(({ contact: c, started }) => ({ id: c.id, name: `${c.first_name} ${c.last_name}`, started }))} />}
             title="Selected Executives"
-            description={<>Everyone selected to invite on this event’s <Link href={`/events/${event.slug}/accounts`} className="text-blue-900 hover:underline">account plans</Link>. Outreach: {brief.outreach_lead === "ae" ? "AE-led, BDRs optional" : "Assign BDRs for outreach."}.</>}
+            description={<>Everyone selected to invite on this event’s <Link href={`/events/${event.slug}/accounts`} className="text-blue-900 hover:underline">account plans</Link>. Outreach: {OUTREACH_LEADS[brief.outreach_lead].label}.</>}
           >
             {selected.length ? (
               <ul className="material-base divide-y divide-gray-alpha-400">
-                {selected.map(({ contact: c, account, bdrId, qualified, outreach, started }) => (
+                {selected.map(({ contact: c, account, bdrId, execName, qualified, outreach, started }) => (
                   <li key={c.id} className={`grid items-start gap-3 px-5 py-4 xl:grid-cols-[minmax(0,1fr)_150px_140px_140px_200px_120px] xl:gap-5`}>
                     <div className="flex min-w-0 items-center gap-3">
-                      <RemoveCheckbox id={c.id} name={`${c.first_name} ${c.last_name}`} />
+                      <SelectCheckbox id={c.id} name={`${c.first_name} ${c.last_name}`} />
                       <Avatar name={`${c.first_name} ${c.last_name}`} />
                       <div className="min-w-0">
                         <PersonName name={`${c.first_name} ${c.last_name}`} linkedinUrl={c.linkedin_url} />
@@ -83,15 +86,25 @@ async function Candidates({ params }: Pick<Props, "params">) {
                     <div className="text-label-13">
                       <Link href={`/events/${event.slug}/accounts/${account.id}`} className="font-medium hover:underline">{account.name}</Link>
                     </div>
+                    {brief.outreach_lead === "ae_bdr" ? (
+                      // AE/BDR-led: the account's AE sends when it has one, otherwise a BDR picked here.
+                      <div className="text-label-13">
+                        <p className="text-label-12 text-gray-900">Sent By</p>
+                        {sentByBdr("ae_bdr", account.owner_id) ? "BDR" : "AE"}
+                      </div>
+                    ) : (
+                      <div className="text-label-13">
+                        <p className="text-label-12 text-gray-900">AE</p>
+                        {/* The AE is the account's Salesforce owner: assignable here only while the account has none. */}
+                        {account.owner_id ? aes.find((u) => u.id === account.owner_id)?.name : <Assign label="AE" options={aes} value={null} action={assignAe.bind(null, account.id)} />}
+                      </div>
+                    )}
                     <div className="text-label-13">
-                      <p className="text-label-12 text-gray-900">AE</p>
-                      {/* The AE is the account's Salesforce owner: assignable here only while the account has none. */}
-                      {account.owner_id ? aes.find((u) => u.id === account.owner_id)?.name : <Assign label="AE" options={aes} value={null} action={assignAe.bind(null, account.id)} />}
-                    </div>
-                    <div className="text-label-13">
-                      <p className="text-label-12 text-gray-900">BDR</p>
-                      {brief.outreach_lead === "ae" ? (
-                        <p className="text-gray-900">Not needed for event</p>
+                      <p className="text-label-12 text-gray-900">{brief.outreach_lead === "exec" ? "Exec Sign-off" : brief.outreach_lead === "bdr" ? "BDR" : "BDR/AE Name"}</p>
+                      {brief.outreach_lead === "exec" ? (
+                        execName ?? <span className="text-white">TBC (in Brief)</span>
+                      ) : !sentByBdr(brief.outreach_lead, account.owner_id) ? (
+                        aes.find((u) => u.id === account.owner_id)?.name
                       ) : started ? (
                         bdrs.find((u) => u.id === bdrId)?.name
                       ) : (
@@ -115,7 +128,7 @@ async function Candidates({ params }: Pick<Props, "params">) {
               </p>
             )}
           </Section>
-        </RemoveSelection>
+        </SelectionProvider>
       </Page>
     </>
   );
