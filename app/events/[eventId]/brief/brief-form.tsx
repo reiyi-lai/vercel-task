@@ -177,7 +177,7 @@ export default function BriefForm({ brief, event, confirmed }: Props) {
           </div>
         </Group>
 
-        <Group n="04" title="Sequence & Copy" description="The outreach steps every candidate for this event gets, with template copy. Each candidate’s invitation page fills it in.">
+        <Group n="04" title="Outreach Sequence">
           <Radios
             options={OUTREACH_LEADS}
             value={b.outreach_lead}

@@ -100,7 +100,6 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
     const gap = AS_OF.getTime() - Date.parse(campaign.start_date!);
     if (gap >= 0 && gap <= SIXTY_DAYS) labels.push({ text: `Invited to ${campaign.name} in the last 60 days`, color: "amber" });
   }
-  if (!c.email) labels.push({ text: "No email · needs enrichment", color: "amber" });
 
   if (excluded.length) return { contact: c, status: "Excluded", persona, labels: excluded.map((text) => ({ text, color: "red" })) };
   return { contact: c, status: persona && !labels.some((l) => l.color === "amber") ? "Qualified" : "Review", persona, labels };

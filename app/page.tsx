@@ -25,7 +25,6 @@ async function Events() {
     <>
       <PageHeader>
         <h1 className="text-heading-32">All Events</h1>
-        <p className="mt-1 text-copy-14 text-gray-900">Each event’s guests against its target, and what needs attention.</p>
       </PageHeader>
       <Page>
         <ul className="space-y-4">

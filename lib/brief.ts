@@ -32,9 +32,9 @@ export const CITIES = [
 export const TIERS = ["Tier 1", "Tier 2", "Tier 3"];
 
 export const GEOGRAPHY: Record<EventBrief["geography"], { label: string; detail: string }> = {
-  city: { label: "City-Based", detail: "Executives located in one of the selected cities." },
-  conference: { label: "Attending Selected Conference", detail: "Coming soon: Limit to list of conference attendees, through Salesforce campaign." },
-  nationwide: { label: "Nationwide / Open to Travel", detail: "No location limit. Evaluate travel individually." },
+  city: { label: "City-Based", detail: "Located in selected cities." },
+  conference: { label: "Attending Conference Only", detail: "Coming soon: Limit to conference attendee list, through Salesforce campaign." },
+  nationwide: { label: "Nationwide / Open to Travel", detail: "No location restriction." },
 };
 
 export const SENIORITY: Record<EventBrief["min_seniority"], string> = {
@@ -45,9 +45,9 @@ export const SENIORITY: Record<EventBrief["min_seniority"], string> = {
 };
 
 export const OBJECTIVES: Record<EventBrief["objective"], { label: string; detail: string }> = {
-  balanced: { label: "Balanced: new SQOs + pipeline acceleration", detail: "Accounts shows both." },
-  pipeline: { label: "Advance existing opportunities", detail: "Accounts shows only accounts with an open opportunity." },
-  net_new: { label: "Generate net-new opportunities", detail: "Accounts shows only accounts without an open opportunity." },
+  net_new: { label: "Generate net-new opportunities", detail: "Excludes accounts with open opportunity." },
+  pipeline: { label: "Advance existing pipeline", detail: "Only accounts with prior touch." },
+  balanced: { label: "Net-new + Advance pipeline", detail: "Includes cold and warm accounts." },
 };
 
 // Who runs outreach. AE-led events have no BDR; BDR-led and mixed ones assign a BDR per candidate on the Candidates page.

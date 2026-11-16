@@ -46,7 +46,6 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
         }
       >
         <h1 className="text-heading-32">For AE/BDR</h1>
-        <p className="mt-1 text-copy-14 text-gray-900">{me.first_name}’s steps due across every event, replies to answer, and candidates waiting to start.</p>
       </PageHeader>
       <Page>
         <Section title="Due Now" description="Send each from Gmail or LinkedIn, then mark it sent.">
