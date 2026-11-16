@@ -25,6 +25,13 @@ export async function setSelected(campaignId: string, contactId: string, selecte
   return write(async (db) => ok(await db.from(TABLES.candidates).upsert({ campaign_id: campaignId, contact_id: contactId })));
 }
 
+// Adds executives as candidates for the event; any already added are left as they are.
+export async function addCandidates(campaignId: string, contactIds: string[]) {
+  return write(async (db) =>
+    ok(await db.from(TABLES.candidates).upsert(contactIds.map((contact_id) => ({ campaign_id: campaignId, contact_id })), { ignoreDuplicates: true }))
+  );
+}
+
 // Deselects candidates. Their outreach (start date, sends, drafts) goes with the row, so selecting them again starts fresh.
 export async function removeCandidates(campaignId: string, contactIds: string[]) {
   return write(async (db) => ok(await db.from(TABLES.candidates).delete().eq("campaign_id", campaignId).in("contact_id", contactIds)));

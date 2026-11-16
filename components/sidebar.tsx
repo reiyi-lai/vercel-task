@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { Chevron } from "@/components/ui";
 
 export type SidebarEvent = { slug: string; name: string; candidates: number };
 
@@ -20,7 +21,10 @@ export default function SidebarNav({ events }: { events: SidebarEvent[] }) {
         <li><Link href="/outreach" className={item(path === "/outreach")} aria-current={path === "/outreach" ? "page" : undefined}>For AE/BDR</Link></li>
       </ul>
       <div>
-        <p className="px-2.5 pb-1.5 text-label-12 text-gray-900">Events</p>
+        <div className="flex items-center justify-between px-2.5 pb-1.5">
+          <p className="text-label-12 text-gray-900">Events</p>
+          <Link href="/events/new" aria-current={path === "/events/new" ? "page" : undefined} className="text-label-12 text-gray-900 hover:text-gray-1000">+ New Event</Link>
+        </div>
         <ul className="space-y-0.5">
           {events.map((e) => {
             const base = `/events/${e.slug}`;
@@ -47,7 +51,7 @@ function EventGroup({ event, path, open: initial }: { event: SidebarEvent; path:
       <div className={`${item(path === base)} pr-0`}>
         <Link href={base} aria-current={path === base ? "page" : undefined} className="flex h-full min-w-0 flex-1 items-center truncate">{event.name}</Link>
         <button type="button" aria-expanded={open} aria-label={`${open ? "Collapse" : "Expand"} ${event.name}`} onClick={() => setOpen(!open)} className="grid size-8 shrink-0 place-items-center text-label-12">
-          <span aria-hidden>{open ? "▾" : "▸"}</span>
+          <Chevron open={open} />
         </button>
       </div>
       {open && (

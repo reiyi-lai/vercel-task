@@ -163,4 +163,21 @@ export function Meter({ label, n, of, fill }: { label: string; n: number; of: nu
   );
 }
 
+// A disclosure chevron: points down, and up when open.
+export function Chevron({ open, className = "" }: { open: boolean; className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={`shrink-0 transition-transform ${open ? "rotate-180" : ""} ${className}`}>
+      <path d="M4 6l4 4 4-4" />
+    </svg>
+  );
+}
+
+export function Check({ className = "" }: { className?: string }) {
+  return (
+    <svg aria-hidden viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className={`shrink-0 ${className}`}>
+      <path d="M3.5 8.5l3 3 6-7" />
+    </svg>
+  );
+}
+
 export const Page = ({ children }: { children: ReactNode }) => <div className="mx-auto max-w-[1200px] space-y-10 px-4 py-10 sm:px-6">{children}</div>;

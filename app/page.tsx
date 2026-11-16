@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Meter, PageHeader, Page, Status } from "@/components/ui";
+import { Button, Meter, PageHeader, Page, Status } from "@/components/ui";
 import { outreachVolume } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
 import { eventDetails, eventsByDate } from "@/lib/derive";
@@ -23,7 +23,7 @@ async function Events() {
 
   return (
     <>
-      <PageHeader>
+      <PageHeader aside={<Button variant="primary" href="/events/new">New Event</Button>}>
         <h1 className="text-heading-32">All Events</h1>
       </PageHeader>
       <Page>
