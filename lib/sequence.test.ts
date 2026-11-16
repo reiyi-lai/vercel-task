@@ -5,7 +5,7 @@ import { eventProgress, progress, render, schedule } from "./sequence";
 
 const steps: SequenceStep[] = [0, 4, 9].map((day) => ({ day, channel: "Email", sender: "AE", subject: "", body: "" }));
 const candidate = (o: Partial<Candidate>): Candidate => ({
-  campaign_id: "c", contact_id: "k", bdr_id: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null, ...o,
+  campaign_id: "c", contact_id: "k", bdr_id: null, exec_name: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null, ...o,
 });
 const now = new Date("2026-11-10T12:00:00Z");
 

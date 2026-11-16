@@ -32,8 +32,9 @@ export type VercelTeam = {
   key_contact_email: string | null; key_contact_name: string | null; key_contact_title: string | null; key_contact_id: string | null;
 };
 // One step of an event's outreach sequence: when (days after the sequence starts), how, who sends it, and its template
-// copy with placeholders (lib/sequence.ts fills them).
-export type SequenceStep = { day: number; channel: "Email" | "LinkedIn" | "Phone"; sender: "AE" | "BDR"; subject: string; body: string };
+// copy with placeholders (lib/sequence.ts fills them). The event's outreach lead sets the sender: Exec (a Vercel exec's own email,
+// drafted by the AE), BDR, or AE (the account's AE, or a BDR when it has none).
+export type SequenceStep = { day: number; channel: "Email" | "LinkedIn" | "Phone"; sender: "AE" | "BDR" | "Exec"; subject: string; body: string };
 
 // An event's brief: who to find, how to rank them, how many to invite, and its outreach sequence (lib/brief.ts has the
 // labels and sizing).
@@ -42,9 +43,9 @@ export type EventBrief = {
   verticals: string[]; themes: string[]; personas: string[];
   geography: "city" | "conference" | "nationwide"; cities: string[];
   min_seniority: "c_suite" | "svp" | "vp" | "director"; // a hard gate
-  tiers: string[]; tier_mode: "prefer" | "only";
-  objective: "balanced" | "pipeline" | "net_new";
-  outreach_lead: "ae" | "bdr" | "mixed"; // ae: the AE sends every step, no BDR (F1)
+  tiers: string[]; // only accounts in these tiers fit
+  outreach_lead: "exec" | "bdr" | "ae_bdr"; // who sends every step (lib/brief.ts OUTREACH_LEADS)
+  exec_name: string | null; // the exec signing off Exec steps, unless a candidate names their own
   target_guests: number; acceptance_rate: number; approval_rate: number; sequence: SequenceStep[];
 };
 // A Seatbook event: its Salesforce campaign's display details plus its brief.
@@ -54,10 +55,11 @@ export type AccountSignal = {
   account_id: string; category: "hiring" | "leadership" | "initiative"; theme: string | null; title: string; detail: string | null;
   signal_date: string; url: string | null; source: string; person_linkedin_url: string | null;
 };
-// An executive selected for an event, with their outreach: the BDR assigned (null on AE-led events), when the sequence
+// An executive selected for an event, with their outreach: the BDR assigned (BDR-led events, or AE/BDR-led where the account has no AE), the exec signing
+// off (exec-led events; typed, since execs aren't Salesforce users), when the sequence
 // started, the steps sent, and how they responded.
 export type Candidate = {
-  campaign_id: string; contact_id: string; bdr_id: string | null; started_at: string | null;
+  campaign_id: string; contact_id: string; bdr_id: string | null; exec_name: string | null; started_at: string | null;
   // drafts: edited copy saved per step before sending. sent: each step marked sent, with the copy that actually went out
   // and, from Slack, who marked it.
   drafts: Record<string, { subject: string; body: string }>;

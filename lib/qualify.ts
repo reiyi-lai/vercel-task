@@ -12,7 +12,7 @@ export type Qualified = { contact: Contact; status: "Qualified" | "Review" | "Ex
 // Why an account falls outside the brief, or null when it fits. An account with no industry tag counts as cross-industry.
 export function accountGate(a: Account, b: EventBrief): string | null {
   if (a.vertical && !b.verticals.includes("Cross-industry") && !b.verticals.includes(a.vertical)) return `${a.vertical} isn't a target vertical`;
-  if (b.tier_mode === "only" && !b.tiers.includes(a.icp_tier ?? "")) return `${a.icp_tier} isn't a selected tier`;
+  if (!b.tiers.includes(a.icp_tier ?? "")) return `${a.icp_tier} isn't a selected tier`;
   if ((a.employees ?? 0) < 5000) return "Under 5,000 employees";
   return null;
 }
@@ -21,14 +21,9 @@ export function accountGate(a: Account, b: EventBrief): string | null {
 export const isEnterpriseCustomer = (s: Snapshot, a: Account) =>
   a.type === "Customer" || s.opportunities.some((o) => o.account_id === a.id && o.is_won);
 
-// The brief's commercial objective narrows the accounts: advancing pipeline keeps only accounts with an open
-// opportunity, net-new only those without one.
-function objectiveGate(s: Snapshot, a: Account, b: EventBrief) {
-  const open = s.opportunities.some((o) => o.account_id === a.id && !o.is_closed);
-  if (b.objective === "pipeline" && !open) return "No open opportunity";
-  if (b.objective === "net_new" && open) return "Has an open opportunity";
-  return null;
-}
+// Events aim to generate net-new opportunities, so accounts with an open opportunity are left out.
+const openOpportunityGate = (s: Snapshot, a: Account) =>
+  s.opportunities.some((o) => o.account_id === a.id && !o.is_closed) ? "Has an open opportunity" : null;
 
 // Commercial context, from Salesforce and Vercel's own usage data.
 export function commercialState(s: Snapshot, a: Account) {
@@ -119,7 +114,7 @@ export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
   const selected = new Set(s.candidates.filter((x) => x.campaign_id === b.campaign_id).map((x) => x.contact_id));
   return {
     account: a,
-    excluded: accountGate(a, b) ?? objectiveGate(s, a, b),
+    excluded: accountGate(a, b) ?? openOpportunityGate(s, a),
     state: commercialState(s, a),
     signals: (Object.keys(SHOWN) as AccountSignal["category"][]).flatMap((c) => signals.filter((x) => x.category === c).slice(0, SHOWN[c])),
     executives: s.contacts

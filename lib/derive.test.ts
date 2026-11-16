@@ -8,7 +8,7 @@ const contact = (n: number) => `003Sb00000${n}AAA`;
 const account = (n: number) => `001Sb00000${n}AAA`;
 
 it("Event overview: the pipeline follows selected executives and their outreach", () => {
-  const row = { campaign_id: LVGP, bdr_id: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null };
+  const row = { campaign_id: LVGP, bdr_id: null, exec_name: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null };
   const snap = { ...s, candidates: [{ ...row, contact_id: contact(90001) }, { ...row, contact_id: contact(90006), started_at: "2026-11-01T09:00:00Z", outcome: "Replied" as const }] };
   const o = eventOverview(snap, "lvgp")!;
   expect(o.pipeline.map((col) => [col.title, col.cards.map((c) => c.name)])).toEqual([

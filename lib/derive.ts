@@ -1,5 +1,6 @@
 import { daysUntil, progress } from "./sequence";
 import type { Activity, Contact, Snapshot } from "./data";
+import { sentByBdr } from "./brief";
 import { AS_OF } from "./rules";
 
 type Evidence = { text: string; source: string };
@@ -104,8 +105,8 @@ export function eventOverview(s: Snapshot, slug: string) {
       const o = s.candidates.find((x) => x.campaign_id === ev.campaign_id && x.contact_id === id);
       return {
         id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals,
-        // Who runs the outreach: the assigned BDR on a BDR-led event, otherwise the account's AE. null until assigned.
-        owner: brief?.outreach_lead === "bdr" ? (bdr_id ? fullName(user.get(bdr_id)!) : null) : k.owner_id ? fullName(user.get(k.owner_id)!) : null, outcome: o?.outcome ?? null, started: !!o?.started_at,
+        // Who runs the outreach: the assigned BDR when a BDR sends it, otherwise the account's AE. null until assigned.
+        owner: brief && sentByBdr(brief.outreach_lead, k.owner_id) ? (bdr_id ? fullName(user.get(bdr_id)!) : null) : k.owner_id ? fullName(user.get(k.owner_id)!) : null, outcome: o?.outcome ?? null, started: !!o?.started_at,
         detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates/${id}`,
       };
     });

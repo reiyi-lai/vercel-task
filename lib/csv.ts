@@ -67,10 +67,10 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
         host_user_ids: list(r["Host User IDs"]), format: str(r.Format), location: str(r.Location),
         verticals: list(r.Verticals), themes: list(r.Themes), personas: list(r.Personas),
         geography: r.Geography as Brief["geography"], cities: list(r.Cities), min_seniority: r["Min Seniority"] as Brief["min_seniority"],
-        tiers: list(r.Tiers), tier_mode: r["Tier Mode"] as Brief["tier_mode"],
-        objective: r.Objective as Brief["objective"], outreach_lead: r["Outreach Lead"] as Brief["outreach_lead"],
+        tiers: list(r.Tiers),
+        outreach_lead: r["Outreach Lead"] as Brief["outreach_lead"],
         target_guests: Number(r["Target Guests"]), acceptance_rate: Number(r["Acceptance Rate"]), approval_rate: Number(r["Approval Rate"]),
-        sequence: sequences[r["Campaign ID"]] ?? [],
+        exec_name: null, sequence: sequences[r["Campaign ID"]] ?? [],
       };
     }),
     // Signals for the fictional accounts; real accounts fetch live ones on their account plan.

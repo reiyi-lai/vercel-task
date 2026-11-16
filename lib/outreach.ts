@@ -6,12 +6,21 @@ import { expireFromRoute, ok, write } from "./write";
 
 const fullName = (p: { first_name: string; last_name: string }) => `${p.first_name} ${p.last_name}`;
 
-// Who sends a step: the AE is the account's owner (its contacts share it); the BDR is the one assigned to this candidate
-// for the event. Undefined until they're assigned on the Candidates page.
+// Who handles a step in Seatbook (drafts it, gets its Slack card, marks it sent): the AE is the account's owner (its
+// contacts share it), or a BDR on AE steps when it has none; the BDR is the one assigned to this candidate for the event. Exec steps are the AE's too, signed
+// off and sent by the exec (execName). Undefined until they're assigned on the Candidates page.
 export function sender(s: Snapshot, campaignId: string, step: SequenceStep, c: Contact) {
-  const id = step.sender === "AE" ? c.owner_id : s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
+  const bdr = () => s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
+  const id = step.sender === "BDR" ? bdr() : step.sender === "AE" ? c.owner_id ?? bdr() : c.owner_id;
   return s.users.find((u) => u.id === id);
 }
+
+// The exec who signs off and sends a candidate's Exec steps: their own, typed on the Candidates page, or else the event's,
+// set on the brief.
+export const execName = (s: Snapshot, campaignId: string, c: Contact) =>
+  s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.exec_name ||
+  s.events.find((e) => e.campaign_id === campaignId)?.exec_name ||
+  null;
 
 // The values a step's template fills for one candidate.
 export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: SequenceStep) {
@@ -21,7 +30,7 @@ export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: S
     account: s.accounts.find((a) => a.id === c.account_id)!.name,
     event: event.name,
     date: event.date,
-    sender_first_name: sender(s, campaignId, step, c)?.first_name ?? "{sender_first_name}",
+    sender_first_name: (step.sender === "Exec" ? execName(s, campaignId, c)?.split(" ")[0] : sender(s, campaignId, step, c)?.first_name) ?? "{sender_first_name}",
     ae_first_name: s.users.find((u) => u.id === c.owner_id)?.first_name ?? "{ae_first_name}",
   };
 }
@@ -64,7 +73,8 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
   const value = `${campaignId}|${c.id}|${index}`;
   const copy = draftCopy(s, campaignId, c, index);
   const gmail = step.channel === "Email" ? gmailDraft(c.email, copy.subject, copy.body) : null;
-  const text = `Step ${index + 1} (${step.channel}) to ${fullName(c)}, ${c.title} at ${account}, is ${overdue ? "overdue" : "due today"} · ${event}`;
+  const exec = step.sender === "Exec" && ` Get ${execName(s, campaignId, c)}’s sign-off; it goes from their email.`;
+  const text = `Step ${index + 1} (${step.channel}) to ${fullName(c)}, ${c.title} at ${account}, is ${overdue ? "overdue" : "due today"} · ${event}.${exec || ""}`;
   const blocks: Block[] = [
     { type: "section", text: { type: "mrkdwn", text: `*For ${fullName(by)}:* ${text}` } },
     { type: "section", text: { type: "mrkdwn", text: quote(copy) } },
