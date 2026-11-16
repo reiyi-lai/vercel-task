@@ -1,4 +1,4 @@
-import type { EventBrief } from "./data";
+import type { EventBrief, SequenceStep } from "./data";
 
 // Choices and labels for the Event Brief. Values are what the events table stores.
 
@@ -31,6 +31,13 @@ export const CITIES = [
 ];
 export const TIERS = ["Tier 1", "Tier 2", "Tier 3"];
 
+// The formats a new event starts from. Each pre-fills the brief from the existing event of that kind (from: its slug).
+export const FORMATS = {
+  f1: { label: "F1 Hospitality", detail: "Race-weekend suite. AE-led with exec sign-off, nationwide.", from: "lvgp" },
+  vertical: { label: "Vertical ABM", detail: "One industry in one city. AE/BDR-led.", from: "nrf-breakfast" },
+  horizontal: { label: "Horizontal ABM", detail: "Cross-industry, on a theme. BDR-led.", from: "ai-builder-dinner" },
+} as const;
+
 export const GEOGRAPHY: Record<EventBrief["geography"], { label: string; detail: string }> = {
   city: { label: "City-Based", detail: "Located in selected cities." },
   conference: { label: "Attending Conference Only", detail: "Coming soon: Limit to conference attendee list, through Salesforce campaign." },
@@ -44,18 +51,21 @@ export const SENIORITY: Record<EventBrief["min_seniority"], string> = {
   director: "Director and above",
 };
 
-export const OBJECTIVES: Record<EventBrief["objective"], { label: string; detail: string }> = {
-  net_new: { label: "Generate net-new opportunities", detail: "Excludes accounts with open opportunity." },
-  pipeline: { label: "Advance existing pipeline", detail: "Only accounts with prior touch." },
-  balanced: { label: "Net-new + Advance pipeline", detail: "Includes cold and warm accounts." },
+
+// Who sends every step of an event's outreach, and the sender its steps carry. AE/BDR-led: the account's AE, or a BDR
+// (picked on the Candidates page) when the account has no AE.
+export const OUTREACH_LEADS: Record<EventBrief["outreach_lead"], { label: string; detail: string }> = {
+  exec: { label: "AE-led with Exec Sign-off", detail: "AE drafts each step with exec sign-off." },
+  bdr: { label: "BDR-led only", detail: "BDR drafts & sends each step." },
+  ae_bdr: { label: "AE / BDR-led", detail: "AE if warm; BDR if cold." },
 };
 
-// Who runs outreach. AE-led events have no BDR; BDR-led and mixed ones assign a BDR per candidate on the Candidates page.
-export const OUTREACH_LEADS: Record<EventBrief["outreach_lead"], { label: string; detail: string }> = {
-  ae: { label: "AE-led", detail: "The account’s AE sends every step. No BDR." },
-  bdr: { label: "BDR-led", detail: "A BDR runs the sequence; the AE steps in where a step says so." },
-  mixed: { label: "Mixed", detail: "The AE and a BDR each send their own steps." },
-};
+export const LEAD_SENDER: Record<EventBrief["outreach_lead"], SequenceStep["sender"]> = { exec: "Exec", bdr: "BDR", ae_bdr: "AE" };
+export const SENDER_LABEL: Record<SequenceStep["sender"], string> = { Exec: "From Vercel Exec (draft by AE)", BDR: "From BDR", AE: "From AE, or BDR if no AE" };
+
+// Whether a candidate's outreach is sent by a BDR: always on BDR-led events, and on AE/BDR-led ones when the account
+// has no AE.
+export const sentByBdr = (lead: EventBrief["outreach_lead"], aeId: string | null) => lead === "bdr" || (lead === "ae_bdr" && !aeId);
 
 // Works back from the guest target: invitations needed at the expected acceptance rate, then executives to
 // shortlist at the expected approval rate. Guests already confirmed in Salesforce come off the target.
