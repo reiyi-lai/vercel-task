@@ -5,18 +5,23 @@ import { useSelection } from "@/components/selection";
 import { Button, Chevron } from "@/components/ui";
 import { addCandidates } from "./[accountId]/actions";
 
-// An account's row on the Accounts table. Its name toggles the rows below it (children), one per executive.
+// An account's row on the Accounts table. The chevron, at the right edge of the Account cell so every row's lines up,
+// toggles the rows below it (children), one per executive.
 export default function AccountRow({ name, detail, cells, children }: { name: string; detail: string; cells: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
     <>
       <tr className={`align-top ${open ? "border-b-0" : ""}`}>
-        <td className="px-4 py-3">
-          <button type="button" aria-expanded={open} aria-label={`${open ? "Hide" : "Show"} executives at ${name}`} onClick={() => setOpen(!open)} className="flex cursor-pointer items-center gap-1 text-left text-label-14 font-medium hover:text-gray-1000">
-            {name}
-            <Chevron open={open} className="text-gray-900" />
-          </button>
-          <p className="text-label-12 text-gray-900">{detail}</p>
+        <td className="py-3 pr-1 pl-4">
+          <div className="flex items-start justify-between gap-1">
+            <div className="min-w-0">
+              <p className="text-label-14 font-medium">{name}</p>
+              <p className="text-label-12 text-gray-900">{detail}</p>
+            </div>
+            <button type="button" aria-expanded={open} aria-label={`${open ? "Hide" : "Show"} executives at ${name}`} onClick={() => setOpen(!open)} className="-mt-1.5 grid size-8 shrink-0 cursor-pointer place-items-center rounded-lg text-gray-900 hover:bg-gray-100 hover:text-gray-1000">
+              <Chevron open={open} />
+            </button>
+          </div>
         </td>
         {cells}
       </tr>

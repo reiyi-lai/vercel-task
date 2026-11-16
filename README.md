@@ -62,3 +62,12 @@ All Sumble calls are `POST`s with the API key.
 
 **Slack:** alerts post to `#<event-invitations>`, the channel the Slack webhook was set up for. Slack message has configured buttons **Mark Sent**, **Edit in Seatbook**, and **Open in Gmail**. In production, AE or BDR would be tagged in the message to that channel instead.
 
+## Run the app locally
+
+```bash
+npm install
+cp .env.example .env.local        # fill in the keys
+npx supabase link --project-ref <project-ref>
+npx supabase db push --include-seed   # create the tables and load the sample data
+npm run dev                          # http://localhost:3000
+```

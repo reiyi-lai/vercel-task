@@ -48,9 +48,10 @@ async function Accounts({ params }: Pick<Props, "params">) {
             {/* Fixed column widths, so opening an account doesn't shift them. */}
             <table className="w-full min-w-[880px] table-fixed text-left">
               <colgroup>
-                <col className="w-[28%]" />
-                <col className="w-[32%]" />
-                <col className="w-[24%]" />
+                {/* Account is sized to its longest names, so the chevrons at its right edge sit close beside them. */}
+                <col className="w-56" />
+                <col className="w-[40%]" />
+                <col className="w-[23%]" />
                 <col />
               </colgroup>
               <thead className="border-b border-gray-alpha-400 text-label-12 text-gray-900">
