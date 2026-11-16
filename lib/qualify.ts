@@ -1,4 +1,4 @@
-import { SENIORITY, relevantTheme } from "./brief";
+import { SENIORITY, VERTICALS, relevantTheme } from "./brief";
 import type { Account, AccountSignal, Contact, EventBrief, Snapshot } from "./data";
 import type { DotColor } from "@/components/ui";
 import { AS_OF } from "./rules";
@@ -11,7 +11,7 @@ export type Qualified = { contact: Contact; status: "Qualified" | "Review" | "Ex
 
 // Why an account falls outside the brief, or null when it fits. An account with no industry tag counts as cross-industry.
 export function accountGate(a: Account, b: EventBrief): string | null {
-  if (a.vertical && !b.verticals.includes("Cross-industry") && !b.verticals.includes(a.vertical)) return `${a.vertical} isn't a target vertical`;
+  if (a.vertical && !VERTICALS.every((v) => b.verticals.includes(v)) && !b.verticals.includes(a.vertical)) return `${a.vertical} isn't a target vertical`;
   if (!b.tiers.includes(a.icp_tier ?? "")) return `${a.icp_tier} isn't a selected tier`;
   if ((a.employees ?? 0) < 5000) return "Under 5,000 employees";
   return null;

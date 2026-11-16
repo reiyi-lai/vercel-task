@@ -98,12 +98,14 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
         </div>
 
         <Group n="01" title="Audience & Targeting">
-          <Field label="Target Verticals">
-            <Chips options={VERTICALS} value={b.verticals} onChange={(verticals) => set({ verticals })} />
-          </Field>
-          <Field label="Target Horizontals">
-            <Chips options={THEMES} value={b.themes} onChange={(themes) => set({ themes })} all />
-          </Field>
+          <div className="grid gap-5 sm:grid-cols-2 sm:max-w-xl">
+            <Field label="Target Verticals">
+              <OneOrAll label="Target Verticals" options={VERTICALS} value={b.verticals} onChange={(verticals) => set({ verticals })} />
+            </Field>
+            <Field label="Target Horizontals">
+              <OneOrAll label="Target Horizontals" options={THEMES} value={b.themes} onChange={(themes) => set({ themes })} />
+            </Field>
+          </div>
           <Field label="Target Personas" hint="Comma-separated titles or functions.">
             <input
               className={control}
@@ -289,27 +291,14 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
-// all: an "All" chip first, pressed when every option is, that selects or clears them all.
-function Chips({ options, value, onChange, all }: { options: string[]; value: string[]; onChange: (v: string[]) => void; all?: boolean }) {
-  const chip = (on: boolean) => `h-8 rounded-lg px-3 text-label-13 ${on ? "bg-gray-1000 text-background-100" : "text-gray-900 shadow-border hover:text-gray-1000"}`;
-  const everything = options.every((o) => value.includes(o));
+// A dropdown of All or one option. The value is the options it covers: every one for All, else the one chosen.
+function OneOrAll({ label, options, value, onChange }: { label: string; options: string[]; value: string[]; onChange: (v: string[]) => void }) {
+  const current = options.every((o) => value.includes(o)) ? "All" : value[0] ?? "All";
   return (
-    <div className="flex flex-wrap gap-2">
-      {all && (
-        <button type="button" aria-pressed={everything} onClick={() => onChange(everything ? [] : options)} className={chip(everything)}>All</button>
-      )}
-      {options.map((o) => (
-        <button
-          key={o}
-          type="button"
-          aria-pressed={value.includes(o)}
-          onClick={() => onChange(toggle(value, o))}
-          className={chip(value.includes(o))}
-        >
-          {o}
-        </button>
-      ))}
-    </div>
+    <select aria-label={label} className={control} value={current} onChange={(e) => onChange(e.target.value === "All" ? options : [e.target.value])}>
+      <option>All</option>
+      {options.map((o) => <option key={o}>{o}</option>)}
+    </select>
   );
 }
 

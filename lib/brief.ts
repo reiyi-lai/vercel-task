@@ -2,8 +2,8 @@ import type { EventBrief, SequenceStep } from "./data";
 
 // Choices and labels for the Event Brief. Values are what the events table stores.
 
-// The verticals a brief can target, as Salesforce holds them (Vertical__c), plus Cross-industry for any vertical.
-export const VERTICALS = ["Retail", "Financial Services", "Cross-industry"];
+// The verticals a brief can target, as Salesforce holds them (Vertical__c). Selecting them all targets any vertical.
+export const VERTICALS = ["Retail", "Financial Services"];
 export const THEMES = ["Apps & Agents", "Software Factories"];
 // Event cities, as "City, ST" to match a contact's mailing city and state.
 export const CITIES = [
