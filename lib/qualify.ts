@@ -1,4 +1,4 @@
-import { SENIORITY, VERTICALS, relevantTheme } from "./brief";
+import { SENIORITY, THEMES, VERTICALS, relevantTheme } from "./brief";
 import type { Account, AccountSignal, Contact, EventBrief, Snapshot } from "./data";
 import type { DotColor } from "@/components/ui";
 import { AS_OF } from "./rules";
@@ -9,9 +9,11 @@ import { AS_OF } from "./rules";
 export type Label = { text: string; color: DotColor };
 export type Qualified = { contact: Contact; status: "Qualified" | "Review" | "Excluded"; persona?: string; labels: Label[] };
 
-// Why an account falls outside the brief, or null when it fits. An account with no industry tag counts as cross-industry.
+// Why an account falls outside the brief, or null when it fits. An account with no industry tag counts as cross-industry;
+// one with no horizontal tag fits only when the brief targets all horizontals.
 export function accountGate(a: Account, b: EventBrief): string | null {
   if (a.vertical && !VERTICALS.every((v) => b.verticals.includes(v)) && !b.verticals.includes(a.vertical)) return `${a.vertical} isn't a target vertical`;
+  if (!THEMES.every((t) => b.themes.includes(t)) && !b.themes.some((t) => a.horizontals.includes(t))) return `Not tagged ${b.themes.join(" or ")}`;
   if (!b.tiers.includes(a.icp_tier ?? "")) return `${a.icp_tier} isn't a selected tier`;
   if ((a.employees ?? 0) < 5000) return "Under 5,000 employees";
   return null;

@@ -34,7 +34,7 @@ export function AddToCrm({ accountId, linkedinUrl }: { accountId: string; linked
   return (
     <div className="flex flex-col gap-1 sm:items-end">
       <Button disabled={pending} onClick={() => post(`/api/accounts/${accountId}/contacts`, { linkedinUrl }, (d) => setAdded(!d.error))}>
-        {pending ? "Adding…" : "Add to CRM"}
+        {pending ? "Adding…" : "Add to Contacts"}
       </Button>
       {error && <p className="text-label-12 text-red-900">{error}</p>}
     </div>
