@@ -1,6 +1,6 @@
 import { loadSnapshot, TABLES, type Contact, type SequenceStep, type Snapshot } from "./data";
 import { eventOverview } from "./derive";
-import { gmailDraft, render, schedule, type StepStatus } from "./sequence";
+import { gmailDraft, render, schedule } from "./sequence";
 import { notify, quote, type Block } from "./slack";
 import { expireFromRoute, ok, write } from "./write";
 
@@ -24,13 +24,14 @@ export const execName = (s: Snapshot, campaignId: string, c: Contact) =>
 
 // The values a step's template fills for one candidate.
 export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: SequenceStep) {
+  const by = sender(s, campaignId, step, c);
   const event = eventOverview(s, s.events.find((e) => e.campaign_id === campaignId)!.slug)!.event;
   return {
     first_name: c.first_name,
     account: s.accounts.find((a) => a.id === c.account_id)!.name,
     event: event.name,
     date: event.date,
-    sender_first_name: (step.sender === "Exec" ? execName(s, campaignId, c)?.split(" ")[0] : sender(s, campaignId, step, c)?.first_name) ?? "{sender_first_name}",
+    sender_name: (step.sender === "Exec" ? execName(s, campaignId, c) : by && fullName(by)) ?? "{sender_name}",
     ae_first_name: s.users.find((u) => u.id === c.owner_id)?.first_name ?? "{ae_first_name}",
   };
 }
@@ -99,15 +100,14 @@ export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: num
   ];
 }
 
-// A Slack card for each unsent step in the event with one of these statuses, to its sender: due or overdue at 9am,
-// due today at 4pm (Vercel Cron).
-export async function sendReminders(campaignId: string, statuses: StepStatus[]) {
+// A Slack card to its sender for each unsent step in the event that's due or overdue (Vercel Cron, daily at 9am).
+export async function sendReminders(campaignId: string) {
   const s = await loadSnapshot();
   const brief = s.events.find((b) => b.campaign_id === campaignId);
   if (!brief) return { error: "No such event." };
   const due = s.candidates
     .filter((o) => o.campaign_id === campaignId)
-    .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status && statuses.includes(x.status)).map((x) => ({ o, x })));
+    .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status === "Due" || x.status === "Overdue").map((x) => ({ o, x })));
   const error = await write(async (db) => {
     for (const { o, x } of due) {
       const card = stepCard(s, campaignId, s.contacts.find((c) => c.id === o.contact_id)!, x.index, x.status === "Overdue");
@@ -135,9 +135,5 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
         .map((st) => ({ ...r, step: st, copy: draftCopy(s, r.e.campaign_id, r.c, st.index) }))
     )
     .sort((a, b) => Number(b.step.status === "Overdue") - Number(a.step.status === "Overdue") || a.step.due!.getTime() - b.step.due!.getTime());
-  return {
-    due,
-    replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"),
-    toStart: rows.filter((r) => r.mine && !r.x.started_at),
-  };
+  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied") };
 }

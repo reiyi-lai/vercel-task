@@ -6,7 +6,6 @@ import { Avatar, Button, Page, PageHeader, Section, Status, TabLinks } from "@/c
 import { loadSnapshot } from "@/lib/data";
 import { myQueue } from "@/lib/outreach";
 import { gmailDraft, shortDate } from "@/lib/sequence";
-import StartSequence from "../events/[eventId]/candidates/start-sequence";
 import MarkSent from "./mark-sent";
 
 export const metadata: Metadata = { title: "For AE/BDR" };
@@ -23,7 +22,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const sellers = s.users.filter((u) => u.title === "Account Executive" || u.title === "BDR");
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
-  const { due, replies, toStart } = myQueue(s, me.id);
+  const { due, replies } = myQueue(s, me.id);
   const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
     <div className="flex min-w-0 items-center gap-3">
@@ -49,7 +48,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
       </PageHeader>
       <Page>
         <Section title="Due Now" description="Send each from Gmail or LinkedIn, then mark it sent.">
-          <List empty="Nothing due. Slack pings you at 9am and 4pm when a step falls due.">
+          <List empty="Nothing due. Slack pings you at 9am when a step falls due.">
             {due.map((r) => (
               <Row key={`${r.x.campaign_id}${r.c.id}${r.step.index}`}>
                 {who(r)}
@@ -60,21 +59,6 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                   <Link href={plan(r.e.slug, r.c.id, r.step.index)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">View Draft</Link>
                   {r.step.step.channel === "Email" && r.c.email && <Button href={gmailDraft(r.c.email, r.copy.subject, r.copy.body)}>Open in Gmail</Button>}
                   <MarkSent campaignId={r.x.campaign_id} contactId={r.c.id} step={r.step.index} />
-                </div>
-              </Row>
-            ))}
-          </List>
-        </Section>
-
-        <Section title="Ready to Start" description="Your candidates whose outreach hasn’t started.">
-          <List empty="Every candidate of yours has started.">
-            {toStart.map((r) => (
-              <Row key={`${r.x.campaign_id}${r.c.id}`}>
-                {who(r)}
-                <Status color="gray">Not started</Status>
-                <div className="flex flex-wrap items-start justify-end gap-3">
-                  <Link href={plan(r.e.slug, r.c.id)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">Open Plan</Link>
-                  {r.c.email ? <StartSequence campaignId={r.x.campaign_id} contactId={r.c.id} /> : <span className="flex h-8 items-center text-label-13 text-gray-900">Needs an email</span>}
                 </div>
               </Row>
             ))}

@@ -3,10 +3,10 @@ import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import type { Account, AccountSignal } from "./data";
 import { AS_OF } from "./rules";
-import { sumble, type SumbleJob, type SumblePerson } from "./sumble";
+import { sumble, type SumblePerson } from "./sumble";
 
-// Live signals for one account, from three sources:
-// hiring (Sumble job posts), leadership changes (Sumble people), and initiatives (Claude with web search, through AI Gateway).
+// Live signals for one account, from two sources:
+// leadership changes (Sumble people) and initiatives (Claude with web search, through AI Gateway).
 
 const since = new Date(AS_OF);
 since.setUTCMonth(since.getUTCMonth() - 6);
@@ -17,34 +17,6 @@ const SINCE_LABEL = since.toLocaleDateString("en-US", { month: "short", year: "n
 export async function sumbleOrgId(a: Account): Promise<number | null> {
   const res = await sumble("organizations", { organizations: [{ url: a.website }], select: { attributes: ["id"] } });
   return res.organizations[0]?.attributes?.id ?? null;
-}
-
-// Sumble technology categories for each theme: coding agents for Software Factories, agent frameworks for Apps & Agents.
-const HIRING = [
-  { theme: "Software Factories", category: "coding-agents", label: "coding agents" },
-  { theme: "Apps & Agents", category: "ai-frameworks-for-language-models", label: "AI agent frameworks" },
-];
-
-// One signal per theme: how many recent job posts name those technologies, and the latest few.
-export async function hiringSignals(accountId: string, orgId: number): Promise<AccountSignal[]> {
-  const results = await Promise.all(
-    HIRING.map(async (h) => {
-      const res = await sumble("jobs", {
-        filter: { organization_ids: [orgId], query: { query: `technology_category EQ '${h.category}' AND since EQ '${SINCE}'` } },
-        select: { attributes: ["title", "posted_date"] },
-        limit: 3,
-      });
-      const jobs: SumbleJob[] = res.jobs ?? [];
-      if (!res.total || !jobs.length) return null;
-      return {
-        account_id: accountId, category: "hiring" as const, theme: h.theme,
-        title: `${res.total} job ${res.total === 1 ? "post mentions" : "posts mention"} ${h.label} since ${SINCE_LABEL}`,
-        detail: `Latest: ${[...new Set(jobs.map((j) => j.attributes.title))].join("; ")}`,
-        signal_date: jobs[0].attributes.posted_date.slice(0, 10), url: jobs[0].sumble_url, source: "Sumble job posts", person_linkedin_url: null,
-      };
-    })
-  );
-  return results.filter((x) => x !== null);
 }
 
 const themeOf = (title: string) =>

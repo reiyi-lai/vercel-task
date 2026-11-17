@@ -2,14 +2,14 @@ import { randomBytes } from "node:crypto";
 import { loadSnapshot, TABLES, type AccountSignal, type EventBrief } from "./data";
 import { geocode } from "./geocode";
 import { matchPersona } from "./qualify";
-import { hiringSignals, initiativeSignals, leadershipSignals, sumbleOrgId } from "./signals";
+import { initiativeSignals, leadershipSignals, sumbleOrgId } from "./signals";
 import { profileKey, sumble, type SumblePerson } from "./sumble";
 import { expireFromRoute, ok, write } from "./write";
 
 // The account plan's slow work (Sumble, web research), run from Route Handlers so the browser can run several at once:
 // Next.js sends Server Actions one at a time per tab. Each returns an error message, or undefined on success.
 
-// Fetches one group of the account's live signals, Sumble (hiring and leadership) or web research (AI initiatives),
+// Fetches one group of the account's live signals, Sumble (leadership changes) or web research (AI initiatives),
 // and replaces each of its sources' previous signals. A source that fails keeps its old signals and is named in the
 // message; the others still save.
 export async function refreshSignals(accountId: string, group: "sumble" | "research") {
@@ -21,10 +21,7 @@ export async function refreshSignals(accountId: string, group: "sumble" | "resea
     const sources: Record<string, Promise<AccountSignal[]>> =
       group === "research"
         ? { "Web research": initiativeSignals(a) }
-        : {
-            "Sumble job posts": orgId ? hiringSignals(a.id, orgId) : Promise.resolve([]),
-            "Sumble people": orgId ? leadershipSignals(a.id, orgId) : Promise.resolve([]),
-          };
+        : { "Sumble people": orgId ? leadershipSignals(a.id, orgId) : Promise.resolve([]) };
     const results = await Promise.allSettled(Object.values(sources));
     for (const [i, source] of Object.keys(sources).entries()) {
       const r = results[i];

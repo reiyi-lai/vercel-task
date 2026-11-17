@@ -41,7 +41,10 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
   const started = !!outreach?.started_at;
 
   return (
-    <Section title="Outreach Sequence">
+    <Section
+      title="Outreach Sequence"
+      aside={!started && <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Start Sequence</Button>}
+    >
       <div className="space-y-4">
         {error && <p className="text-label-13 text-red-900">{error}</p>}
         {outreach?.outcome && <Status color={outreach.outcome === "Accepted" ? "green" : outreach.outcome === "Declined" ? "red" : "blue"}>{outreach.outcome}: remaining steps are stopped</Status>}
@@ -131,7 +134,7 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
         )}
 
         {/* Status changes come after the sequence they act on. */}
-        {started ? (
+        {started && (
           <div className="flex flex-wrap gap-2">
             {outreach?.outcome === "Paused" ? (
               <Button disabled={pending} onClick={() => run(() => setOutcome(campaignId, contactId, null))}>Resume</Button>
@@ -143,8 +146,6 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
               ))
             )}
           </div>
-        ) : (
-          <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Start Sequence</Button>
         )}
       </div>
     </Section>

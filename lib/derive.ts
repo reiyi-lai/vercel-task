@@ -89,6 +89,9 @@ export function eventDetails(s: Snapshot, slug: string) {
   };
 }
 
+// A card's outreach line, and whether its next step is overdue (red with no outcome yet).
+const overdue = (p: ReturnType<typeof progress>, outcome?: string | null) => ({ detail: p.text, overdue: !outcome && p.color === "red" });
+
 // Event overview: the event's details and the invitation pipeline, built from the executives selected on its account
 // plans and where their outreach stands.
 export function eventOverview(s: Snapshot, slug: string) {
@@ -107,7 +110,7 @@ export function eventOverview(s: Snapshot, slug: string) {
         id, name: fullName(k), title: k.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals,
         // Who runs the outreach: the assigned BDR when a BDR sends it, otherwise the account's AE. null until assigned.
         owner: brief && sentByBdr(brief.outreach_lead, k.owner_id) ? (bdr_id ? fullName(user.get(bdr_id)!) : null) : k.owner_id ? fullName(user.get(k.owner_id)!) : null, outcome: o?.outcome ?? null, started: !!o?.started_at,
-        detail: progress(sequence, o).text, href: `/events/${ev.slug}/candidates/${id}`,
+        ...overdue(progress(sequence, o), o?.outcome), href: `/events/${ev.slug}/candidates/${id}`,
       };
     });
   const responded = (outcome: string) => cards.filter((c) => c.outcome === outcome);

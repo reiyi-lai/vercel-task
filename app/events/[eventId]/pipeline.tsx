@@ -19,13 +19,13 @@ export default function Pipeline({ columns, bdrLed }: { columns: Columns; bdrLed
               <div className="space-y-2">
                 {cards.length === 0 && <p className="rounded-xl border border-dashed border-gray-alpha-500 p-3 text-label-12 text-gray-900">No one here yet.</p>}
                 {cards.map((c) => (
-                  <div key={c.id} className="space-y-2.5 rounded-xl bg-background-100 p-3 shadow-border">
+                  <div key={c.id} className={`space-y-2.5 rounded-xl bg-background-100 p-3 ${c.overdue ? "ring-[1.5px] ring-red-700" : "shadow-border"}`}>
                     <div>
                       <p className="break-words text-label-14 font-medium">{c.name}</p>
                       <p className="text-copy-13 text-gray-900">{c.title} · {c.company}</p>
                     </div>
                     <Tags vertical={c.vertical} horizontals={c.horizontals} />
-                    <p className="text-label-12 text-gray-900">{c.detail}</p>
+                    <p className={`text-label-12 ${c.overdue ? "text-red-900" : "text-gray-900"}`}>{c.detail}</p>
                     <div className="flex items-center gap-1.5 border-t border-gray-alpha-400 pt-2.5 text-label-12">
                       {c.owner ? (
                         <>

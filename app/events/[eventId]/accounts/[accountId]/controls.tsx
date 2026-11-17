@@ -43,7 +43,7 @@ export function AddToCrm({ accountId, linkedinUrl }: { accountId: string; linked
 
 // Each takes up to a minute: Sumble's people search runs as a job, and web research searches several times.
 const REFRESH = {
-  sumble: { label: "Refresh Sumble Signals", busy: "Fetching from Sumble…" },
+  sumble: { label: "Get Leadership Changes", busy: "Fetching from Sumble…" },
   research: { label: "Research AI Initiatives", busy: "Researching…" },
 };
 

@@ -233,7 +233,7 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
           <Button
             onClick={() => {
               const last = b.sequence.at(-1);
-              set({ sequence: [...b.sequence, { day: (last?.day ?? -3) + 3, channel: "Email", sender: LEAD_SENDER[b.outreach_lead], subject: "", body: "Hi {first_name},\n\n\n\n{sender_first_name}" }] });
+              set({ sequence: [...b.sequence, { day: (last?.day ?? -3) + 3, channel: "Email", sender: LEAD_SENDER[b.outreach_lead], subject: "", body: "Hi {first_name},\n\n\n\n{sender_name}" }] });
             }}
           >
             Add Step

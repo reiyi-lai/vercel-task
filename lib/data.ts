@@ -52,7 +52,7 @@ export type EventBrief = {
 export type EventRow = EventBrief & { slug: string; short_name: string; program: string | null; seats: number | null; host_user_ids: string[] };
 // Why an account matters now (lib/signals.ts fetches them). theme is one of the brief's campaign themes.
 export type AccountSignal = {
-  account_id: string; category: "hiring" | "leadership" | "initiative"; theme: string | null; title: string; detail: string | null;
+  account_id: string; category: "leadership" | "initiative"; theme: string | null; title: string; detail: string | null;
   signal_date: string; url: string | null; source: string; person_linkedin_url: string | null;
 };
 // An executive selected for an event, with their outreach: the BDR assigned (BDR-led events, or AE/BDR-led where the account has no AE), the exec signing

@@ -6,7 +6,7 @@ import { TIMEZONE } from "./rules";
 export const render = (template: string, vars: Record<string, string>) =>
   template.replace(/\{(\w+)\}/g, (m, k: string) => vars[k] ?? m).replace(/\n{3,}/g, "\n\n");
 
-export const PLACEHOLDERS = ["first_name", "account", "event", "date", "sender_first_name", "ae_first_name"];
+export const PLACEHOLDERS = ["first_name", "account", "event", "date", "sender_name", "ae_first_name"];
 
 // A new Gmail draft with a step's copy filled in, in whichever Google account the sender is signed into.
 // Spaces as %20, not "+", which Gmail can show literally.

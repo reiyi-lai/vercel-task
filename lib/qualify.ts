@@ -103,8 +103,8 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
 }
 
 const ORDER: Qualified["status"][] = ["Qualified", "Review", "Excluded"];
-// Signals shown per category, in this order: leadership changes, then AI initiatives, then hiring last.
-const SHOWN: Record<AccountSignal["category"], number> = { leadership: 4, initiative: 3, hiring: 2 };
+// Signals shown per category, in this order: leadership changes, then AI initiatives.
+const SHOWN: Record<AccountSignal["category"], number> = { leadership: 4, initiative: 3 };
 
 // One account in one event: whether it fits the brief, its commercial context, its signals (by category, and within
 // each the event's themes first, then newest), its executives (target personas first, then by status) and who has been selected to invite.

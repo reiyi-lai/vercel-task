@@ -3,7 +3,7 @@ import { refreshSignals } from "@/lib/accounts";
 // Sumble's people search runs as a job and web research searches several times: allow up to five minutes.
 export const maxDuration = 300;
 
-// POST ?group=sumble (hiring and leadership) or ?group=research (AI initiatives).
+// POST ?group=sumble (leadership changes) or ?group=research (AI initiatives).
 export async function POST(req: Request, ctx: RouteContext<"/api/accounts/[accountId]/signals">) {
   const group = new URL(req.url).searchParams.get("group");
   if (group !== "sumble" && group !== "research") return Response.json({ error: "group must be sumble or research" }, { status: 400 });

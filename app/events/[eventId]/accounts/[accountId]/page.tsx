@@ -13,7 +13,7 @@ import { AddToCrm, FindExecutives, RefreshSignals, SelectExecutive } from "./con
 type Props = PageProps<"/events/[eventId]/accounts/[accountId]">;
 
 const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-const CATEGORY = { hiring: "Hiring & Tech Adoption", leadership: "Leadership Change", initiative: "AI Initiative" };
+const CATEGORY = { leadership: "Leadership Change", initiative: "AI Initiative" };
 const statusColor = { Qualified: "green", Review: "amber", Excluded: "red" } as const;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -127,7 +127,7 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
 
         <Section
           title="Signals"
-          description={plan.signals.some((x) => x.source === "Sample data") ? "Sample signals for this fictional account; real accounts fetch live ones." : "Hiring from Sumble job posts, leadership changes from Sumble people, initiatives from web research."}
+          description={plan.signals.some((x) => x.source === "Sample data") ? "Sample signals for this fictional account; real accounts fetch live ones." : "Leadership changes from Sumble people, initiatives from web research."}
           aside={
             live && (
               <div className="flex flex-wrap items-start gap-2">
@@ -138,14 +138,13 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
           }
         >
           <ul className="material-base divide-y divide-gray-alpha-400">
-            {plan.signals.filter((x) => x.category !== "hiring").map(signalRow)}
+            {plan.signals.map(signalRow)}
             {!plan.signals.some((x) => x.category === "initiative") && (
               <li className="grid gap-2 px-5 py-4 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
                 <p className="text-label-12 font-medium uppercase tracking-wide text-gray-900">{CATEGORY.initiative}</p>
                 <p className="text-copy-13 text-gray-900">No AI initiatives found yet.{live && " Research AI Initiatives to look for them."}</p>
               </li>
             )}
-            {plan.signals.filter((x) => x.category === "hiring").map(signalRow)}
           </ul>
         </Section>
 

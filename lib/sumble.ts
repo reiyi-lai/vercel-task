@@ -1,5 +1,5 @@
 // Sumble's API (docs.sumble.com/api), trimmed to what Seatbook reads: people (work history, recent leaders),
-// organizations (resolving an account's domain) and job posts. People requests are async: a POST starts a job,
+// and organizations (resolving an account's domain). People requests are async: a POST starts a job,
 // then POSTing { request_id } polls it until it succeeds; credits are charged once, on success.
 // Empty fields are omitted rather than null: a current role has no end_date.
 
@@ -17,7 +17,6 @@ export type SumblePerson = {
     experience?: SumbleRole[];
   };
 };
-export type SumbleJob = { job_id: number; sumble_url: string; attributes: { title: string; posted_date: string } };
 
 // LinkedIn profile URLs compared without the scheme, "www." or a trailing slash.
 export const profileKey = (url: string) => url.toLowerCase().replace(/^https?:\/\/(www\.)?/, "").replace(/\/+$/, "");

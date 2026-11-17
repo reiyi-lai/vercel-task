@@ -74,7 +74,7 @@ export function outreachVolume(b: Pick<EventBrief, "target_guests" | "acceptance
   return { invites, shortlist: Math.ceil((invites * 100) / b.approval_rate), expected: confirmed + Math.round((invites * b.acceptance_rate) / 100) };
 }
 
-// Whether a signal's theme bears on this event. Hiring and leadership signals carry campaign themes, which match
+// Whether a signal's theme bears on this event. Leadership signals carry campaign themes, which match
 // the brief's themes directly; web-research initiatives carry their own themes, which map to its themes or verticals.
 export function relevantTheme(theme: string | null, b: Pick<EventBrief, "themes" | "verticals">) {
   if (theme === "Internal Software") return b.themes.includes("Apps & Agents") || b.themes.includes("Software Factories");

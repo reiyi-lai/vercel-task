@@ -81,7 +81,7 @@ async function Accounts({ params }: Pick<Props, "params">) {
                             <Status color="gray">No Pro teams</Status>
                           )}
                         </td>
-                        <td className="px-4 py-3.5 text-label-13">{p.executives.filter((e) => e.status !== "Excluded").length} to review · {picked} selected</td>
+                        <td className="px-4 py-3.5 text-label-13">{p.executives.filter((e) => e.status === "Qualified").length} to review · {picked} selected</td>
                         <td className="px-4 py-3.5 text-right">
                           <Link href={`${basePath}/accounts/${p.account.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
                         </td>
