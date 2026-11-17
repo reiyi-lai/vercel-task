@@ -103,7 +103,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           )}
         </Section>
 
-        <Section title="Due Now" description="Send each from your Outreach task list.">
+        <Section title="Due Now">
           <List empty="Nothing due. Slack pings you at 9am when a step falls due.">
             {due.map((r) => (
               <Row key={`${r.x.campaign_id}${r.c.id}${r.step.index}`}>
