@@ -3,11 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Avatar, Badge, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
+import { Avatar, Badge, Chevron, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { accountInteractions, vercelUsage } from "@/lib/derive";
 import { draftCopy, execName, sender } from "@/lib/outreach";
 import { schedule, shortDate } from "@/lib/sequence";
+import AccountContext from "../../accounts/[accountId]/account-context";
 import Outreach from "../outreach";
 
 type Props = PageProps<"/events/[eventId]/candidates/[candidateId]">;
@@ -61,7 +62,6 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
     <>
       <PageHeader
         crumbs={[{ label: event.short_name, href: base }, { label: "Candidates", href: `${base}/candidates` }, { label: name }]}
-        aside={<Link href={`${base}/accounts/${account.id}`} className="text-label-13 text-blue-900 hover:underline">Account Plan →</Link>}
       >
         <div className="flex items-center gap-4">
           <Avatar name={name} size="lg" />
@@ -86,57 +86,16 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
           to={{ email: target.email, linkedinUrl: target.linkedin_url?.includes("linkedin.example") ? null : target.linkedin_url }}
         />
 
-        <Section
-          title="Vercel Usage"
-          aside={usage.teams.length > 0 && <p className="text-label-13 text-gray-900">{usage.activeUsers} active users · {usd.format(usage.monthlySpend)}/mo</p>}
-        >
-          {usage.teams.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">No Vercel teams on this account yet.</p>
-          ) : (
-            <ul className="material-base divide-y divide-gray-alpha-400 overflow-hidden">
-              {usage.teams.map((t) => (
-                <li key={t.id} className="grid items-center gap-3 px-5 py-4 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:gap-6">
-                  <div className="min-w-0">
-                    <p className="truncate text-label-14 font-medium">{t.name}</p>
-                    <p className="text-label-12 text-gray-900">{t.plan} · {t.active_users_30d} active {t.active_users_30d === 1 ? "user" : "users"} · {usd.format(t.monthly_spend ?? 0)}/mo</p>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-label-12 text-gray-900">Billing Owner</p>
-                    <p className="truncate text-label-13">{t.key_contact_name ?? t.key_contact_title ?? "Not on file"}</p>
-                  </div>
-                  <Badge variant={t.key_contact_id ? "amber" : "gray"}>{t.key_contact_id ? "In Salesforce" : "Not in Salesforce"}</Badge>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Section>
-
-        <Section title="Past Account Interactions">
-          {interactions.length === 0 ? (
-            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">No past interactions with anyone else at {account.name}.</p>
-          ) : (
-            <ul className="material-base divide-y divide-gray-alpha-400 overflow-hidden">
-              {interactions.map((r) => (
-                <li key={r.contact.id} className="grid items-center gap-3 px-5 py-4 lg:grid-cols-[220px_200px_1fr] lg:gap-6">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <Avatar name={r.name} />
-                    <div className="min-w-0">
-                      <p className="text-label-14 font-medium">{r.name}</p>
-                      <p className="text-label-12 text-gray-900">{r.contact.title}</p>
-                    </div>
-                  </div>
-                  <Status color={interactionDot[r.status]}>{r.status} Employee</Status>
-                  <div className="space-y-1.5">
-                    <ul className="space-y-0.5">
-                      {r.lines.map((l) => <li key={l.text} className="text-copy-13">{l.text}</li>)}
-                    </ul>
-                    <p className="text-label-12 text-gray-900">Sources: {[...new Set(r.lines.map((l) => l.source))].join(" · ")}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Section>
+        {/* The top of the account plan, collapsed until wanted while writing the outreach. */}
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+            <h2 className="text-heading-20">Account Context</h2>
+            <Chevron open={false} className="text-gray-900 group-open:rotate-180" />
+          </summary>
+          <div className="mt-4 space-y-6">
+            <AccountContext s={s} account={account} brief={event} />
+          </div>
+        </details>
       </Page>
     </>
   );
