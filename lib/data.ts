@@ -46,6 +46,7 @@ export type EventBrief = {
   tiers: string[]; // only accounts in these tiers fit
   outreach_lead: "exec" | "bdr" | "ae_bdr"; // who sends every step (lib/brief.ts OUTREACH_LEADS)
   exec_name: string | null; // the exec signing off Exec steps, unless a candidate names their own
+  select_by: string | null; // the date AEs and BDRs select their candidates by
   target_guests: number; acceptance_rate: number; approval_rate: number; sequence: SequenceStep[];
 };
 // A Seatbook event: its Salesforce campaign's display details plus its brief.

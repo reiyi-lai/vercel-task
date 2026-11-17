@@ -1,7 +1,7 @@
 "use server";
 
 import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
-import { execName, recordSent, sender, stepCard } from "@/lib/outreach";
+import { execName, sender, stepCard } from "@/lib/outreach";
 import { notify } from "@/lib/slack";
 import { ok, write } from "@/lib/write";
 
@@ -33,10 +33,6 @@ export async function startSequence(campaignId: string, contactId: string) {
   });
 }
 
-// copy: what actually went out, when the sender edited the draft.
-export async function markSent(campaignId: string, contactId: string, step: number, copy?: { subject: string; body: string }) {
-  return recordSent(campaignId, contactId, step, copy);
-}
 
 const NEXT: Record<string, string> = {
   Replied: "replied. Answer within a day, and stop the remaining steps.",

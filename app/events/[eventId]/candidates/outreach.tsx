@@ -3,9 +3,9 @@
 import { useState, useSyncExternalStore, useTransition } from "react";
 import { Button, Section, Status, type DotColor } from "@/components/ui";
 import type { Candidate } from "@/lib/data";
-import { gmailDraft, type StepStatus } from "@/lib/sequence";
+import { OUTREACH_URL, type StepStatus } from "@/lib/sequence";
 import FindEmail from "./find-email";
-import { markSent, saveDraft, setOutcome, startSequence } from "./outreach-actions";
+import { saveDraft, setOutcome, startSequence } from "./outreach-actions";
 
 export type StepView = {
   index: number; day: number; channel: string; sender: string; subject: string; body: string;
@@ -14,7 +14,7 @@ export type StepView = {
 const statusColor: Record<StepStatus, DotColor> = { Sent: "green", Due: "amber", Overdue: "red", Upcoming: "gray", Stopped: "hollow" };
 const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
 
-// The candidate's outreach for this event: the event's sequence with each step's filled-in copy, due date and status. Sending happens outside Seatbook (Outreach in production); Mark Sent records it.
+// The candidate's outreach for this event: the event's sequence with each step's filled-in copy, due date and status. Outreach sends the steps and reports back what's sent; Open in Outreach goes to the prospect there.
 // to: where steps go. Email steps link a mailto with the step's copy filled in; LinkedIn steps link the profile.
 export default function Outreach({ campaignId, contactId, outreach, steps, to }: {
   campaignId: string; contactId: string; outreach?: Candidate; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
@@ -84,7 +84,7 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
                       <span className="text-label-13 text-gray-900">Not started</span>
                     )}
                     {started && x.status !== "Sent" && x.status !== "Stopped" && (
-                      <Button disabled={pending} onClick={() => run(() => markSent(campaignId, contactId, x.index))}>Mark Sent</Button>
+                      <Button href={OUTREACH_URL}>Open in Outreach</Button>
                     )}
                   </div>
                 </div>
@@ -118,8 +118,6 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
                         {x.subject && <p className="text-label-13"><span className="text-gray-900">Subject:</span> {x.subject}</p>}
                         <p className="whitespace-pre-line text-copy-14">{x.body}</p>
                         <div className="flex flex-wrap gap-2">
-                          {x.channel === "Email" && <Button variant="primary" href={gmailDraft(to.email, x.subject, x.body)}>Open in Gmail</Button>}
-                          <Button onClick={() => navigator.clipboard.writeText(x.subject ? `${x.subject}\n\n${x.body}` : x.body)}>Copy</Button>
                           <Button onClick={() => setEditing({ index: x.index, subject: x.subject, body: x.body })}>Edit</Button>
                         </div>
                       </>

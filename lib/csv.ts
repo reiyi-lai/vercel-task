@@ -70,7 +70,7 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
         tiers: list(r.Tiers),
         outreach_lead: r["Outreach Lead"] as Brief["outreach_lead"],
         target_guests: Number(r["Target Guests"]), acceptance_rate: Number(r["Acceptance Rate"]), approval_rate: Number(r["Approval Rate"]),
-        exec_name: null, sequence: sequences[r["Campaign ID"]] ?? [],
+        exec_name: null, select_by: str(r["Select By"]), sequence: sequences[r["Campaign ID"]] ?? [],
       };
     }),
     // Signals for the fictional accounts; real accounts fetch live ones on their account plan.

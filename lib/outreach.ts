@@ -1,5 +1,7 @@
 import { loadSnapshot, TABLES, type Contact, type SequenceStep, type Snapshot } from "./data";
-import { eventOverview } from "./derive";
+import { sentByBdr } from "./brief";
+import { eventOverview, eventsByDate } from "./derive";
+import { eventAccounts } from "./qualify";
 import { gmailDraft, render, schedule } from "./sequence";
 import { notify, quote, type Block } from "./slack";
 import { expireFromRoute, ok, write } from "./write";
@@ -118,8 +120,9 @@ export async function sendReminders(campaignId: string) {
 }
 
 // One AE's or BDR's queue across every event: the steps they send that are due or overdue (overdue first), replies on
-// their candidates to answer, and their candidates whose sequence hasn't started. "Their" candidates: the AE owns the
-// account, or the BDR is assigned for the event.
+// their candidates to answer, the accounts in upcoming events they've yet to select anyone at, and their numbers per
+// event. "Their" candidates: the AE owns the contact, or the BDR is assigned for the event. "Their" accounts: the AE owns
+// the account, unless a BDR sends its outreach (then every BDR sees it).
 export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   const rows = s.events.flatMap((e) =>
     s.candidates.filter((x) => x.campaign_id === e.campaign_id).map((x) => {
@@ -129,11 +132,26 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   );
   const due = rows
     .filter(({ x }) => x.started_at && !x.outcome)
-    .flatMap((r) =>
-      schedule(r.e.sequence, r.x, now)
-        .filter((st) => (st.status === "Due" || st.status === "Overdue") && sender(s, r.e.campaign_id, st.step, r.c)?.id === userId)
-        .map((st) => ({ ...r, step: st, copy: draftCopy(s, r.e.campaign_id, r.c, st.index) }))
-    )
+    // One row per candidate: their earliest step that's due, and how many more are due behind it.
+    .flatMap((r) => {
+      const [st, ...rest] = schedule(r.e.sequence, r.x, now).filter((st) => (st.status === "Due" || st.status === "Overdue") && sender(s, r.e.campaign_id, st.step, r.c)?.id === userId);
+      return st ? [{ ...r, step: st, more: rest.length }] : [];
+    })
     .sort((a, b) => Number(b.step.status === "Overdue") - Number(a.step.status === "Overdue") || a.step.due!.getTime() - b.step.due!.getTime());
-  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied") };
+  const isBdr = s.users.find((u) => u.id === userId)?.title === "BDR";
+  const byDate = eventsByDate(s, now);
+  const upcoming = byDate.filter((x) => x.days >= 0).map((x) => x.e);
+  const myAccounts = (e: (typeof s.events)[number]) =>
+    eventAccounts(s, e).fits.filter((p) => (sentByBdr(e.outreach_lead, p.account.owner_id) ? isBdr : p.account.owner_id === userId));
+  const toSelect = upcoming
+    .map((e) => ({ e, accounts: myAccounts(e).filter((p) => !p.executives.some((x) => x.selected)) }))
+    .filter((x) => x.accounts.length);
+  const stats = byDate
+    .map(({ e }) => {
+      const mine = rows.filter((r) => r.mine && r.e === e);
+      const emails = mine.reduce((n, r) => n + r.x.sent.filter((x) => e.sequence[x.step]?.channel === "Email").length, 0);
+      return { e, accounts: myAccounts(e).length, candidates: mine.length, emails, accepted: mine.filter((r) => r.x.outcome === "Accepted").length };
+    })
+    .filter((x) => x.accounts || x.candidates);
+  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"), toSelect, stats };
 }

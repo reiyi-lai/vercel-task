@@ -44,7 +44,7 @@ async function NewEvent({ searchParams }: Pick<PageProps<"/events/new">, "search
             ))}
           </ul>
         </section>
-        <BriefForm key={format} create brief={template} event={{ slug: "", startDate: "", endDate: null, seats: template.seats }} confirmed={0} />
+        <BriefForm key={format} create brief={{ ...template, select_by: null }} event={{ slug: "", startDate: "", endDate: null, seats: template.seats }} confirmed={0} />
       </Page>
     </>
   );

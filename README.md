@@ -18,7 +18,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 - **Head of Marketing:** **All Events** shows overview of statistics and dates for all events, clicking on each event card also reveals **Overview** of each event.
 - **Marketing:** Each event in the sidebar, in workflow order: **Brief**, **Accounts**, **Candidates** with root page showing progress for that event.
-- **AEs/BDRs:** **For AE/BDR** lists their steps due across every event (with the draft, Open in Gmail and Mark Sent) and replies to answer. Slack pings them about the same steps daily at 9am.
+- **AEs/BDRs:** **For AE/BDR** lists their steps due across every event, one row per candidate (with the draft and Open in Outreach), and replies to answer. Slack pings them about the same steps daily at 9am.
 
 ## Sample Flow
 

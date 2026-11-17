@@ -13,6 +13,7 @@ const invalid = (brief: EventBrief, details: Details) =>
   !isDate(details.date) ? "Enter a valid start date."
   : details.endDate !== null && (!isDate(details.endDate) || details.endDate < details.date) ? "The end date must be a valid date on or after the start date."
   : details.seats !== null && (!Number.isInteger(details.seats) || details.seats < 1) ? "Capacity must be a whole number of seats."
+  : brief.select_by !== null && (!isDate(brief.select_by) || brief.select_by > details.date) ? "The selection deadline must be a valid date on or before the start date."
   : !Number.isInteger(brief.target_guests) || brief.target_guests < 1 ? "Target confirmed guests must be a whole number."
   : null;
 

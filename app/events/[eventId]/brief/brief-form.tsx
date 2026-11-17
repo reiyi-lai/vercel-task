@@ -160,6 +160,11 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
         </Group>
 
         <Group n="02" title="Attendance & Outreach Planning">
+          <label className="block space-y-2 sm:w-64">
+            <span className="text-label-13 font-medium">Candidate Selection Deadline</span>
+            <input type="date" max={date || undefined} className={control} value={b.select_by ?? ""} onChange={(e) => set({ select_by: e.target.value || null })} />
+            <span className="block text-label-12 text-gray-900">AE/BDRs to select candidates by this date.</span>
+          </label>
           <div className="grid gap-5 sm:grid-cols-3">
             <label className="block space-y-2">
               <span className="text-label-13 font-medium">Target Confirmed Guests</span>

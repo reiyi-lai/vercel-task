@@ -5,8 +5,8 @@ import { Suspense, type ReactNode } from "react";
 import { Avatar, Button, Page, PageHeader, Section, Status, TabLinks } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { myQueue } from "@/lib/outreach";
-import { gmailDraft, shortDate } from "@/lib/sequence";
-import MarkSent from "./mark-sent";
+import { formatDate } from "@/lib/derive";
+import { daysUntil, OUTREACH_URL, shortDate } from "@/lib/sequence";
 
 export const metadata: Metadata = { title: "For AE/BDR" };
 
@@ -22,7 +22,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const sellers = s.users.filter((u) => u.title === "Account Executive" || u.title === "BDR");
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
-  const { due, replies } = myQueue(s, me.id);
+  const { due, replies, toSelect, stats } = myQueue(s, me.id);
   const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
     <div className="flex min-w-0 items-center gap-3">
@@ -47,18 +47,76 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
         <h1 className="text-heading-32">For AE/BDR</h1>
       </PageHeader>
       <Page>
-        <Section title="Due Now" description="Send each from Gmail or LinkedIn, then mark it sent.">
+        {stats.length > 0 && (
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {stats.map(({ e, accounts, emails, accepted }) => (
+              <li key={e.campaign_id} className="material-base p-4">
+                <Link href={`/events/${e.slug}`} className="text-label-14 font-medium hover:underline">{e.short_name}</Link>
+                <dl className="mt-3 grid grid-cols-3 gap-3">
+                  {[["Accounts", accounts], ["Emails Sent", emails], ["Accepted", accepted]].map(([label, n]) => (
+                    <div key={label}>
+                      <dt className="text-label-12 text-gray-900">{label}</dt>
+                      <dd className="text-heading-24 tabular-nums">{n}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </li>
+            ))}
+          </ul>
+        )}
+
+<Section title="Accounts to Select Candidates">
+          {toSelect.length ? (
+            <div className="space-y-6">
+              {toSelect.map(({ e, accounts }) => {
+                const left = e.select_by === null ? null : daysUntil(e.select_by);
+                return (
+                  <div key={e.campaign_id} className="space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                      <h3 className="text-label-14 font-medium">{e.short_name} · {accounts.length} {accounts.length === 1 ? "account" : "accounts"}</h3>
+                      {left === null ? (
+                        <Status color="gray">No selection deadline</Status>
+                      ) : (
+                        <Status color={left < 0 ? "red" : left <= 3 ? "amber" : "gray"}>
+                          Select by {formatDate(e.select_by!)} · {left < 0 ? "deadline passed" : left === 0 ? "today" : `${left} ${left === 1 ? "day" : "days"} left`}
+                        </Status>
+                      )}
+                    </div>
+                    <List empty="">
+                      {accounts.map((p) => (
+                        <Row key={p.account.id}>
+                          <div className="min-w-0">
+                            <p className="truncate text-label-14 font-medium">{p.account.name}</p>
+                            <p className="truncate text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</p>
+                          </div>
+                          <span className="text-label-13 text-gray-900">{((n) => `${n} qualified ${n === 1 ? "executive" : "executives"}`)(p.executives.filter((x) => x.status === "Qualified").length)}</span>
+                          <Link href={`/events/${e.slug}/accounts/${p.account.id}`} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
+                        </Row>
+                      ))}
+                    </List>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">You’ve selected candidates at every account in your upcoming events.</p>
+          )}
+        </Section>
+
+        <Section title="Due Now" description="Send each from your Outreach task list.">
           <List empty="Nothing due. Slack pings you at 9am when a step falls due.">
             {due.map((r) => (
               <Row key={`${r.x.campaign_id}${r.c.id}${r.step.index}`}>
                 {who(r)}
-                <Status color={r.step.status === "Overdue" ? "red" : "amber"}>
-                  Step {r.step.index + 1} · {r.step.step.channel} · {r.step.status === "Overdue" ? `overdue since ${shortDate(r.step.due!)}` : "due today"}
-                </Status>
+                <div className="space-y-1">
+                  <Status color={r.step.status === "Overdue" ? "red" : "amber"}>
+                    Step {r.step.index + 1} · {r.step.step.channel} · {r.step.status === "Overdue" ? `overdue since ${shortDate(r.step.due!)}` : "due today"}
+                  </Status>
+                  {r.more > 0 && <p className="pl-3.5 text-label-12 text-gray-900">+{r.more} more {r.more === 1 ? "step" : "steps"} due after this</p>}
+                </div>
                 <div className="flex flex-wrap items-start justify-end gap-2">
                   <Link href={plan(r.e.slug, r.c.id, r.step.index)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">View Draft</Link>
-                  {r.step.step.channel === "Email" && r.c.email && <Button href={gmailDraft(r.c.email, r.copy.subject, r.copy.body)}>Open in Gmail</Button>}
-                  <MarkSent campaignId={r.x.campaign_id} contactId={r.c.id} step={r.step.index} />
+                  <Button href={OUTREACH_URL}>Open in Outreach</Button>
                 </div>
               </Row>
             ))}
