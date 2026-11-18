@@ -9,6 +9,9 @@ import { AddToCrm, RefreshSignals } from "./controls";
 
 const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const CATEGORY = { leadership: "Leadership Change", initiative: "AI Initiative" };
+// Each category with no signals yet gets a row saying so, and which button looks for them.
+const EMPTY = { leadership: "No leadership changes found yet.", initiative: "No AI initiatives found yet." };
+const EMPTY_ACTION = { leadership: "Get Leadership Changes to look for them.", initiative: "Research AI Initiatives to look for them." };
 
 // An account's shared context for an event: Vercel usage, relationship, event history and signals. The account plan
 // (which puts its executives in as children, before the signals), and the Account Context on each invitation plan.
@@ -105,12 +108,12 @@ export default function AccountContext({ s, account, brief, children }: { s: Sna
         >
           <ul className="material-base divide-y divide-gray-alpha-400">
             {plan.signals.map(signalRow)}
-            {!plan.signals.some((x) => x.category === "initiative") && (
-              <li className="grid gap-2 px-5 py-4 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
-                <p className="text-label-12 font-medium uppercase tracking-wide text-gray-900">{CATEGORY.initiative}</p>
-                <p className="text-copy-13 text-gray-900">No AI initiatives found yet.{live && " Research AI Initiatives to look for them."}</p>
+            {(Object.keys(CATEGORY) as (keyof typeof CATEGORY)[]).filter((k) => !plan.signals.some((x) => x.category === k)).map((k) => (
+              <li key={k} className="grid gap-2 px-5 py-4 sm:grid-cols-[180px_1fr_auto] sm:gap-6">
+                <p className="text-label-12 font-medium uppercase tracking-wide text-gray-900">{CATEGORY[k]}</p>
+                <p className="text-copy-13 text-gray-900">{EMPTY[k]}{live && ` ${EMPTY_ACTION[k]}`}</p>
               </li>
-            )}
+            ))}
           </ul>
         </Section>
 
