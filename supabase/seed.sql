@@ -51,7 +51,8 @@ insert into salesforce_accounts (id, name, website, industry, employees, type, o
   ('001Sb0000070038AAA', 'Datadog', 'datadoghq.com', 'Computer Software', 9589, 'Prospect', '005Sb0000050001AAA', true, 'Tier 1', null, '{"Software Factories","Apps & Agents"}'),
   ('001Sb0000070039AAA', 'ServiceNow', 'servicenow.com', 'Computer Software', 33074, 'Prospect', null, true, 'Tier 1', null, '{"Software Factories","Apps & Agents"}'),
   ('001Sb0000070040AAA', 'Zscaler', 'zscaler.com', 'Computer Software', 9030, 'Prospect', null, true, 'Tier 1', null, '{"Software Factories","Apps & Agents"}'),
-  ('001Sb0000070041AAA', 'Palo Alto Networks', 'paloaltonetworks.com', 'Computer Software', 23395, 'Prospect', null, true, 'Tier 1', null, '{"Software Factories","Apps & Agents"}');
+  ('001Sb0000070041AAA', 'Palo Alto Networks', 'paloaltonetworks.com', 'Computer Software', 23395, 'Prospect', null, true, 'Tier 1', null, '{"Software Factories","Apps & Agents"}'),
+  ('001Sb0000070042AAA', 'Kohl''s', 'kohls.com', 'Retail', 96000, 'Prospect', '005Sb0000050002AAA', true, 'Tier 1', 'Retail', '{"Apps & Agents","Software Factories"}');
 
 insert into salesforce_contacts (id, first_name, last_name, email, title, account_id, owner_id, linkedin_url, employment_status, mailing_city, mailing_state, has_opted_out_of_email) values
   ('003Sb0000090001AAA', 'Owen', 'Fischer', 'owen.fischer@alderfinch.example', 'Chief Information Officer', '001Sb0000070001AAA', '005Sb0000050001AAA', 'https://linkedin.example/in/owen-fischer', 'Current', 'New York', 'NY', false),
@@ -142,7 +143,9 @@ insert into salesforce_contacts (id, first_name, last_name, email, title, accoun
   ('003Sb0000090087AAA', 'Kailash', 'Kailash', null, 'Chief Architect and Founder', '001Sb0000070040AAA', null, 'https://www.linkedin.com/in/kailash-kailash-85295518', 'Current', 'San Jose', 'CA', false),
   ('003Sb0000090088AAA', 'Levi', 'Bolourie', null, 'Corporate Chief Information Security Officer (CISO)', '001Sb0000070040AAA', null, 'https://www.linkedin.com/in/levi-bolourie', 'Current', null, null, false),
   ('003Sb0000090089AAA', 'Helen', 'London', null, 'Chief Information Security Officer', '001Sb0000070041AAA', null, 'https://www.linkedin.com/in/henri-susila-6b593071', 'Current', null, null, false),
-  ('003Sb0000090090AAA', 'Lee', 'Klarich', null, 'Chief Product & Technology Officer and Board Member', '001Sb0000070041AAA', null, 'https://www.linkedin.com/in/leeklarich', 'Current', 'Los Gatos', 'CA', false);
+  ('003Sb0000090090AAA', 'Lee', 'Klarich', null, 'Chief Product & Technology Officer and Board Member', '001Sb0000070041AAA', null, 'https://www.linkedin.com/in/leeklarich', 'Current', 'Los Gatos', 'CA', false),
+  ('003Sb0000090091AAA', 'Steve', 'Dee', null, 'Chief Technology Officer', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/stevenedee', 'Current', 'Milwaukee', 'WI', false),
+  ('003Sb0000090092AAA', 'Sujal', 'Patel', null, 'Senior Vice President of Technology', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/sujalpatel', 'Current', 'Chicago', 'IL', false);
 
 insert into salesforce_opportunities (id, name, account_id, owner_id, stage, amount, is_closed, is_won) values
   ('006Sb0000080001AAA', 'Halvorsen Retail Group — Platform expansion', '001Sb0000070011AAA', '005Sb0000050002AAA', 'Proposal', 400000, false, false),

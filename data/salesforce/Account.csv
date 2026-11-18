@@ -40,3 +40,4 @@ Id,Name,Website,Industry,NumberOfEmployees,Type,OwnerId,Target_Account__c,ICP_Ti
 001Sb0000070039AAA,ServiceNow,servicenow.com,Computer Software,33074,Prospect,,true,Tier 1,,Software Factories;Apps & Agents,,2
 001Sb0000070040AAA,Zscaler,zscaler.com,Computer Software,9030,Prospect,,true,Tier 1,,Software Factories;Apps & Agents,,3
 001Sb0000070041AAA,Palo Alto Networks,paloaltonetworks.com,Computer Software,23395,Prospect,,true,Tier 1,,Software Factories;Apps & Agents,,8
+001Sb0000070042AAA,Kohl's,kohls.com,Retail,96000,Prospect,005Sb0000050002AAA,true,Tier 1,Retail,Apps & Agents;Software Factories,,

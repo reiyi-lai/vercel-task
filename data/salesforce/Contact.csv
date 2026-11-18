@@ -88,3 +88,5 @@ Id,FirstName,LastName,Email,Title,AccountId,OwnerId,LinkedIn_URL__c,Intro_Progra
 003Sb0000090088AAA,Levi,Bolourie,,Corporate Chief Information Security Officer (CISO),001Sb0000070040AAA,,https://www.linkedin.com/in/levi-bolourie,,Current,,,,,false
 003Sb0000090089AAA,Helen,London,,Chief Information Security Officer,001Sb0000070041AAA,,https://www.linkedin.com/in/henri-susila-6b593071,,Current,,,,,false
 003Sb0000090090AAA,Lee,Klarich,,Chief Product & Technology Officer and Board Member,001Sb0000070041AAA,,https://www.linkedin.com/in/leeklarich,,Current,Los Gatos,CA,37.2266,-121.9747,false
+003Sb0000090091AAA,Steve,Dee,,Chief Technology Officer,001Sb0000070042AAA,005Sb0000050002AAA,https://www.linkedin.com/in/stevenedee,,Current,Milwaukee,WI,43.0389,-87.9065,false
+003Sb0000090092AAA,Sujal,Patel,,Senior Vice President of Technology,001Sb0000070042AAA,005Sb0000050002AAA,https://www.linkedin.com/in/sujalpatel,,Current,Chicago,IL,41.8781,-87.6298,false

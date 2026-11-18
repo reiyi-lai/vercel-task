@@ -7,7 +7,7 @@ import { AS_OF } from "./rules";
 // executive gets labels a BDR can read at a glance. The BDR chooses who to invite.
 
 export type Label = { text: string; color: DotColor };
-export type Qualified = { contact: Contact; status: "Qualified" | "Review" | "Excluded"; persona?: string; labels: Label[] };
+export type Qualified = { contact: Contact; status: "Qualified" | "Review" | "Excluded"; ranked: boolean; labels: Label[] };
 
 // Why an account falls outside the brief, or null when it fits. An account with no industry tag counts as cross-industry;
 // one with no horizontal tag fits only when the brief targets all horizontals.
@@ -64,6 +64,15 @@ export function matchPersona(title: string, personas: string[]) {
   return personas.find((p) => words(ACRONYMS[p.toLowerCase()] ?? p).every((w) => t.has(w)));
 }
 
+// Whether the title states a rank at or above the brief's minimum seniority: Chief (or a
+// C-level acronym) always; Senior/Executive Vice President from SVP down; Vice President from VP down; Director at Director.
+export function holdsRank(title: string, min: EventBrief["min_seniority"]) {
+  const t = title.toLowerCase();
+  const svp = /\b(svp|evp)\b|(senior|executive) vice president/.test(t);
+  const vp = svp || /\bvp\b|vice president/.test(t);
+  return /\bchief\b|\bc[a-z]{1,2}o\b/.test(t) || { c_suite: false, svp, vp, director: vp || /\bdirector\b/.test(t) }[min];
+}
+
 const SIXTY_DAYS = 60 * 86_400_000;
 
 export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualified {
@@ -78,8 +87,9 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
   if (member) excluded.push(`Already on this event · ${member.invite_status}`);
   if (below) excluded.push(`Below ${SENIORITY[b.min_seniority]}`); // minimum seniority is a hard gate
 
-  const persona = matchPersona(c.title ?? "", b.personas);
-  labels.push(persona ? { text: `Matches ${persona}`, color: "green" } : { text: "Outside target personas", color: "gray" });
+  // Target personas steer Find Executives; here the title only has to state the minimum seniority.
+  const ranked = holdsRank(c.title ?? "", b.min_seniority);
+  labels.push(ranked ? { text: `Matches ${SENIORITY[b.min_seniority]}`, color: "green" } : { text: "Seniority not in title", color: "gray" });
 
   // City-based: the contact's mailing city is one of the selected cities. (Conference attendance isn't checked yet.)
   if (b.geography === "city" && b.cities.length) {
@@ -98,8 +108,8 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
     if (gap >= 0 && gap <= SIXTY_DAYS) labels.push({ text: `Invited to ${campaign.name} in the last 60 days`, color: "amber" });
   }
 
-  if (excluded.length) return { contact: c, status: "Excluded", persona, labels: excluded.map((text) => ({ text, color: "red" })) };
-  return { contact: c, status: persona && !labels.some((l) => l.color === "amber") ? "Qualified" : "Review", persona, labels };
+  if (excluded.length) return { contact: c, status: "Excluded", ranked, labels: excluded.map((text) => ({ text, color: "red" })) };
+  return { contact: c, status: ranked && !labels.some((l) => l.color === "amber") ? "Qualified" : "Review", ranked, labels };
 }
 
 const ORDER: Qualified["status"][] = ["Qualified", "Review", "Excluded"];
@@ -107,7 +117,7 @@ const ORDER: Qualified["status"][] = ["Qualified", "Review", "Excluded"];
 const SHOWN: Record<AccountSignal["category"], number> = { leadership: 4, initiative: 3 };
 
 // One account in one event: whether it fits the brief, its commercial context, its signals (by category, and within
-// each the event's themes first, then newest), its executives (target personas first, then by status) and who has been selected to invite.
+// each the event's themes first, then newest), its executives (seniority stated in the title first, then by status) and who has been selected to invite.
 export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
   const signals = s.account_signals
     .filter((x) => x.account_id === a.id)
@@ -122,7 +132,7 @@ export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
     executives: s.contacts
       .filter((c) => c.account_id === a.id)
       .map((c) => ({ ...qualifyContact(s, c, b), selected: selected.has(c.id) }))
-      .sort((x, y) => Number(!x.persona) - Number(!y.persona) || ORDER.indexOf(x.status) - ORDER.indexOf(y.status)),
+      .sort((x, y) => Number(!x.ranked) - Number(!y.ranked) || ORDER.indexOf(x.status) - ORDER.indexOf(y.status)),
   };
 }
 
