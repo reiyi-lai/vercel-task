@@ -67,11 +67,11 @@ export const SENDER_LABEL: Record<SequenceStep["sender"], string> = { Exec: "Fro
 // has no AE.
 export const sentByBdr = (lead: EventBrief["outreach_lead"], aeId: string | null) => lead === "bdr" || (lead === "ae_bdr" && !aeId);
 
-// Works back from the guest target: invitations needed at the expected acceptance rate, then executives to
-// shortlist at the expected approval rate. Guests already confirmed in Salesforce come off the target.
-export function outreachVolume(b: Pick<EventBrief, "target_guests" | "acceptance_rate" | "approval_rate">, confirmed: number) {
+// Works back from the guest target: invitations needed at the expected acceptance rate. Guests already confirmed in
+// Salesforce come off the target.
+export function outreachVolume(b: Pick<EventBrief, "target_guests" | "acceptance_rate">, confirmed: number) {
   const invites = Math.ceil((Math.max(0, b.target_guests - confirmed) * 100) / b.acceptance_rate);
-  return { invites, shortlist: Math.ceil((invites * 100) / b.approval_rate), expected: confirmed + Math.round((invites * b.acceptance_rate) / 100) };
+  return { invites, expected: confirmed + Math.round((invites * b.acceptance_rate) / 100) };
 }
 
 // Whether a signal's theme bears on this event. Leadership signals carry campaign themes, which match

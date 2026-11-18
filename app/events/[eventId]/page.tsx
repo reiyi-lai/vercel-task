@@ -34,7 +34,7 @@ async function EventOverview({ params }: Pick<Props, "params">) {
   const volume = outreachVolume(brief, p.confirmedInSalesforce);
   // The funnel left to right, each against the brief's attendance plan (targets work back from the guest target).
   const bars = [
-    { label: "Executives Shortlisted", n: p.shortlisted, of: volume.shortlist, note: `Target at ${brief.approval_rate}% approval`, fill: "bg-gray-1000" },
+    { label: "Executives Shortlisted", n: p.shortlisted, of: volume.invites, note: "Target: one per invite", fill: "bg-gray-1000" },
     { label: "Invites Sent", n: p.invited, of: volume.invites, note: `Target at ${brief.acceptance_rate}% acceptance`, fill: "bg-blue-700" },
     { label: "Guests Accepted", n: p.accepted, of: brief.target_guests, note: `${p.confirmedInSalesforce} confirmed in Salesforce`, fill: "bg-green-700" },
   ];

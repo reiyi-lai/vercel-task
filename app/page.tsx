@@ -41,7 +41,7 @@ async function Events() {
                     {[
                       { label: "Guests Accepted", n: p.accepted, of: e.target_guests, fill: "bg-green-700" },
                       { label: "Invites Sent", n: p.invited, of: volume.invites, fill: "bg-blue-700" },
-                      { label: "Shortlisted", n: p.shortlisted, of: volume.shortlist, fill: "bg-gray-1000" },
+                      { label: "Shortlisted", n: p.shortlisted, of: volume.invites, fill: "bg-gray-1000" },
                     ].map((x) => (
                       <div key={x.label} className="space-y-1.5">
                         <p className="text-label-12 text-gray-900">{x.label}</p>

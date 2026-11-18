@@ -69,7 +69,7 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
         geography: r.Geography as Brief["geography"], cities: list(r.Cities), min_seniority: r["Min Seniority"] as Brief["min_seniority"],
         tiers: list(r.Tiers),
         outreach_lead: r["Outreach Lead"] as Brief["outreach_lead"],
-        target_guests: Number(r["Target Guests"]), acceptance_rate: Number(r["Acceptance Rate"]), approval_rate: Number(r["Approval Rate"]),
+        target_guests: Number(r["Target Guests"]), acceptance_rate: Number(r["Acceptance Rate"]),
         exec_name: null, select_by: str(r["Select By"]), sequence: sequences[r["Campaign ID"]] ?? [],
       };
     }),

@@ -165,7 +165,7 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
             <input type="date" max={date || undefined} className={control} value={b.select_by ?? ""} onChange={(e) => set({ select_by: e.target.value || null })} />
             <span className="block text-label-12 text-gray-900">AE/BDRs to select candidates by this date.</span>
           </label>
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2">
             <label className="block space-y-2">
               <span className="text-label-13 font-medium">Target Confirmed Guests</span>
               <input
@@ -177,11 +177,9 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
               />
             </label>
             <Slider label="Expected Acceptance Rate" value={b.acceptance_rate} min={10} max={90} step={5} unit="%" onChange={(acceptance_rate) => set({ acceptance_rate })} />
-            <Slider label="Expected Shortlist Approval" value={b.approval_rate} min={10} max={100} step={5} unit="%" onChange={(approval_rate) => set({ approval_rate })} />
           </div>
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             {[
-              ["Executives to Shortlist", volume.shortlist, "For BDR and AE review"],
               ["Invitations to Send", volume.invites, `${confirmed} already confirmed in Salesforce`],
               ["Expected Guests", volume.expected, `Target ${b.target_guests}`],
             ].map(([label, n, note]) => (

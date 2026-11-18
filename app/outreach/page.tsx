@@ -90,7 +90,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                             <p className="truncate text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</p>
                           </div>
                           <span className="text-label-13 text-gray-900">{((n) => `${n} qualified ${n === 1 ? "executive" : "executives"}`)(p.executives.filter((x) => x.status === "Qualified").length)}</span>
-                          <Link href={`/events/${e.slug}/accounts/${p.account.id}`} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
+                          <Link href={`/events/${e.slug}/accounts/${p.account.id}`} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Contacts →</Link>
                         </Row>
                       ))}
                     </List>
