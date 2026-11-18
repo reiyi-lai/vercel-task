@@ -34,7 +34,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 5. **Candidates.**
    - The candidates you've selected across all accounts for this event appear here.
    - Clicking **Find Email** fetches a missing email for that candidate via Sumble if needed.
-   - **Start Sequence** kickstarts the outreach sequence, which involves a message to the respective AE/BDR via Slack.
+   - **Push to Outreach** kickstarts the outreach sequence, which involves a message to the respective AE/BDR via Slack.
 6. **Invitation plan** (click **Invitation Plan →**).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.
@@ -55,7 +55,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 | Find Executives | Sumble | People matching the brief's personas (about 100 credits). | `api.sumble.com/v9/organizations`, `/v9/people` |
 | Add to Contacts | Sumble | The person's current title and location (about 4 credits). | `api.sumble.com/v9/people` |
 | Find Email | Sumble | Reveals a work email (10 credits). | `api.sumble.com/v9/people` |
-| Start Sequence, Mark Sent, outcomes | Slack | Posts a card or alert to the team channel. | Incoming webhook: `hooks.slack.com/services/…` (set as `SLACK_WEBHOOK_URL`)<br>Seatbook posts a message to the webhook, which drops it into the channel. Clicking **Mark Sent** in Slack calls back to Seatbook at `/api/slack/interactions`. |
+| Push to Outreach, Mark Sent, outcomes | Slack | Posts a card or alert to the team channel. | Incoming webhook: `hooks.slack.com/services/…` (set as `SLACK_WEBHOOK_URL`)<br>Seatbook posts a message to the webhook, which drops it into the channel. Clicking **Mark Sent** in Slack calls back to Seatbook at `/api/slack/interactions`. |
 | Daily reminders (Vercel Cron) | Slack | Reminds senders of steps due or overdue, daily at 9am Pacific. | API route: `/api/outreach/reminders`, then the Slack webhook<br>Vercel Cron calls the reminders route once a day. It finds steps due or overdue and posts a card for each to the webhook. |
 
 All Sumble calls are `POST`s with the API key. 

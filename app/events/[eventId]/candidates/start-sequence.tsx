@@ -12,7 +12,7 @@ export default function StartSequence({ campaignId, contactId }: { campaignId: s
   return (
     <div className="flex flex-col items-start gap-1">
       <Button variant="primary" disabled={pending} onClick={() => startTransition(async () => setError(await startSequence(campaignId, contactId)))}>
-        {pending ? "Starting…" : "Start Sequence"}
+        {pending ? "Pushing…" : "Push to Outreach"}
       </Button>
       {error && <p className="text-label-12 text-red-900">{error}</p>}
     </div>

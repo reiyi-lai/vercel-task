@@ -43,7 +43,7 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
   return (
     <Section
       title="Outreach Sequence"
-      aside={!started && <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Start Sequence</Button>}
+      aside={!started && <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Push to Outreach</Button>}
     >
       <div className="space-y-4">
         {error && <p className="text-label-13 text-red-900">{error}</p>}

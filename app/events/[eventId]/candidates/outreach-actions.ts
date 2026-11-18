@@ -29,7 +29,7 @@ export async function startSequence(campaignId: string, contactId: string) {
     ok(await db.from(TABLES.candidates).update({ started_at: new Date().toISOString(), sent: [], outcome: null, outcome_at: null }).eq("campaign_id", campaignId).eq("contact_id", contactId));
     // Step 1 is due now: its card, with the drafted copy and Mark Sent / Edit buttons, goes to its sender.
     const card = stepCard(s, campaignId, c, 0);
-    await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: card.recipient, kind: "Started", text: `${event} outreach to ${who} has started. ${card.text}` }, card.blocks);
+    await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: card.recipient, kind: "Pushed to Outreach", text: `${event} outreach to ${who} was pushed to Outreach. ${card.text}` }, card.blocks);
   });
 }
 

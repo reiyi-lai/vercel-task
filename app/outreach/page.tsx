@@ -103,7 +103,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           )}
         </Section>
 
-        <Section title="Candidates to Start Sequence">
+        <Section title="Candidates to Push to Outreach">
           <List empty="No selected candidates waiting to start.">
             {toStart.map((r) => (
               <Row key={`${r.x.campaign_id}${r.c.id}`}>
