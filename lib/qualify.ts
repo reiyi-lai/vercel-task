@@ -38,10 +38,12 @@ export function commercialState(s: Snapshot, a: Account) {
 }
 
 const LEVELS: EventBrief["min_seniority"][] = ["director", "vp", "svp", "c_suite"];
+// C-level: Chief, a C-level acronym, or President on its own (not Vice President).
+const C_LEVEL = /\bchief\b|\bc[a-z]{1,2}o\b|(?<!vice[\s-])\bpresident\b/;
 
 export function seniority(title: string): EventBrief["min_seniority"] | null {
   const t = title.toLowerCase();
-  if (/\bchief\b|\bc[a-z]{1,2}o\b|\bpresident\b/.test(t)) return "c_suite";
+  if (C_LEVEL.test(t)) return "c_suite";
   if (/\b(evp|svp)\b|executive vice president|senior vice president/.test(t)) return "svp";
   if (/\bvp\b|vice president|\bhead of\b/.test(t)) return "vp";
   if (/\bdirector\b/.test(t)) return "director";
@@ -78,13 +80,12 @@ export function matchPersona(title: string, personas: string[]) {
 const DEPARTMENTS = ["technology", "tech", "engineering", "digital", "commerce", "ecommerce", "information", "ai"];
 export const inTechDepartment = (title: string) => DEPARTMENTS.some((d) => titleWords(title).has(d));
 
-// Whether the title states a rank at or above the brief's minimum seniority: Chief (or a
-// C-level acronym) always; Senior/Executive Vice President from SVP down; Vice President from VP down; Director at Director.
+// Whether the title states a rank at or above the brief's minimum seniority: C-level always; Senior/Executive Vice President from SVP down; Vice President from VP down; Director at Director.
 export function holdsRank(title: string, min: EventBrief["min_seniority"]) {
   const t = title.toLowerCase();
   const svp = /\b(svp|evp)\b|(senior|executive) vice president/.test(t);
   const vp = svp || /\bvp\b|vice president/.test(t);
-  return /\bchief\b|\bc[a-z]{1,2}o\b/.test(t) || { c_suite: false, svp, vp, director: vp || /\bdirector\b/.test(t) }[min];
+  return C_LEVEL.test(t) || { c_suite: false, svp, vp, director: vp || /\bdirector\b/.test(t) }[min];
 }
 
 const SIXTY_DAYS = 60 * 86_400_000;

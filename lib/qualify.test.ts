@@ -40,6 +40,11 @@ it("The same executive qualifies differently per event", () => {
   expect(holdsRank("Vice President, Engineering", "svp")).toBe(false);
   expect(holdsRank("Director of Engineering", "director")).toBe(true);
   expect(holdsRank("CTO", "c_suite")).toBe(true);
+  // President on its own is C-level; Vice President isn't.
+  expect(holdsRank("President, Technology", "c_suite")).toBe(true);
+  expect(holdsRank("Vice President - AI Research & Innovation", "svp")).toBe(false);
+  expect(seniority("Vice President - AI Research & Innovation")).toBe("vp");
+  expect(seniority("Senior Vice President, Engineering")).toBe("svp");
   // Hye-jin: Director of Platform Engineering, excluded by the AI dinner's VP+ minimum.
   expect(check("Hye-jin", "ai-builder-dinner")).toMatchObject({ status: "Excluded", labels: [{ text: "Below VP and above" }] });
   // Adaeze: VP Platform Engineering in San Francisco.
