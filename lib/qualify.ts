@@ -54,15 +54,29 @@ const ACRONYMS: Record<string, string> = {
 };
 const words = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().split(" ");
 
-// The first persona whose every word is in the title. Acronyms expand both ways, and SVP/EVP count as VP.
-export function matchPersona(title: string, personas: string[]) {
+// A title's words, with acronyms expanded and SVP/EVP counting as VP.
+function titleWords(title: string) {
   const t = new Set(words(title));
   for (const w of [...t]) {
     if (ACRONYMS[w]) words(ACRONYMS[w]).forEach((x) => t.add(x));
     if (w === "svp" || w === "evp") t.add("vp");
   }
-  return personas.find((p) => words(ACRONYMS[p.toLowerCase()] ?? p).every((w) => t.has(w)));
+  return t;
 }
+
+// The first persona whose every word is in the title. Acronyms expand both ways. A security title only matches a
+// security persona, so a CISO isn't taken for a CIO.
+export function matchPersona(title: string, personas: string[]) {
+  const t = titleWords(title);
+  return personas.find((p) => {
+    const need = words(ACRONYMS[p.toLowerCase()] ?? p);
+    return need.every((w) => t.has(w)) && (!t.has("security") || need.includes("security"));
+  });
+}
+
+// Whether the title sits in technology, engineering, digital or commerce (a CIO's information counts; so does AI).
+const DEPARTMENTS = ["technology", "tech", "engineering", "digital", "commerce", "ecommerce", "information", "ai"];
+export const inTechDepartment = (title: string) => DEPARTMENTS.some((d) => titleWords(title).has(d));
 
 // Whether the title states a rank at or above the brief's minimum seniority: Chief (or a
 // C-level acronym) always; Senior/Executive Vice President from SVP down; Vice President from VP down; Director at Director.

@@ -90,3 +90,7 @@ Id,FirstName,LastName,Email,Title,AccountId,OwnerId,LinkedIn_URL__c,Intro_Progra
 003Sb0000090090AAA,Lee,Klarich,,Chief Product & Technology Officer and Board Member,001Sb0000070041AAA,,https://www.linkedin.com/in/leeklarich,,Current,Los Gatos,CA,37.2266,-121.9747,false
 003Sb0000090091AAA,Steve,Dee,,Chief Technology Officer,001Sb0000070042AAA,005Sb0000050002AAA,https://www.linkedin.com/in/stevenedee,,Current,Milwaukee,WI,43.0389,-87.9065,false
 003Sb0000090092AAA,Sujal,Patel,,Senior Vice President of Technology,001Sb0000070042AAA,005Sb0000050002AAA,https://www.linkedin.com/in/sujalpatel,,Current,Chicago,IL,41.8781,-87.6298,false
+003Sb0000090093AAA,Jason,Dickerson,,"Director of Engineering (Customer Experience - Web, Ecommerce, Post Purchase)",001Sb0000070020AAA,005Sb0000050002AAA,https://www.linkedin.com/in/jason-dickerson-b2233,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090094AAA,Benjamin,Sherry,,"Director of Engineering, Platform Services",001Sb0000070020AAA,005Sb0000050002AAA,https://www.linkedin.com/in/benjaminsherry,,Current,Seattle,WA,47.6038,-122.3301,false
+003Sb0000090095AAA,Adam,Cobb,,"Director, Engineering Leader - AI",001Sb0000070042AAA,005Sb0000050002AAA,https://www.linkedin.com/in/adam-g-cobb,,Current,Portland,OR,45.5152,-122.6784,false
+003Sb0000090096AAA,Paul,Nagorney,,"Director, Engineering Leader | Digital",001Sb0000070042AAA,005Sb0000050002AAA,https://www.linkedin.com/in/paul-nagorney-02638219,,Current,Chicago,IL,41.8781,-87.6298,false

@@ -22,7 +22,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const sellers = s.users.filter((u) => u.title === "Account Executive" || u.title === "BDR");
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
-  const { due, replies, toSelect, stats } = myQueue(s, me.id);
+  const { due, replies, toSelect, toStart, stats } = myQueue(s, me.id);
   const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
     <div className="flex min-w-0 items-center gap-3">
@@ -101,6 +101,17 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           ) : (
             <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">You’ve selected candidates at every account in your upcoming events.</p>
           )}
+        </Section>
+
+        <Section title="Candidates to Start Sequence">
+            {toStart.map((r) => (
+              <Row key={`${r.x.campaign_id}${r.c.id}`}>
+                {who(r)}
+                <Status color="gray">Not started</Status>
+                <Link href={plan(r.e.slug, r.c.id)} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
+              </Row>
+            ))}
+          </List>
         </Section>
 
         <Section title="Due Now">

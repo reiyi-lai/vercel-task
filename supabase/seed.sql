@@ -145,7 +145,11 @@ insert into salesforce_contacts (id, first_name, last_name, email, title, accoun
   ('003Sb0000090089AAA', 'Helen', 'London', null, 'Chief Information Security Officer', '001Sb0000070041AAA', null, 'https://www.linkedin.com/in/henri-susila-6b593071', 'Current', null, null, false),
   ('003Sb0000090090AAA', 'Lee', 'Klarich', null, 'Chief Product & Technology Officer and Board Member', '001Sb0000070041AAA', null, 'https://www.linkedin.com/in/leeklarich', 'Current', 'Los Gatos', 'CA', false),
   ('003Sb0000090091AAA', 'Steve', 'Dee', null, 'Chief Technology Officer', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/stevenedee', 'Current', 'Milwaukee', 'WI', false),
-  ('003Sb0000090092AAA', 'Sujal', 'Patel', null, 'Senior Vice President of Technology', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/sujalpatel', 'Current', 'Chicago', 'IL', false);
+  ('003Sb0000090092AAA', 'Sujal', 'Patel', null, 'Senior Vice President of Technology', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/sujalpatel', 'Current', 'Chicago', 'IL', false),
+  ('003Sb0000090093AAA', 'Jason', 'Dickerson', null, 'Director of Engineering (Customer Experience - Web, Ecommerce, Post Purchase)', '001Sb0000070020AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/jason-dickerson-b2233', 'Current', 'Seattle', 'WA', false),
+  ('003Sb0000090094AAA', 'Benjamin', 'Sherry', null, 'Director of Engineering, Platform Services', '001Sb0000070020AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/benjaminsherry', 'Current', 'Seattle', 'WA', false),
+  ('003Sb0000090095AAA', 'Adam', 'Cobb', null, 'Director, Engineering Leader - AI', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/adam-g-cobb', 'Current', 'Portland', 'OR', false),
+  ('003Sb0000090096AAA', 'Paul', 'Nagorney', null, 'Director, Engineering Leader | Digital', '001Sb0000070042AAA', '005Sb0000050002AAA', 'https://www.linkedin.com/in/paul-nagorney-02638219', 'Current', 'Chicago', 'IL', false);
 
 insert into salesforce_opportunities (id, name, account_id, owner_id, stage, amount, is_closed, is_won) values
   ('006Sb0000080001AAA', 'Halvorsen Retail Group — Platform expansion', '001Sb0000070011AAA', '005Sb0000050002AAA', 'Proposal', 400000, false, false),

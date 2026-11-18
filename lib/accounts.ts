@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { loadSnapshot, TABLES, type AccountSignal, type EventBrief } from "./data";
 import { geocode } from "./geocode";
-import { matchPersona } from "./qualify";
+import { inTechDepartment, matchPersona } from "./qualify";
 import { initiativeSignals, leadershipSignals, sumbleOrgId } from "./signals";
 import { profileKey, sumble, type SumblePerson } from "./sumble";
 import { expireFromRoute, ok, write } from "./write";
@@ -70,10 +70,10 @@ const LEVELS: Record<EventBrief["min_seniority"], string[]> = {
 };
 const FUNCTIONS = ["Engineering & R&D", "Information Technology", "Product & Design", "Executive"];
 
-// People at the account who match the event's target personas and aren't contacts yet, saved as the account's
-// found executives for the event (replacing the last search). One search for senior people in technology, product and
-// executive functions, names and titles only (about 2 credits each); titles are matched against the personas here,
-// then only the matches get their LinkedIn URL and location (about 3 credits each).
+// People at the account who match the event's target personas and aren't contacts yet, saved as the account's found
+// executives for the event (replacing the last search). One search for senior people in technology, product and
+// executive functions, names and titles only (about 2 credits each); titles must name a technology, engineering, digital
+// or commerce role and match a persona, then only the matches get their LinkedIn URL and location (about 3 credits each).
 export async function findExecutives(accountId: string, campaignId: string) {
   const s = await loadSnapshot();
   const a = s.accounts.find((x) => x.id === accountId);
@@ -90,7 +90,10 @@ export async function findExecutives(accountId: string, campaignId: string) {
     });
     const known = new Set(s.contacts.filter((c) => c.account_id === a.id).map((c) => `${c.first_name} ${c.last_name}`.toLowerCase()));
     const matches = (search.people as SumblePerson[])
-      .filter((p) => !known.has(p.attributes?.name?.toLowerCase() ?? "") && matchPersona(p.attributes?.job_title ?? "", brief.personas))
+      .filter((p) => {
+        const title = p.attributes?.job_title ?? "";
+        return !known.has(p.attributes?.name?.toLowerCase() ?? "") && inTechDepartment(title) && matchPersona(title, brief.personas);
+      })
       .slice(0, 10);
     const details = matches.length
       ? await sumble("people", { people: matches.map((p) => ({ person_id: p.person_id })), select: { attributes: ["name", "job_title", "linkedin_url", "location"] } })

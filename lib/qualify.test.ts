@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { loadSampleSnapshot } from "./csv";
-import { accountGate, holdsRank, matchPersona, qualifyContact, seniority } from "./qualify";
+import { accountGate, holdsRank, inTechDepartment, matchPersona, qualifyContact, seniority } from "./qualify";
 
 const s = loadSampleSnapshot();
 const brief = (slug: string) => s.events.find((b) => b.campaign_id === s.events.find((e) => e.slug === slug)!.campaign_id)!;
@@ -16,6 +16,13 @@ it("Titles map to seniority and personas, acronyms included", () => {
   expect(matchPersona("Chief Technology and Information Officer", ["CTO"])).toBe("CTO");
   expect(matchPersona("SVP Digital Commerce", ["VP Digital Commerce"])).toBe("VP Digital Commerce");
   expect(matchPersona("SVP Engineering", ["VP Platform Engineering"])).toBeUndefined();
+  expect(matchPersona("Chief Information Security Officer", ["CIO"])).toBeUndefined();
+  expect(matchPersona("Chief Information Security Officer", ["CISO"])).toBe("CISO");
+  expect(inTechDepartment("CIO")).toBe(true);
+  expect(inTechDepartment("SVP Digital Commerce")).toBe(true);
+  expect(inTechDepartment("VP Engineering")).toBe(true);
+  expect(inTechDepartment("Chief Financial Officer")).toBe(false);
+  expect(inTechDepartment("VP Marketing")).toBe(false);
 });
 
 it("Accounts outside the brief's verticals or tiers are excluded, with the reason", () => {

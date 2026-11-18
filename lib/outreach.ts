@@ -141,6 +141,9 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   const isBdr = s.users.find((u) => u.id === userId)?.title === "BDR";
   const byDate = eventsByDate(s, now);
   const upcoming = byDate.filter((x) => x.days >= 0).map((x) => x.e);
+  // Selected for an upcoming event with the sequence not started, where this user sends the first step.
+  const toStart = rows.filter(({ e, x, c }) =>
+    !x.started_at && !x.outcome && upcoming.includes(e) && e.sequence.length && sender(s, e.campaign_id, e.sequence[0], c)?.id === userId);
   const myAccounts = (e: (typeof s.events)[number]) =>
     eventAccounts(s, e).fits.filter((p) => (sentByBdr(e.outreach_lead, p.account.owner_id) ? isBdr : p.account.owner_id === userId));
   const toSelect = upcoming
@@ -153,5 +156,5 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
       return { e, accounts: myAccounts(e).length, candidates: mine.length, emails, accepted: mine.filter((r) => r.x.outcome === "Accepted").length };
     })
     .filter((x) => x.accounts || x.candidates);
-  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"), toSelect, stats };
+  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"), toSelect, toStart, stats };
 }
