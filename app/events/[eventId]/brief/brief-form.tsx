@@ -16,7 +16,7 @@ const isDate = (d: string) => /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Dat
 
 type Props = {
   brief: EventBrief;
-  event: { slug: string; startDate: string; endDate: string | null; seats: number | null };
+  event: { slug: string; name?: string; shortName?: string; startDate: string; endDate: string | null; seats: number | null };
   confirmed: number; // guests already confirmed in Salesforce
   create?: boolean; // a new event: also asks for its name, and Save creates it
 };
@@ -32,8 +32,8 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
   const [seats, setSeats] = useState(initial.seats);
   const [guests, setGuests] = useState(initial.guests);
   const [personas, setPersonas] = useState(brief.personas.join(", "));
-  const [name, setName] = useState("");
-  const [shortName, setShortName] = useState("");
+  const [name, setName] = useState(event.name ?? "");
+  const [shortName, setShortName] = useState(event.shortName ?? "");
   const [error, setError] = useState<string>();
   const [pending, startTransition] = useTransition();
   const set = (patch: Partial<EventBrief>) => setB({ ...b, ...patch });

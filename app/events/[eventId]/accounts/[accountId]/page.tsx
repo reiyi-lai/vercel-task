@@ -23,8 +23,8 @@ export default function AccountPlanPage({ params }: Props) {
   return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><AccountPlan params={params} /></Suspense>;
 }
 
-// One account's plan for one event: the shared context first (relationship, usage, signals, industry, event history),
-// then its executives, where the BDR picks who to invite and opens each person's invitation plan.
+// One account's plan for one event: usage, relationship and event history, then its executives, where the BDR picks who
+// to invite and opens each person's invitation plan, then its signals.
 async function AccountPlan({ params }: Pick<Props, "params">) {
   const { eventId, accountId } = await params;
   const s = await loadSnapshot();
@@ -54,50 +54,50 @@ async function AccountPlan({ params }: Pick<Props, "params">) {
       </PageHeader>
 
       <Page>
-        <AccountContext s={s} account={account} brief={brief} />
-
-        <Section title="Executives" description="Qualified against this event’s brief. Add candidates to invite, then open their invitation plan for the outreach drafts.">
-          {live && (
-            <div className="mb-4">
-              <FindExecutives
-                accountId={account.id}
-                campaignId={event.campaign_id}
-                found={s.found_executives.filter((x) => x.account_id === account.id && x.campaign_id === event.campaign_id)}
-                inCrm={[...inCrm]}
-              />
-            </div>
-          )}
-          <ul className="material-base divide-y divide-gray-alpha-400">
-            {plan.executives.map((e) => {
-              const c = e.contact;
-              return (
-                <li key={c.id} className={`grid items-start gap-3 px-5 py-4 lg:grid-cols-[260px_1fr_160px] lg:gap-6 ${e.status === "Excluded" ? "opacity-60" : ""}`}>
-                  <div className="flex items-center gap-3">
-                    <Avatar name={`${c.first_name} ${c.last_name}`} />
-                    <div className="min-w-0">
-                      <PersonName name={`${c.first_name} ${c.last_name}`} linkedinUrl={c.linkedin_url} />
-                      <p className="text-label-12 text-gray-900">{c.title}</p>
+        <AccountContext s={s} account={account} brief={brief}>
+          <Section title="Executives" description="Qualified against this event’s brief. Add candidates to invite, then open their invitation plan for the outreach drafts.">
+            {live && (
+              <div className="mb-4">
+                <FindExecutives
+                  accountId={account.id}
+                  campaignId={event.campaign_id}
+                  found={s.found_executives.filter((x) => x.account_id === account.id && x.campaign_id === event.campaign_id)}
+                  inCrm={[...inCrm]}
+                />
+              </div>
+            )}
+            <ul className="material-base divide-y divide-gray-alpha-400">
+              {plan.executives.map((e) => {
+                const c = e.contact;
+                return (
+                  <li key={c.id} className={`grid items-start gap-3 px-5 py-4 lg:grid-cols-[260px_1fr_160px] lg:gap-6 ${e.status === "Excluded" ? "opacity-60" : ""}`}>
+                    <div className="flex items-center gap-3">
+                      <Avatar name={`${c.first_name} ${c.last_name}`} />
+                      <div className="min-w-0">
+                        <PersonName name={`${c.first_name} ${c.last_name}`} linkedinUrl={c.linkedin_url} />
+                        <p className="text-label-12 text-gray-900">{c.title}</p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Status color={statusColor[e.status]}>{e.status}</Status>
-                    <ul className="flex flex-wrap gap-x-4 gap-y-1">
-                      {e.labels.map((l) => <li key={l.text}><Status color={l.color}><span className="text-label-12">{l.text}</span></Status></li>)}
-                    </ul>
-                  </div>
-                  <div className="flex flex-col gap-2 lg:items-end">
-                    {e.status !== "Excluded" && (
-                      <>
-                        <SelectExecutive campaignId={event.campaign_id} contactId={c.id} name={`${c.first_name} ${c.last_name}`} selected={e.selected} />
-                        <Link href={`/events/${event.slug}/candidates/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
-                      </>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </Section>
+                    <div className="space-y-1.5">
+                      <Status color={statusColor[e.status]}>{e.status}</Status>
+                      <ul className="flex flex-wrap gap-x-4 gap-y-1">
+                        {e.labels.map((l) => <li key={l.text}><Status color={l.color}><span className="text-label-12">{l.text}</span></Status></li>)}
+                      </ul>
+                    </div>
+                    <div className="flex flex-col gap-2 lg:items-end">
+                      {e.status !== "Excluded" && (
+                        <>
+                          <SelectExecutive campaignId={event.campaign_id} contactId={c.id} name={`${c.first_name} ${c.last_name}`} selected={e.selected} />
+                          <Link href={`/events/${event.slug}/candidates/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
+                        </>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </Section>
+        </AccountContext>
       </Page>
     </>
   );

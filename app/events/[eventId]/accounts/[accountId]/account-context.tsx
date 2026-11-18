@@ -10,9 +10,9 @@ import { AddToCrm, RefreshSignals } from "./controls";
 const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const CATEGORY = { leadership: "Leadership Change", initiative: "AI Initiative" };
 
-// An account's shared context for an event: Vercel usage, relationship, event history and signals. The top of its
-// account plan, and the Account Context on each candidate's invitation plan.
-export default function AccountContext({ s, account, brief }: { s: Snapshot; account: Account; brief: EventBrief }) {
+// An account's shared context for an event: Vercel usage, relationship, event history and signals. The account plan
+// (which puts its executives in as children, before the signals), and the Account Context on each invitation plan.
+export default function AccountContext({ s, account, brief, children }: { s: Snapshot; account: Account; brief: EventBrief; children?: ReactNode }) {
   const plan = accountPlan(s, account, brief);
   const contacts = s.contacts.filter((c) => c.account_id === account.id);
   const name = (id: string) => contacts.find((c) => c.id === id)!;
@@ -88,6 +88,8 @@ export default function AccountContext({ s, account, brief }: { s: Snapshot; acc
             )}
           </Block>
         </div>
+
+        {children}
 
         <Section
           title="Signals"
