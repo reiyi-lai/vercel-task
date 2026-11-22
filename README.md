@@ -18,7 +18,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 - **Head of Marketing:** **All Events** shows overview of statistics and dates for all events, clicking on each event card also reveals **Overview** of each event.
 - **Marketing:** Each event in the sidebar, in workflow order: **Brief**, **Contacts**, **Invites** with root page showing progress for that event.
-- **AEs/BDRs:** **For AE/BDR** lists their steps due across every event, one row per candidate (with the draft and Open in Outreach), and replies to answer. Slack pings them about the same steps daily at 9am.
+- **AEs/BDRs:** **For AE/BDR** is their to-do list across every event: accounts to select candidates at (open one with its chevron to tick executives right there, the same rows as **Contacts**), candidates to push to Outreach, steps due (with the draft and Open in Outreach), and replies to answer. Slack pings them about due steps daily at 9am.
 
 ## Sample Flow
 
@@ -28,15 +28,15 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
    - Pick an AE or an engagement level from the dropdowns, or click **Show Qualified Only**. E.g. **Cold Contacts Only** with **Show Qualified Only** for net-new executives.
    - Click **Find More Executives** on an account (e.g. **Visa**) to search Sumble for technical leaders new in their role who pass this event's seniority gate, topped up to 5 with people in its target personas. It takes up to a minute. Results show under the account's contacts with whether they match a persona and when they started; **Add to Contacts** saves them to the CRM, where you can tick them as candidates.
    - Tick the executives to invite and click **Add Candidates**.
-3. **Invites.** One tab per stage: **Pending Approval**, **Pending Push to Outreach**, **In Sequence**, **Replied**, **Accepted**, **Declined**.
-   - **Pending Approval:** marketing clicks **Approve** (or **Approve Selected**) to give candidates their seats; the AE/BDR gets a Slack message that they're ready.
-   - **Pending Push to Outreach:** the AE/BDR checks the copy, then **Push to Outreach** kickstarts the outreach sequence, with a Slack card to the sender. Clicking **Find Email** fetches a missing email via Sumble if needed.
+3. **Invites.** One tab per stage: **Pending Marketing Approval**, **Pending Send (via Outreach)**, **Sent**, **Replied**, **Accepted**, **Declined**.
+   - **Pending Marketing Approval:** marketing clicks **Approve** (or **Approve Selected**) to give candidates their seats; the AE/BDR gets a Slack message that they're ready.
+   - **Pending Send (via Outreach):** the AE/BDR checks the copy, then **Push to Outreach** hands the sequence to Outreach, which sends step 1 right away (so **Sent** always means the first email is out), with a Slack message to the sender. Clicking **Find Email** fetches a missing email via Sumble if needed.
 4. **Invitation plan** (click **Invitation Plan →**).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.
    - Temporary setup: **Mark Sent** once it goes out. Candidate outcome can be updated via **Replied, Accepted or Declined**.
 5. **Overview.** Shortlisted, invited and accepted counts against the targets, how many candidates are at each stage (click one to open its tab on Invites), and Recent Activity lists the Slack alerts.
-6. **For AE/BDR.** Pick who you're viewing as (an AE or BDR) to see their queue across all events.
+6. **For AE/BDR.** Pick who you're viewing as (an AE or BDR) to see their queue across all events. Open an account under **Accounts to Select Candidates**, tick executives and click **Add Candidates** without leaving the page. On **Contacts**, the AE dropdown's **No AE (BDR accounts)** shows the accounts BDRs work.
 
 ## Architecture
 

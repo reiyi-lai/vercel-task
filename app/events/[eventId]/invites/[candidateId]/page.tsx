@@ -5,8 +5,8 @@ import { Suspense } from "react";
 import { Avatar, Badge, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { vercelUsage } from "@/lib/derive";
-import { draftCopy, execName, sender } from "@/lib/outreach";
-import { pushDeadline, schedule, shortDate } from "@/lib/sequence";
+import { stepViews } from "@/lib/outreach";
+import { pushDeadline } from "@/lib/sequence";
 import { engagement } from "@/lib/qualify";
 import Outreach from "../outreach";
 
@@ -38,21 +38,7 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
   const name = `${target.first_name} ${target.last_name}`;
   const usage = vercelUsage(s, account.id);
   const outreach = s.candidates.find((x) => x.campaign_id === event.campaign_id && x.contact_id === candidateId);
-  const day = (d: Date | null) => d && shortDate(d);
-  const steps = schedule(event.sequence, outreach).map(({ step, index, due, sent, status }) => {
-    const by = sender(s, event.campaign_id, step, target);
-    const done = outreach?.sent.find((x) => x.step === index);
-    // The copy that went out once sent; before that, the saved edit or the template filled in.
-    const copy = done?.body ? { subject: done.subject ?? "", body: done.body } : draftCopy(s, event.campaign_id, target, index);
-    return {
-      index, day: step.day, channel: step.channel, ...copy,
-      sender: step.sender === "Exec"
-        ? `${execName(s, event.campaign_id, target) ?? "Exec unassigned"} (draft by ${by ? by.first_name : "AE"})`
-        : by ? `${by.first_name} ${by.last_name}` : `${step.sender} unassigned`,
-      edited: !done && !!outreach?.drafts?.[index],
-      status, due: day(due), sent: day(sent) && `${day(sent)}${done?.by ? ` by ${done.by} in Slack` : ""}`,
-    };
-  });
+  const steps = stepViews(s, event, target, outreach);
   const base = `/events/${event.slug}`;
 
   return (

@@ -1,4 +1,4 @@
-import { loadSnapshot, TABLES, type Contact, type SequenceStep, type Snapshot } from "./data";
+import { loadSnapshot, TABLES, type Candidate, type Contact, type EventBrief, type SequenceStep, type Snapshot } from "./data";
 import { sentByBdr } from "./brief";
 import { eventOverview, eventsByDate } from "./derive";
 import { eventAccounts } from "./qualify";
@@ -45,6 +45,25 @@ export function draftCopy(s: Snapshot, campaignId: string, c: Contact, index: nu
   const step = s.events.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const vars = messageVars(s, campaignId, c, step);
   return { subject: render(step.subject, vars), body: render(step.body, vars) };
+}
+
+// A candidate's sequence for the invitation plan: each step's copy (what went out once sent; before that, the saved edit
+// or the template filled in), sender, due date and status.
+export function stepViews(s: Snapshot, event: EventBrief, target: Contact, outreach: Candidate | undefined) {
+  const day = (d: Date | null) => d && shortDate(d);
+  return schedule(event.sequence, outreach).map(({ step, index, due, sent, status }) => {
+    const by = sender(s, event.campaign_id, step, target);
+    const done = outreach?.sent.find((x) => x.step === index);
+    const copy = done?.body ? { subject: done.subject ?? "", body: done.body } : draftCopy(s, event.campaign_id, target, index);
+    return {
+      index, day: step.day, channel: step.channel, ...copy,
+      sender: step.sender === "Exec"
+        ? `${execName(s, event.campaign_id, target) ?? "Exec unassigned"} (draft by ${by ? by.first_name : "AE"})`
+        : by ? `${by.first_name} ${by.last_name}` : `${step.sender} unassigned`,
+      edited: !done && !!outreach?.drafts?.[index],
+      status, due: day(due), sent: day(sent) && `${day(sent)}${done?.by ? ` by ${done.by} in Slack` : ""}`,
+    };
+  });
 }
 
 // Records a step as sent, with the copy that actually went out: the drafted copy unless the sender edited it.
@@ -133,9 +152,9 @@ export async function sendReminders(campaignId: string) {
 }
 
 // One AE's or BDR's queue across every event: the steps they send that are due or overdue (overdue first), replies on
-// their candidates to answer, the accounts in upcoming events they've yet to select anyone at, and their numbers per
-// event. "Their" candidates: the AE owns the contact, or the BDR is assigned for the event. "Their" accounts: the AE owns
-// the account, unless a BDR sends its outreach (then every BDR sees it).
+// their candidates to answer, and the accounts in upcoming events they've yet to select anyone at. "Their" candidates:
+// the AE owns the contact, or the BDR is assigned for the event. "Their" accounts: the AE owns the account, unless a BDR
+// sends its outreach (then every BDR sees it).
 export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   const rows = s.events.flatMap((e) =>
     s.candidates.filter((x) => x.campaign_id === e.campaign_id).map((x) => {
@@ -165,12 +184,5 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   const toSelect = upcoming
     .map((e) => ({ e, accounts: myAccounts(e).filter((p) => !p.executives.some((x) => x.selected)) }))
     .filter((x) => x.accounts.length);
-  const stats = byDate
-    .map(({ e }) => {
-      const mine = rows.filter((r) => r.mine && r.e === e);
-      const emails = mine.reduce((n, r) => n + r.x.sent.filter((x) => e.sequence[x.step]?.channel === "Email").length, 0);
-      return { e, accounts: myAccounts(e).length, candidates: mine.length, emails, accepted: mine.filter((r) => r.x.outcome === "Accepted").length };
-    })
-    .filter((x) => x.accounts || x.candidates);
-  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"), toSelect, toStart, stats };
+  return { due, replies: rows.filter((r) => r.mine && r.x.outcome === "Replied"), toSelect, toStart };
 }

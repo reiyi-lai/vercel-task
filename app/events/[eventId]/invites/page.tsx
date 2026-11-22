@@ -69,7 +69,7 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
   const EMPTY: Record<string, string> = {
     approval: "No one waiting for approval.",
     push: "No approved candidates waiting to be pushed to Outreach.",
-    sequence: "No one in the sequence yet.",
+    sequence: "No invites sent yet.",
     replied: "No replies yet.",
     accepted: "No acceptances yet.",
     declined: "No declines.",
@@ -150,7 +150,7 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
                       ) : deadline ? (
                         <Status color={deadline.color}><span className="text-label-12">{deadline.text}</span></Status>
                       ) : (
-                        <Status color={stage.color}><span className="text-label-12">{approved ? "Approved · not pushed" : "For Marketing Approval"}</span></Status>
+                        <Status color={stage.color}><span className="text-label-12">{approved ? "Approved · not pushed" : "Pending Marketing Approval"}</span></Status>
                       )}
                     </div>
                     <div className="flex flex-col items-start gap-2 xl:justify-self-end">

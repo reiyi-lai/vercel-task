@@ -4,9 +4,14 @@ import { connection } from "next/server";
 import { Suspense, type ReactNode } from "react";
 import { Avatar, Button, Page, PageHeader, Section, Status, TabLinks } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { myQueue } from "@/lib/outreach";
+import { myQueue, stepViews } from "@/lib/outreach";
 import { formatDate } from "@/lib/derive";
 import { daysUntil, OUTREACH_URL, shortDate } from "@/lib/sequence";
+import { SelectionProvider } from "@/components/selection";
+import { AccountRows, ContactsTable, foundFor, isLive } from "../events/[eventId]/contacts/account-rows";
+import { AddCandidatesBar, FindExecutives } from "../events/[eventId]/contacts/controls";
+import Outreach from "../events/[eventId]/invites/outreach";
+import RowToggle from "./row-toggle";
 
 export const metadata: Metadata = { title: "For AE/BDR" };
 
@@ -22,16 +27,17 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const sellers = s.users.filter((u) => u.title === "Account Executive" || u.title === "BDR");
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
-  const { due, replies, toSelect, toStart, stats } = myQueue(s, me.id);
+  const { due, replies, toSelect, toStart } = myQueue(s, me.id);
   const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/invites/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
-    <div className="flex min-w-0 items-center gap-3">
+    // spans, not divs, as it can sit inside a RowToggle's button
+    <span className="flex min-w-0 items-center gap-3">
       <Avatar name={`${r.c.first_name} ${r.c.last_name}`} />
-      <div className="min-w-0">
-        <p className="truncate text-label-14 font-medium">{r.c.first_name} {r.c.last_name}</p>
-        <p className="truncate text-label-12 text-gray-900">{r.c.title} · {r.account} · {r.e.short_name}</p>
-      </div>
-    </div>
+      <span className="min-w-0">
+        <span className="block truncate text-label-14 font-medium">{r.c.first_name} {r.c.last_name}</span>
+        <span className="block truncate text-label-12 text-gray-900">{r.c.title} · {r.account} · {r.e.short_name}</span>
+      </span>
+    </span>
   );
 
   return (
@@ -47,23 +53,6 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
         <h1 className="text-heading-32">For AE/BDR</h1>
       </PageHeader>
       <Page>
-        {stats.length > 0 && (
-          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {stats.map(({ e, accounts, emails, accepted }) => (
-              <li key={e.campaign_id} className="material-base p-4">
-                <Link href={`/events/${e.slug}`} className="text-label-14 font-medium hover:underline">{e.short_name}</Link>
-                <dl className="mt-3 grid grid-cols-3 gap-3">
-                  {[["Accounts", accounts], ["Emails Sent", emails], ["Accepted", accepted]].map(([label, n]) => (
-                    <div key={label}>
-                      <dt className="text-label-12 text-gray-900">{label}</dt>
-                      <dd className="text-heading-24 tabular-nums">{n}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </li>
-            ))}
-          </ul>
-        )}
 
 <Section title="Accounts to Select Candidates">
           {toSelect.length ? (
@@ -82,18 +71,32 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                         </Status>
                       )}
                     </div>
-                    <List empty="">
-                      {accounts.map((p) => (
-                        <Row key={p.account.id}>
-                          <div className="min-w-0">
-                            <p className="truncate text-label-14 font-medium">{p.account.name}</p>
-                            <p className="truncate text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</p>
-                          </div>
-                          <span className="text-label-13 text-gray-900">{((n) => `${n} qualified ${n === 1 ? "executive" : "executives"}`)(p.executives.filter((x) => x.status === "Qualified").length)}</span>
-                          <Link href={`/events/${e.slug}/contacts${me.title === "BDR" ? "" : `?ae=${me.id}`}#${p.account.id}`} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Select Candidates →</Link>
-                        </Row>
-                      ))}
-                    </List>
+                    {/* Open an account to tick its executives here, the same rows as Contacts; Add Candidates covers this event. */}
+                    <SelectionProvider>
+                      <List empty="">
+                        {accounts.map((p) => {
+                          const found = foundFor(s, p, e.campaign_id);
+                          return (
+                            <RowToggle
+                              key={p.account.id}
+                              name={
+                                <>
+                                  <span className="block truncate text-label-14 font-medium">{p.account.name}</span>
+                                  <span className="block truncate text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</span>
+                                </>
+                              }
+                              summary={<span className="text-label-13 text-gray-900">{((n) => `${n} qualified ${n === 1 ? "executive" : "executives"}`)(p.executives.filter((x) => x.status === "Qualified").length)}</span>}
+                              aside={isLive(p) && <FindExecutives accountId={p.account.id} campaignId={e.campaign_id} searched={found.length > 0} />}
+                            >
+                              <ContactsTable bare>
+                                <AccountRows plan={p} found={found} campaignId={e.campaign_id} accountLine={false} />
+                              </ContactsTable>
+                            </RowToggle>
+                          );
+                        })}
+                      </List>
+                      <AddCandidatesBar campaignId={e.campaign_id} />
+                    </SelectionProvider>
                   </div>
                 );
               })}
@@ -103,14 +106,27 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           )}
         </Section>
 
-        <Section title="Candidates to Push to Outreach" description="Once marketing approves a candidate, check the copy on their plan and push them to Outreach by the next day. Slack pings you at 9am when a push is overdue.">
+        {/* Open a candidate to check the drafts and push them to Outreach right here, the same sequence as their plan. */}
+        <Section title="Candidates to Send Invites">
           <List empty="No selected candidates waiting to start.">
             {toStart.map((r) => (
-              <Row key={`${r.x.campaign_id}${r.c.id}`}>
-                {who(r)}
-                {r.deadline ? <Status color={r.deadline.color}>{r.deadline.text}</Status> : <Status color="hollow">Pending marketing approval</Status>}
-                <Link href={plan(r.e.slug, r.c.id)} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
-              </Row>
+              <RowToggle
+                key={`${r.x.campaign_id}${r.c.id}`}
+                name={who(r)}
+                summary={r.deadline ? <Status color={r.deadline.color}>{r.deadline.text}</Status> : <Status color="hollow">Pending marketing approval</Status>}
+                aside={null}
+              >
+                <div className="pt-2">
+                  <Outreach
+                    campaignId={r.e.campaign_id}
+                    contactId={r.c.id}
+                    outreach={r.x}
+                    steps={stepViews(s, r.e, r.c, r.x)}
+                    bare
+                    to={{ email: r.c.email, linkedinUrl: r.c.linkedin_url?.includes("linkedin.example") ? null : r.c.linkedin_url }}
+                  />
+                </div>
+              </RowToggle>
             ))}
           </List>
         </Section>
@@ -135,7 +151,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           </List>
         </Section>
 
-        <Section title="Replies to Answer" description="Answer within a day, then mark them Accepted or Declined on their plan.">
+        <Section title="Replies to Answer" description="Answer within a day, and mark them Accepted or Declined on their plan.">
           <List empty="No replies waiting.">
             {replies.map((r) => (
               <Row key={`${r.x.campaign_id}${r.c.id}`}>

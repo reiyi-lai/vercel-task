@@ -16,10 +16,11 @@ const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
 
 // The candidate's outreach for this event: the event's sequence with each step's filled-in copy, due date and status. Outreach sends the steps and reports back what's sent; Open in Outreach goes to the prospect there.
 // to: where steps go. Email steps link a mailto with the step's copy filled in; LinkedIn steps link the profile.
-// deadline: when an approved candidate must be pushed to Outreach by.
-export default function Outreach({ campaignId, contactId, outreach, steps, to, deadline }: {
+// deadline: when an approved candidate must be pushed to Outreach by. bare: just the steps, without the section's title
+// and status, for a row that already shows them (the AE/BDR page); Push to Outreach then sits on step 1's row.
+export default function Outreach({ campaignId, contactId, outreach, steps, to, deadline, bare = false }: {
   campaignId: string; contactId: string; outreach?: Candidate; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
-  deadline?: { text: string; color: DotColor } | null;
+  deadline?: { text: string; color: DotColor } | null; bare?: boolean;
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
@@ -41,22 +42,11 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to, d
   const isOpen = (i: number) => (i === nextUnsent || i === linked) !== flipped.has(i);
   const run = (action: () => Promise<string | undefined>) => startTransition(async () => setError(await action()));
   const started = !!outreach?.started_at;
+  const push = !started && outreach?.approved_at && (
+    <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Push to Outreach</Button>
+  );
 
-  return (
-    <Section
-      title="Outreach Sequence"
-      aside={
-        !started &&
-        (outreach?.approved_at ? (
-          <div className="flex flex-wrap items-center gap-3">
-            {deadline && <Status color={deadline.color}>{deadline.text}</Status>}
-            <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Push to Outreach</Button>
-          </div>
-        ) : (
-          <Status color="hollow">Pending marketing approval</Status>
-        ))
-      }
-    >
+  const body = (
       <div className="space-y-4">
         {error && <p className="text-label-13 text-red-900">{error}</p>}
         {outreach?.outcome && <Status color={outreach.outcome === "Accepted" ? "green" : outreach.outcome === "Declined" ? "red" : "blue"}>{outreach.outcome}: remaining steps are stopped</Status>}
@@ -98,6 +88,7 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to, d
                     {started && x.status !== "Sent" && x.status !== "Stopped" && (
                       <Button href={OUTREACH_URL}>Open in Outreach</Button>
                     )}
+                    {bare && x.index === 0 && push}
                   </div>
                 </div>
                 {isOpen(x.index) && (
@@ -158,6 +149,24 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to, d
           </div>
         )}
       </div>
+  );
+  if (bare) return body;
+  return (
+    <Section
+      title="Outreach Sequence"
+      aside={
+        !started &&
+        (push ? (
+          <div className="flex flex-wrap items-center gap-3">
+            {deadline && <Status color={deadline.color}>{deadline.text}</Status>}
+            {push}
+          </div>
+        ) : (
+          <Status color="hollow">Pending marketing approval</Status>
+        ))
+      }
+    >
+      {body}
     </Section>
   );
 }

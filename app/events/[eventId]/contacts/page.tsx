@@ -10,7 +10,7 @@ import { eventAccounts } from "@/lib/qualify";
 import EventHeader from "../event-header";
 import { AccountRows, ContactsTable, foundFor } from "./account-rows";
 import { AddCandidatesBar } from "./controls";
-import Filters from "./filters";
+import Filters, { ContactsArea } from "./filters";
 
 type Props = PageProps<"/events/[eventId]/contacts">;
 
@@ -26,8 +26,9 @@ export default function ContactsPage({ params, searchParams }: Props) {
 
 // Where candidates are picked: every contact at the accounts that fit the brief, grouped under a quiet account line,
 // with how they qualify and how warm they already are. Tick them and Add Candidates, or find more on Sumble.
-// Filters (?ae= an AE's id, or "none" for accounts with no AE, which BDRs work; ?engagement=; ?qualified=1) narrow the
-// contacts; accounts with none left drop out.
+// Filters (?ae= an AE's id, or "none" for accounts with no AE, which BDRs work; ?engagement=) narrow the contacts here;
+// accounts with none left drop out. The rest only hide rows, so apply in the browser (see ContactsArea): ?accounts= (ids
+// picked in the search) and ?view=expanded (each account’s contacts; collapsed to the account lines by default, to see which have candidates).
 async function Contacts({ params, searchParams }: Pick<Props, "params" | "searchParams">) {
   const { eventId } = await params;
   const q = await searchParams;
@@ -39,8 +40,7 @@ async function Contacts({ params, searchParams }: Pick<Props, "params" | "search
   const aes = s.users.filter((u) => u.title === "Account Executive");
   const ae = q.ae === "none" ? "none" : aes.find((u) => u.id === q.ae)?.id;
   const warmth = q.engagement === "none" || q.engagement === "engaged" ? q.engagement : null;
-  const qualifiedOnly = q.qualified === "1";
-  const filtered = !!(ae || warmth || qualifiedOnly);
+  const filtered = !!(ae || warmth);
 
   const { fits, excluded } = eventAccounts(s, brief);
   const groups = fits
@@ -48,7 +48,7 @@ async function Contacts({ params, searchParams }: Pick<Props, "params" | "search
     .map((p) => ({
       ...p,
       shown: p.executives.filter(
-        (e) => (!qualifiedOnly || e.status === "Qualified") && (!warmth || (warmth === "none") === (e.engagement[0].color === "green"))
+        (e) => !warmth || (warmth === "none") === (e.engagement[0].color === "green")
       ),
     }))
     .filter((p) => p.shown.length || !filtered);
@@ -69,15 +69,17 @@ async function Contacts({ params, searchParams }: Pick<Props, "params" | "search
             }
           >
             <div className="mb-4">
-              <Filters aes={aes.map((u) => ({ id: u.id, name: `${u.first_name} ${u.last_name}` }))} />
+              <Filters aes={aes.map((u) => ({ id: u.id, name: `${u.first_name} ${u.last_name}` }))} accounts={groups.map((p) => ({ id: p.account.id, name: p.account.name }))} />
             </div>
 
             {groups.length ? (
-              <ContactsTable>
-                {groups.map((p) => (
-                  <AccountRows key={p.account.id} plan={p} executives={p.shown} found={filtered ? [] : foundFor(s, p, event.campaign_id)} campaignId={event.campaign_id} accountLine />
-                ))}
-              </ContactsTable>
+              <ContactsArea>
+                <ContactsTable>
+                  {groups.map((p) => (
+                    <AccountRows key={p.account.id} plan={p} executives={p.shown} found={filtered ? [] : foundFor(s, p, event.campaign_id)} campaignId={event.campaign_id} accountLine />
+                  ))}
+                </ContactsTable>
+              </ContactsArea>
             ) : (
               <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">
                 No executives match these filters. <Link href={`${basePath}/contacts`} className="text-blue-900 hover:underline">Clear filters</Link>

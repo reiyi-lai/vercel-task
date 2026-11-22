@@ -53,9 +53,9 @@ export function schedule(steps: SequenceStep[], o: Candidate | undefined, now = 
 // Where a candidate is, stage by stage: waiting for marketing's approval, approved and waiting for their AE or BDR to
 // push them to Outreach, in the sequence (paused included), then how they responded. The Invites page's tabs.
 export const STAGES = [
-  { key: "approval", label: "For Marketing Approval", color: "hollow" },
-  { key: "push", label: "Pending Push to Outreach", color: "gray" },
-  { key: "sequence", label: "In Sequence", color: "blue" },
+  { key: "approval", label: "Pending Marketing Approval", color: "hollow" },
+  { key: "push", label: "Pending Send (via Outreach)", color: "gray" },
+  { key: "sequence", label: "Sent", color: "blue" },
   { key: "replied", label: "Replied", color: "amber" },
   { key: "accepted", label: "Accepted", color: "green" },
   { key: "declined", label: "Declined", color: "red" },
