@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { SelectCheckbox } from "@/components/selection";
 import { Badge, Check, Status } from "@/components/ui";
 import type { FoundExecutive, Snapshot } from "@/lib/data";
-import type { accountPlan } from "@/lib/qualify";
+import { SENIORITY } from "@/lib/brief";
+import { holdsRank, type accountPlan, type Label } from "@/lib/qualify";
 import { NEW_IN_ROLE_SINCE } from "@/lib/rules";
 import { profileKey } from "@/lib/sumble";
 import { FindExecutives, FoundActions } from "./controls";
@@ -18,10 +19,14 @@ const month = (ym: string) => new Date(`${ym}-01`).toLocaleDateString("en-US", {
 // Whether the account is real, so Sumble can search it (sample accounts use .example websites).
 export const isLive = (plan: Plan) => !plan.account.website?.endsWith(".example");
 
-// Find More Executives results for the account and event, without anyone since added to the CRM.
-export function foundFor(s: Snapshot, plan: Plan, campaignId: string): FoundExecutive[] {
+// Find More Executives results for the account and event, without anyone since added to the CRM, each with its seniority
+// label, the same check as for contacts.
+export function foundFor(s: Snapshot, plan: Plan, campaignId: string): (FoundExecutive & { seniority: Label })[] {
+  const min = s.events.find((b) => b.campaign_id === campaignId)!.min_seniority;
   const inCrm = new Set(s.contacts.flatMap((c) => (c.linkedin_url ? [profileKey(c.linkedin_url)] : [])));
-  return s.found_executives.filter((x) => x.account_id === plan.account.id && x.campaign_id === campaignId && !inCrm.has(profileKey(x.linkedin_url)));
+  return s.found_executives
+    .filter((x) => x.account_id === plan.account.id && x.campaign_id === campaignId && !inCrm.has(profileKey(x.linkedin_url)))
+    .map((x) => ({ ...x, seniority: holdsRank(x.title ?? "", min) ? { text: `Matches ${SENIORITY[min]}`, color: "green" } : { text: "Seniority not in title", color: "gray" } }));
 }
 
 // Executive takes what's left; the actions column is fixed, wide enough for its buttons inside its padding (they sit
@@ -71,7 +76,7 @@ export function ContactsTable({ children, bare = false }: { children: ReactNode;
 // executives: the ones to show (the Contacts filters may narrow them); found: Sumble results to list under them.
 // accountLine: the account's pill line with Find More Executives, where the account has no row of its own.
 export function AccountRows({ plan, executives = plan.executives, found, campaignId, accountLine }: {
-  plan: Plan; executives?: Plan["executives"]; found: FoundExecutive[]; campaignId: string; accountLine: boolean;
+  plan: Plan; executives?: Plan["executives"]; found: ReturnType<typeof foundFor>; campaignId: string; accountLine: boolean;
 }) {
   const live = isLive(plan);
   const selected = plan.executives.filter((e) => e.selected).length;
@@ -152,11 +157,17 @@ export function AccountRows({ plan, executives = plan.executives, found, campaig
             <p className="text-label-12 text-gray-900">{[x.title, x.location].filter(Boolean).join(" · ")}</p>
           </td>
           <td className="px-4 py-2.5">
-            {x.persona ? (
-              <Status color="green"><span className="text-label-13">Matches {x.persona}</span></Status>
-            ) : (
-              <Status color="gray"><span className="text-label-13">Not a target persona</span></Status>
-            )}
+            {/* Seniority first, as for contacts, then whether the role is one of the brief's personas. */}
+            <ul className="space-y-1">
+              <li><Status color={x.seniority.color}><span className="text-label-13">{x.seniority.text}</span></Status></li>
+              <li>
+                {x.persona ? (
+                  <Status color="green"><span className="text-label-13">Target persona match: {x.persona}</span></Status>
+                ) : (
+                  <Status color="gray"><span className="text-label-13">Not in target persona role</span></Status>
+                )}
+              </li>
+            </ul>
           </td>
           <td className="px-4 py-2.5">
             {x.started && x.started >= NEW_IN_ROLE_SINCE && <Status color="blue"><span className="text-label-12">New in role · {month(x.started)}</span></Status>}

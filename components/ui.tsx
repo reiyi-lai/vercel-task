@@ -40,8 +40,11 @@ export type DotColor = keyof typeof dotStyles;
 // Geist status dot: colour carries status, the text label keeps it readable without colour.
 export function Status({ color, children }: { color: DotColor; children: ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 text-label-13">
-      <span aria-hidden className={`size-2 shrink-0 rounded-full ${dotStyles[color]}`} />
+    // The dot sits on the first line (a box one line tall), so text that wraps doesn't pull it down.
+    <span className="inline-flex items-start gap-1.5 text-label-13">
+      <span aria-hidden className="flex h-[1lh] shrink-0 items-center">
+        <span className={`size-2 rounded-full ${dotStyles[color]}`} />
+      </span>
       {children}
     </span>
   );
