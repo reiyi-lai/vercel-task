@@ -15,7 +15,7 @@ import Assign from "./assign";
 import { SelectCheckbox, SelectionProvider } from "@/components/selection";
 import { RemoveSelected } from "./remove";
 import FindEmail from "./find-email";
-import StartSequence from "./start-sequence";
+import StartSequence, { PushSelected } from "./start-sequence";
 import { Approve, ApproveSelected } from "./approve";
 
 type Props = PageProps<"/events/[eventId]/invites">;
@@ -81,17 +81,20 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
       <Page>
         <SelectionProvider>
           <Section
-            aside={
-              <div className="flex flex-wrap items-start gap-2">
-                {stage.key === "approval" && <ApproveSelected campaignId={event.campaign_id} pending={shown.map((x) => x.contact.id)} />}
-                <RemoveSelected campaignId={event.campaign_id} candidates={shown.map(({ contact: c, started }) => ({ id: c.id, name: `${c.first_name} ${c.last_name}`, started }))} />
-              </div>
-            }
+            aside={<RemoveSelected campaignId={event.campaign_id} candidates={shown.map(({ contact: c, started }) => ({ id: c.id, name: `${c.first_name} ${c.last_name}`, started }))} />}
             title="Invites"
-            description={<>Marketing approves each candidate, then their AE or BDR checks the copy and pushes them to Outreach. Outreach: {OUTREACH_LEADS[brief.outreach_lead].label}.</>}
+            description={<span className="text-label-13">Outreach: {OUTREACH_LEADS[brief.outreach_lead].label}</span>}
           >
-            <div className="mb-4 overflow-x-auto border-b border-gray-alpha-400">
-              <TabLinks items={STAGES.map((st) => ({ label: `${st.label} (${count(st.key)})`, href: `?stage=${st.key}`, active: st.key === stage.key }))} />
+            {/* The tabs, with the stage's bulk action at their right once anyone is ticked: Approve Selected, or Push Selected
+                to Outreach (those with an email). */}
+            <div className="mb-4 flex items-start justify-between gap-4 border-b border-gray-alpha-400">
+              <div className="min-w-0 overflow-x-auto">
+                <TabLinks variant="boxed" items={STAGES.map((st) => ({ label: st.label, count: count(st.key), href: `?stage=${st.key}`, active: st.key === stage.key }))} />
+              </div>
+              {stage.key === "approval" && <ApproveSelected campaignId={event.campaign_id} pending={shown.map((x) => x.contact.id)} />}
+              {stage.key === "push" && (
+                <PushSelected campaignId={event.campaign_id} ready={shown.filter((x) => x.contact.email).map(({ contact: c }) => ({ id: c.id, name: `${c.first_name} ${c.last_name}` }))} />
+              )}
             </div>
             {!selected.length ? (
               <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">
@@ -147,12 +150,12 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
                       ) : deadline ? (
                         <Status color={deadline.color}><span className="text-label-12">{deadline.text}</span></Status>
                       ) : (
-                        <Status color={stage.color}><span className="text-label-12">{approved ? "Approved · not pushed" : "Pending approval"}</span></Status>
+                        <Status color={stage.color}><span className="text-label-12">{approved ? "Approved · not pushed" : "For Marketing Approval"}</span></Status>
                       )}
                     </div>
                     <div className="flex flex-col items-start gap-2 xl:justify-self-end">
                       <Link href={`/events/${event.slug}/invites/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
-                      {!c.email && c.linkedin_url && !c.linkedin_url.includes("linkedin.example") && <FindEmail contactId={c.id} />}
+                      {stage.key === "push" && !c.email && c.linkedin_url && !c.linkedin_url.includes("linkedin.example") && <FindEmail contactId={c.id} />}
                       {!approved ? <Approve campaignId={event.campaign_id} contactIds={[c.id]} /> : c.email && !started && <StartSequence campaignId={event.campaign_id} contactId={c.id} />}
                     </div>
                   </li>

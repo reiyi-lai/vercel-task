@@ -25,9 +25,10 @@ export function Approve({ campaignId, contactIds, label = "Approve", onDone }: {
   );
 }
 
-// The checked candidates still waiting for approval.
+// The checked candidates still waiting for approval; shows only once one is ticked.
 export function ApproveSelected({ campaignId, pending }: { campaignId: string; pending: string[] }) {
   const { ids, clear } = useSelection();
   const chosen = pending.filter((id) => ids.has(id));
-  return <Approve campaignId={campaignId} contactIds={chosen} label={`Approve Selected${chosen.length ? ` (${chosen.length})` : ""}`} onDone={clear} />;
+  if (!chosen.length) return null;
+  return <Approve campaignId={campaignId} contactIds={chosen} label={`Approve Selected (${chosen.length})`} onDone={clear} />;
 }

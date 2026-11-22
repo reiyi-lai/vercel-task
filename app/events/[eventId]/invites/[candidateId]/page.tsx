@@ -75,15 +75,6 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
       </PageHeader>
 
       <Page>
-        <Outreach
-          campaignId={event.campaign_id}
-          contactId={candidateId}
-          outreach={outreach}
-          steps={steps}
-          deadline={outreach && pushDeadline(outreach)}
-          to={{ email: target.email, linkedinUrl: target.linkedin_url?.includes("linkedin.example") ? null : target.linkedin_url }}
-        />
-
         {/* What to know while writing the outreach: how warm they are, and the account's Vercel usage. */}
         <Section title="Context">
           <div className="material-base grid gap-4 p-5 text-copy-13 sm:grid-cols-2">
@@ -108,6 +99,16 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
             </div>
           </div>
         </Section>
+
+        <Outreach
+          campaignId={event.campaign_id}
+          contactId={candidateId}
+          outreach={outreach}
+          steps={steps}
+          deadline={outreach && pushDeadline(outreach)}
+          to={{ email: target.email, linkedinUrl: target.linkedin_url?.includes("linkedin.example") ? null : target.linkedin_url }}
+        />
+
       </Page>
     </>
   );
