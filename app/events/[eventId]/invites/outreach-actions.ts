@@ -18,8 +18,27 @@ async function context(campaignId: string, contactId: string) {
   return { s, c, brief, o, ae: ae ? `${ae.first_name} ${ae.last_name}` : "Unassigned AE", who, event: s.campaigns.find((x) => x.id === campaignId)!.name };
 }
 
+// Marketing approves selected candidates for their seats. Each one's first-step sender (the AE or BDR) hears on Slack
+// that they can push them to Outreach.
+export async function approveCandidates(campaignId: string, contactIds: string[]) {
+  const s = await loadSnapshot();
+  const brief = s.events.find((b) => b.campaign_id === campaignId)!;
+  const event = s.campaigns.find((x) => x.id === campaignId)!.name;
+  const pending = s.candidates.filter((x) => x.campaign_id === campaignId && contactIds.includes(x.contact_id) && !x.approved_at);
+  return write(async (db) => {
+    ok(await db.from(TABLES.candidates).update({ approved_at: new Date().toISOString() }).eq("campaign_id", campaignId).in("contact_id", pending.map((x) => x.contact_id)));
+    for (const x of pending) {
+      const c = s.contacts.find((k) => k.id === x.contact_id)!;
+      const by = brief.sequence[0] && sender(s, campaignId, brief.sequence[0], c);
+      const who = `${c.first_name} ${c.last_name} (${s.accounts.find((a) => a.id === c.account_id)!.name})`;
+      await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient: by ? `${by.first_name} ${by.last_name}` : "Unassigned AE", kind: "Approved", text: `Marketing approved ${who} for ${event}. Check the copy and push them to Outreach.` });
+    }
+  });
+}
+
 export async function startSequence(campaignId: string, contactId: string) {
-  const { s, c, brief, who, event } = await context(campaignId, contactId);
+  const { s, c, brief, o, who, event } = await context(campaignId, contactId);
+  if (!o?.approved_at) return "Waiting for marketing to approve this candidate.";
   const first = brief.sequence[0];
   if (!first) return "This event has no sequence yet: add steps on the Brief.";
   const missing = brief.sequence.find((step) => !sender(s, campaignId, step, c));

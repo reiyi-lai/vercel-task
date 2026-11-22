@@ -23,7 +23,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
   const as = (await searchParams).as;
   const me = sellers.find((u) => u.id === as) ?? sellers[0];
   const { due, replies, toSelect, toStart, stats } = myQueue(s, me.id);
-  const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/candidates/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
+  const plan = (slug: string, contactId: string, step?: number) => `/events/${slug}/invites/${contactId}${step === undefined ? "" : `#step-${step + 1}`}`;
   const who = (r: { c: { first_name: string; last_name: string; title: string | null }; account: string; e: { short_name: string } }) => (
     <div className="flex min-w-0 items-center gap-3">
       <Avatar name={`${r.c.first_name} ${r.c.last_name}`} />
@@ -90,7 +90,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                             <p className="truncate text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</p>
                           </div>
                           <span className="text-label-13 text-gray-900">{((n) => `${n} qualified ${n === 1 ? "executive" : "executives"}`)(p.executives.filter((x) => x.status === "Qualified").length)}</span>
-                          <Link href={`/events/${e.slug}/accounts/${p.account.id}`} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Contacts →</Link>
+                          <Link href={`/events/${e.slug}/contacts${me.title === "BDR" ? "" : `?ae=${me.id}`}#${p.account.id}`} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Select Candidates →</Link>
                         </Row>
                       ))}
                     </List>
@@ -103,12 +103,12 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
           )}
         </Section>
 
-        <Section title="Candidates to Push to Outreach">
+        <Section title="Candidates to Push to Outreach" description="Once marketing approves a candidate, check the copy on their plan and push them to Outreach by the next day. Slack pings you at 9am when a push is overdue.">
           <List empty="No selected candidates waiting to start.">
             {toStart.map((r) => (
               <Row key={`${r.x.campaign_id}${r.c.id}`}>
                 {who(r)}
-                <Status color="gray">Not started</Status>
+                {r.deadline ? <Status color={r.deadline.color}>{r.deadline.text}</Status> : <Status color="hollow">Pending marketing approval</Status>}
                 <Link href={plan(r.e.slug, r.c.id)} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
               </Row>
             ))}

@@ -75,8 +75,10 @@ const buttonStyles = {
   secondary: "bg-background-100 shadow-border hover:bg-gray-100",
 };
 
-export function Button({ children, variant = "secondary", href, onClick, disabled, className = "" }: { children: ReactNode; variant?: keyof typeof buttonStyles; href?: string; onClick?: () => void; disabled?: boolean; className?: string }) {
-  const classes = `inline-flex h-8 items-center justify-center whitespace-nowrap rounded-lg px-3 text-button-14 disabled:pointer-events-none disabled:opacity-50 ${buttonStyles[variant]} ${className}`;
+// size sm: a compact button for inside table rows.
+export function Button({ children, variant = "secondary", size = "md", href, onClick, disabled, className = "" }: { children: ReactNode; variant?: keyof typeof buttonStyles; size?: "md" | "sm"; href?: string; onClick?: () => void; disabled?: boolean; className?: string }) {
+  const sizing = size === "sm" ? "h-7 px-2.5 text-label-13 font-medium" : "h-8 px-3 text-button-14";
+  const classes = `inline-flex ${sizing} items-center justify-center whitespace-nowrap rounded-lg disabled:pointer-events-none disabled:opacity-50 ${buttonStyles[variant]} ${className}`;
   if (href?.startsWith("http")) return <a href={href} target="_blank" rel="noreferrer" className={classes}>{children}</a>; // external: new tab
   return href ? <Link href={href} className={classes}>{children}</Link> : <button type="button" onClick={onClick} disabled={disabled} className={classes}>{children}</button>;
 }

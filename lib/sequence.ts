@@ -44,7 +44,38 @@ export function schedule(steps: SequenceStep[], o: Candidate | undefined, now = 
   });
 }
 
-// One line for the Candidates page: where this candidate's outreach stands.
+// Where a candidate is, stage by stage: waiting for marketing's approval, approved and waiting for their AE or BDR to
+// push them to Outreach, in the sequence (paused included), then how they responded. The Invites page's tabs.
+export const STAGES = [
+  { key: "approval", label: "Pending Approval", color: "hollow" },
+  { key: "push", label: "Pending Push to Outreach", color: "gray" },
+  { key: "sequence", label: "In Sequence", color: "blue" },
+  { key: "replied", label: "Replied", color: "amber" },
+  { key: "accepted", label: "Accepted", color: "green" },
+  { key: "declined", label: "Declined", color: "red" },
+] as const;
+export type Stage = (typeof STAGES)[number]["key"];
+export function stageOf(o: Candidate): Stage {
+  if (!o.approved_at) return "approval";
+  if (!o.started_at) return "push";
+  return o.outcome === "Replied" ? "replied" : o.outcome === "Accepted" ? "accepted" : o.outcome === "Declined" ? "declined" : "sequence";
+}
+
+// An approved candidate's deadline to be pushed to Outreach: the day after marketing approves them, by calendar day in the
+// business time zone; overdue from the day after that. null once pushed, or before approval. The follow-up steps still
+// count from the push, so a late push doesn't squeeze them together.
+export function pushDeadline(o: Candidate, now = new Date()) {
+  if (!o.approved_at || o.started_at) return null;
+  const due = new Date(Date.parse(o.approved_at) + DAY);
+  const left = dayOf(due) - dayOf(now);
+  return {
+    due, overdue: left < 0,
+    text: left < 0 ? `Push overdue since ${shortDate(due)}` : left === 0 ? "Push by today" : `Push by ${shortDate(due)}`,
+    color: left < 0 ? ("red" as const) : left === 0 ? ("amber" as const) : ("gray" as const),
+  };
+}
+
+// One line for the Invites page: where this candidate's outreach stands.
 export function progress(steps: SequenceStep[], o: Candidate | undefined, now = new Date()) {
   if (!o?.started_at) return { text: "Not started", color: "gray" as const };
   if (o.outcome) return { text: o.outcome, color: o.outcome === "Accepted" ? ("green" as const) : o.outcome === "Declined" ? ("red" as const) : ("blue" as const) };
@@ -73,5 +104,6 @@ export function eventProgress(s: Snapshot, b: EventBrief, now = new Date()) {
     replied: outcome("Replied").length,
     declined: outcome("Declined").length,
     overdue: outreach.flatMap((o) => schedule(b.sequence, o, now)).filter((x) => x.status === "Overdue").length,
+    pushOverdue: outreach.filter((o) => pushDeadline(o, now)?.overdue).length,
   };
 }

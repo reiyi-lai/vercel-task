@@ -2,7 +2,7 @@ import { loadSnapshot, TABLES, type Contact, type SequenceStep, type Snapshot } 
 import { sentByBdr } from "./brief";
 import { eventOverview, eventsByDate } from "./derive";
 import { eventAccounts } from "./qualify";
-import { gmailDraft, render, schedule } from "./sequence";
+import { gmailDraft, pushDeadline, render, schedule, shortDate } from "./sequence";
 import { notify, quote, type Block } from "./slack";
 import { expireFromRoute, ok, write } from "./write";
 
@@ -10,14 +10,14 @@ const fullName = (p: { first_name: string; last_name: string }) => `${p.first_na
 
 // Who handles a step in Seatbook (drafts it, gets its Slack card, marks it sent): the AE is the account's owner (its
 // contacts share it), or a BDR on AE steps when it has none; the BDR is the one assigned to this candidate for the event. Exec steps are the AE's too, signed
-// off and sent by the exec (execName). Undefined until they're assigned on the Candidates page.
+// off and sent by the exec (execName). Undefined until they're assigned on the Invites page.
 export function sender(s: Snapshot, campaignId: string, step: SequenceStep, c: Contact) {
   const bdr = () => s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
   const id = step.sender === "BDR" ? bdr() : step.sender === "AE" ? c.owner_id ?? bdr() : c.owner_id;
   return s.users.find((u) => u.id === id);
 }
 
-// The exec who signs off and sends a candidate's Exec steps: their own, typed on the Candidates page, or else the event's,
+// The exec who signs off and sends a candidate's Exec steps: their own, typed on the Invites page, or else the event's,
 // set on the brief.
 export const execName = (s: Snapshot, campaignId: string, c: Contact) =>
   s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.exec_name ||
@@ -86,7 +86,7 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
       elements: [
         { type: "button", style: "primary", text: { type: "plain_text", text: "Mark Sent" }, action_id: "mark_sent", value },
         ...(gmail && gmail.length <= 3000 ? [{ type: "button", text: { type: "plain_text", text: "Open in Gmail" }, action_id: "gmail", url: gmail }] : []),
-        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/candidates/${c.id}#step-${index + 1}` },
+        { type: "button", text: { type: "plain_text", text: "Edit in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/invites/${c.id}#step-${index + 1}` },
       ],
     },
   ];
@@ -102,7 +102,8 @@ export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: num
   ];
 }
 
-// A Slack card to its sender for each unsent step in the event that's due or overdue (Vercel Cron, daily at 9am).
+// A Slack card to its sender for each unsent step in the event that's due or overdue, and for each approved candidate
+// not pushed to Outreach by their deadline (Vercel Cron, daily at 9am).
 export async function sendReminders(campaignId: string) {
   const s = await loadSnapshot();
   const brief = s.events.find((b) => b.campaign_id === campaignId);
@@ -110,13 +111,25 @@ export async function sendReminders(campaignId: string) {
   const due = s.candidates
     .filter((o) => o.campaign_id === campaignId)
     .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status === "Due" || x.status === "Overdue").map((x) => ({ o, x })));
+  const unpushed = s.candidates.filter((o) => o.campaign_id === campaignId && pushDeadline(o)?.overdue);
+  const event = s.campaigns.find((x) => x.id === campaignId)!.name;
   const error = await write(async (db) => {
     for (const { o, x } of due) {
       const card = stepCard(s, campaignId, s.contacts.find((c) => c.id === o.contact_id)!, x.index, x.status === "Overdue");
       await notify(db, { campaign_id: campaignId, contact_id: o.contact_id, recipient: card.recipient, kind: "Due", text: card.text }, card.blocks);
     }
+    for (const o of unpushed) {
+      const c = s.contacts.find((k) => k.id === o.contact_id)!;
+      const by = brief.sequence[0] && sender(s, campaignId, brief.sequence[0], c);
+      const account = s.accounts.find((a) => a.id === c.account_id)!.name;
+      const text = `Push ${fullName(c)} (${account}) to Outreach · ${event}. Approved ${shortDate(new Date(o.approved_at!))}, ${pushDeadline(o)!.text.toLowerCase()}.`;
+      await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient: by ? fullName(by) : "Unassigned BDR", kind: "Push Overdue", text }, [
+        { type: "section", text: { type: "mrkdwn", text: `*For ${by ? fullName(by) : "Unassigned BDR"}:* ${text}` } },
+        { type: "actions", elements: [{ type: "button", style: "primary", text: { type: "plain_text", text: "Open in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${brief.slug}/invites/${c.id}` }] },
+      ]);
+    }
   }, expireFromRoute);
-  return { error, sent: due.length };
+  return { error, sent: due.length + unpushed.length };
 }
 
 // One AE's or BDR's queue across every event: the steps they send that are due or overdue (overdue first), replies on
@@ -141,9 +154,12 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   const isBdr = s.users.find((u) => u.id === userId)?.title === "BDR";
   const byDate = eventsByDate(s, now);
   const upcoming = byDate.filter((x) => x.days >= 0).map((x) => x.e);
-  // Selected for an upcoming event with the sequence not started, where this user sends the first step.
-  const toStart = rows.filter(({ e, x, c }) =>
-    !x.started_at && !x.outcome && upcoming.includes(e) && e.sequence.length && sender(s, e.campaign_id, e.sequence[0], c)?.id === userId);
+  // Selected for an upcoming event with the sequence not started, where this user sends the first step: approved by
+  // marketing first, soonest push deadline (overdue) first, then those still waiting for approval.
+  const toStart = rows
+    .filter(({ e, x, c }) => !x.started_at && !x.outcome && upcoming.includes(e) && e.sequence.length && sender(s, e.campaign_id, e.sequence[0], c)?.id === userId)
+    .map((r) => ({ ...r, deadline: pushDeadline(r.x, now) }))
+    .sort((a, b) => Number(!a.deadline) - Number(!b.deadline) || (a.deadline?.due.getTime() ?? 0) - (b.deadline?.due.getTime() ?? 0));
   const myAccounts = (e: (typeof s.events)[number]) =>
     eventAccounts(s, e).fits.filter((p) => (sentByBdr(e.outreach_lead, p.account.owner_id) ? isBdr : p.account.owner_id === userId));
   const toSelect = upcoming

@@ -1,40 +1,13 @@
 import { randomBytes } from "node:crypto";
-import { loadSnapshot, TABLES, type AccountSignal, type EventBrief } from "./data";
+import { loadSnapshot, TABLES, type EventBrief } from "./data";
 import { geocode } from "./geocode";
-import { inTechDepartment, matchPersona } from "./qualify";
-import { initiativeSignals, leadershipSignals, sumbleOrgId } from "./signals";
-import { profileKey, sumble, type SumblePerson } from "./sumble";
+import { inTechDepartment, matchPersona, meetsMinimum } from "./qualify";
+import { profileKey, sumble, sumbleOrgId, type SumblePerson } from "./sumble";
+import { NEW_IN_ROLE_SINCE } from "./rules";
 import { expireFromRoute, ok, write } from "./write";
 
-// The account plan's slow work (Sumble, web research), run from Route Handlers so the browser can run several at once:
+// The Accounts page's slow Sumble work, run from Route Handlers so the browser can run several at once:
 // Next.js sends Server Actions one at a time per tab. Each returns an error message, or undefined on success.
-
-// Fetches one group of the account's live signals, Sumble (leadership changes) or web research (AI initiatives),
-// and replaces each of its sources' previous signals. A source that fails keeps its old signals and is named in the
-// message; the others still save.
-export async function refreshSignals(accountId: string, group: "sumble" | "research") {
-  const a = (await loadSnapshot()).accounts.find((x) => x.id === accountId);
-  if (!a) return "No such account.";
-  const failed: string[] = [];
-  const err = await write(async (db) => {
-    const orgId = group === "sumble" ? await sumbleOrgId(a) : null;
-    const sources: Record<string, Promise<AccountSignal[]>> =
-      group === "research"
-        ? { "Web research": initiativeSignals(a) }
-        : { "Sumble people": orgId ? leadershipSignals(a.id, orgId) : Promise.resolve([]) };
-    const results = await Promise.allSettled(Object.values(sources));
-    for (const [i, source] of Object.keys(sources).entries()) {
-      const r = results[i];
-      if (r.status === "rejected") {
-        failed.push(`${source}: ${(r.reason as Error).message}`);
-        continue;
-      }
-      ok(await db.from(TABLES.account_signals).delete().eq("account_id", a.id).eq("source", source));
-      if (r.value.length) ok(await db.from(TABLES.account_signals).insert(r.value));
-    }
-  }, expireFromRoute);
-  return err ?? (failed.length ? failed.join(" ") : undefined);
-}
 
 // Adds a person as a Contact on the account, owned by its AE: current name, title and location from Sumble by
 // LinkedIn URL (about 4 credits), the city geocoded for the brief's location checks. No email yet.
@@ -50,9 +23,10 @@ export async function addContact(accountId: string, linkedinUrl: string) {
     if (!p.person_id || !p.attributes?.name) throw new Error("Sumble couldn't find this profile.");
     const place = await geocode(p.attributes.location);
     const [first, ...rest] = p.attributes.name.split(" ");
+    const id = `003Sb${randomBytes(5).toString("hex")}AAA`; // Salesforce-style 18-character id
     ok(
       await db.from(TABLES.contacts).insert({
-        id: `003Sb${randomBytes(5).toString("hex")}AAA`, // Salesforce-style 18-character id
+        id,
         first_name: first, last_name: rest.join(" "), email: null, title: p.attributes.job_title ?? null,
         account_id: a.id, owner_id: a.owner_id, linkedin_url: linkedinUrl, employment_status: "Current",
         mailing_city: place?.city ?? null, mailing_state: place?.state ?? null, has_opted_out_of_email: false,
@@ -70,43 +44,76 @@ const LEVELS: Record<EventBrief["min_seniority"], string[]> = {
 };
 const FUNCTIONS = ["Engineering & R&D", "Information Technology", "Product & Design", "Executive"];
 
-// People at the account who match the event's target personas and aren't contacts yet, saved as the account's found
-// executives for the event (replacing the last search). One search for senior people in technology, product and
-// executive functions, names and titles only (about 2 credits each); titles must name a technology, engineering, digital
-// or commerce role and match a persona, then only the matches get their LinkedIn URL and location (about 3 credits each).
+// How many people Find More Executives aims for: every new leader who passes, topped up with persona matches to this.
+const FIND_TARGET = 5;
+
+// Find More Executives: people at the account who aren't contacts yet, saved as the account's found executives for the
+// event (replacing the last search).
+// 1. New leaders: the 7 most recent starts among technical leaders, VP and above (about 5 credits each). Kept, whether or
+//    not they match a persona, when they started since NEW_IN_ROLE_SINCE and pass the brief's seniority gate. Their work
+//    history (about 2 credits each) drops profile edits: the same title at the same company before isn't a change.
+// 2. Persona matches, only while there are fewer than FIND_TARGET: the 30 most senior people in technology, product and
+//    executive functions at or above the minimum, names and titles only (about 2 credits each), whose titles name a
+//    technology, engineering, digital or commerce role and match a persona. Only the ones needed to reach FIND_TARGET get
+//    their LinkedIn URL, location and start date (about 3 credits each).
+// So at most 7 rows, or 5 when persona matches fill in. persona is the target persona a title matches, or null.
 export async function findExecutives(accountId: string, campaignId: string) {
   const s = await loadSnapshot();
   const a = s.accounts.find((x) => x.id === accountId);
   const brief = s.events.find((b) => b.campaign_id === campaignId);
   if (!a || !brief) return "No such account or event.";
   return write(async (db) => {
-    const orgId = await sumbleOrgId(a);
+    const orgId = await sumbleOrgId(a.website);
     if (!orgId) throw new Error(`Sumble doesn't know ${a.name}.`);
-    const query = `(${LEVELS[brief.min_seniority].map((l) => `job_level EQ '${l}'`).join(" OR ")}) AND (${FUNCTIONS.map((f) => `job_function EQ '${f}'`).join(" OR ")})`;
-    const search = await sumble("people", {
-      filter: { organization_ids: [orgId], query: { query } },
-      select: { attributes: ["name", "job_title"] },
-      order_by_column: "job_level", order_by_direction: "DESC", limit: 40,
-    });
     const known = new Set(s.contacts.filter((c) => c.account_id === a.id).map((c) => `${c.first_name} ${c.last_name}`.toLowerCase()));
-    const matches = (search.people as SumblePerson[])
-      .filter((p) => {
-        const title = p.attributes?.job_title ?? "";
-        return !known.has(p.attributes?.name?.toLowerCase() ?? "") && inTechDepartment(title) && matchPersona(title, brief.personas);
-      })
-      .slice(0, 10);
-    const details = matches.length
-      ? await sumble("people", { people: matches.map((p) => ({ person_id: p.person_id })), select: { attributes: ["name", "job_title", "linkedin_url", "location"] } })
-      : { people: [] };
     const inCrm = new Set(s.contacts.flatMap((c) => (c.linkedin_url ? [profileKey(c.linkedin_url)] : [])));
-    const rows = (details.people as SumblePerson[]).flatMap((p) => {
-      const x = p.attributes;
-      if (!x?.linkedin_url || !x.name || inCrm.has(profileKey(x.linkedin_url))) return [];
-      return [{
-        campaign_id: campaignId, account_id: a.id, name: x.name, title: x.job_title ?? null, location: x.location ?? null,
-        linkedin_url: x.linkedin_url, persona: matchPersona(x.job_title ?? "", brief.personas)!,
-      }];
+    const isNew = (p: SumblePerson) => !known.has(p.attributes?.name?.toLowerCase() ?? "") && !(p.attributes?.linkedin_url && inCrm.has(profileKey(p.attributes.linkedin_url)));
+    const persona = (title: string) => (inTechDepartment(title) ? matchPersona(title, brief.personas) ?? null : null);
+    const full = ["name", "job_title", "linkedin_url", "location", "current_employer"];
+
+    // 1. New leaders.
+    const query = "(job_level EQ 'CXO' OR job_level EQ 'SVP' OR job_level EQ 'VP') AND (job_function EQ 'Engineering & R&D' OR job_function EQ 'Information Technology')";
+    const starts = await sumble("people", {
+      filter: { organization_ids: [orgId], query: { query } },
+      select: { attributes: full },
+      order_by_column: "start_date", order_by_direction: "DESC", limit: 7,
     });
+    const recent = (starts.people as SumblePerson[]).filter(
+      (p) => (p.attributes?.current_employer?.start_date ?? "") >= NEW_IN_ROLE_SINCE && p.attributes?.linkedin_url && isNew(p) && meetsMinimum(p.attributes.job_title ?? "", brief.min_seniority)
+    );
+    const history = recent.length ? await sumble("people", { people: recent.map((p) => ({ linkedin_url: p.attributes!.linkedin_url })), select: { attributes: ["experience"] } }) : { people: [] };
+    const leaders = recent.filter((p, i) => {
+      const [, prev] = (history.people[i] as SumblePerson).attributes?.experience ?? [];
+      return !(prev?.employer.organization_id === orgId && prev.title === p.attributes!.job_title);
+    });
+
+    // 2. Persona matches, only as many as it takes to reach FIND_TARGET.
+    let matches: SumblePerson[] = [];
+    if (leaders.length < FIND_TARGET) {
+      const levels = `(${LEVELS[brief.min_seniority].map((l) => `job_level EQ '${l}'`).join(" OR ")}) AND (${FUNCTIONS.map((f) => `job_function EQ '${f}'`).join(" OR ")})`;
+      const search = await sumble("people", {
+        filter: { organization_ids: [orgId], query: { query: levels } },
+        select: { attributes: ["name", "job_title"] },
+        order_by_column: "job_level", order_by_direction: "DESC", limit: 30,
+      });
+      const taken = new Set(leaders.map((p) => p.attributes!.name?.toLowerCase()));
+      const needed = (search.people as SumblePerson[])
+        .filter((p) => isNew(p) && !taken.has(p.attributes?.name?.toLowerCase()) && persona(p.attributes?.job_title ?? ""))
+        .slice(0, FIND_TARGET - leaders.length);
+      if (needed.length) matches = (await sumble("people", { people: needed.map((p) => ({ person_id: p.person_id })), select: { attributes: full } })).people;
+    }
+
+    // New leaders first, then persona matches; one row per LinkedIn profile.
+    const rows = [...leaders, ...matches]
+      .flatMap((p) => {
+        const x = p.attributes;
+        if (!x?.linkedin_url || !x.name || inCrm.has(profileKey(x.linkedin_url))) return [];
+        return [{
+          campaign_id: campaignId, account_id: a.id, name: x.name, title: x.job_title ?? null, location: x.location ?? null,
+          linkedin_url: x.linkedin_url, persona: persona(x.job_title ?? ""), started: x.current_employer?.start_date?.slice(0, 7) ?? null,
+        }];
+      })
+      .filter((r, i, all) => all.findIndex((y) => profileKey(y.linkedin_url) === profileKey(r.linkedin_url)) === i);
     ok(await db.from(TABLES.found_executives).delete().eq("campaign_id", campaignId).eq("account_id", a.id));
     if (rows.length) ok(await db.from(TABLES.found_executives).upsert(rows));
   }, expireFromRoute);

@@ -1,13 +1,13 @@
-import { SENIORITY, THEMES, VERTICALS, relevantTheme } from "./brief";
-import type { Account, AccountSignal, Contact, EventBrief, Snapshot } from "./data";
+import { SENIORITY, THEMES, VERTICALS } from "./brief";
+import type { Account, Contact, EventBrief, Snapshot } from "./data";
 import type { DotColor } from "@/components/ui";
 import { AS_OF } from "./rules";
 
 // Qualification, not scoring: an account either fits the event's brief or it doesn't (with the reason), and each
 // executive gets labels a BDR can read at a glance. The BDR chooses who to invite.
 
-export type Label = { text: string; color: DotColor };
-export type Qualified = { contact: Contact; status: "Qualified" | "Review" | "Excluded"; ranked: boolean; labels: Label[] };
+export type Label = { text: string; color: DotColor; detail?: string }; // detail: shown after the text, in gray
+export type Qualified = { contact: Contact; status: "Qualified" | "Excluded"; ranked: boolean; labels: Label[]; engagement: Label[] };
 
 // Why an account falls outside the brief, or null when it fits. An account with no industry tag counts as cross-industry;
 // one with no horizontal tag fits only when the brief targets all horizontals.
@@ -50,6 +50,12 @@ export function seniority(title: string): EventBrief["min_seniority"] | null {
   return null;
 }
 
+// The seniority gate: whether a title's level is at or above the brief's minimum.
+export function meetsMinimum(title: string, min: EventBrief["min_seniority"]) {
+  const level = seniority(title);
+  return !!level && LEVELS.indexOf(level) >= LEVELS.indexOf(min);
+}
+
 const ACRONYMS: Record<string, string> = {
   cto: "chief technology officer", cio: "chief information officer", ciso: "chief information security officer",
   cdo: "chief digital officer", cmo: "chief marketing officer", ceo: "chief executive officer",
@@ -88,13 +94,42 @@ export function holdsRank(title: string, min: EventBrief["min_seniority"]) {
   return C_LEVEL.test(t) || { c_suite: false, svp, vp, director: vp || /\bdirector\b/.test(t) }[min];
 }
 
-const SIXTY_DAYS = 60 * 86_400_000;
+const DAY = 86_400_000;
+
+// How warm a contact already is, apart from this event, one label per kind: events they attended or were invited to in
+// the last year (Salesforce campaigns), email replies and meetings (outbound emails alone don't count), and paying for
+// Vercel (the billing owner of a team on the account). None of these means no prior engagement.
+export function engagement(s: Snapshot, c: Contact, campaignId: string) {
+  const events = s.campaign_members
+    .filter((m) => m.contact_id === c.id && m.campaign_id !== campaignId)
+    .map((m) => ({ m, campaign: s.campaigns.find((x) => x.id === m.campaign_id)! }))
+    .map((x) => ({ ...x, ago: AS_OF.getTime() - Date.parse(x.campaign.start_date!) }))
+    .filter((x) => x.ago >= 0 && x.ago <= 365 * DAY);
+  const acts = s.activities.filter((a) => a.contact_id === c.id);
+  const month = (iso: string) => new Date(iso).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+  // A count of activities and when the latest was, e.g. "2 replies · latest Aug 2026".
+  const recency = (list: typeof acts, one: string, many: string) =>
+    `${list.length === 1 ? `1 ${one}` : `${list.length} ${many}`} · ${list.length === 1 ? "" : "latest "}${month(list.map((a) => a.occurred_at).sort().at(-1)!)}`;
+  // Which events, flagging one in the last 60 days.
+  const named = (list: typeof events) => list.length && `${list.map((x) => x.campaign.name).join(", ")}${list.some((x) => x.ago <= 60 * DAY) ? " · last 60 days" : ""}`;
+  const replies = acts.filter((a) => a.subtype === "Email" && a.direction === "Inbound");
+  const meetings = acts.filter((a) => a.subtype === "Meeting");
+  const teams = s.vercel_teams.filter((x) => x.key_contact_id === c.id);
+  const kinds: [string, string | 0][] = [
+    ["Prior event attendance", named(events.filter((x) => x.m.status === "Attended"))],
+    ["Prior event invite", named(events.filter((x) => x.m.status !== "Attended"))],
+    ["Prior email reply", replies.length && recency(replies, "reply", "replies")],
+    ["Prior meeting", meetings.length && recency(meetings, "meeting", "meetings")],
+    ["On Vercel plan", teams.length && teams.map((x) => [x.plan, x.name].filter(Boolean).join(" · ")).join(", ")],
+  ];
+  const labels: Label[] = kinds.flatMap(([text, detail]) => (detail ? [{ text, detail, color: "amber" as const }] : []));
+  return { labels: labels.length ? labels : [{ text: "No prior engagement", color: "green" as const }] };
+}
 
 export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualified {
   const excluded: string[] = [];
   const labels: Label[] = [];
-  const level = seniority(c.title ?? "");
-  const below = !level || LEVELS.indexOf(level) < LEVELS.indexOf(b.min_seniority);
+  const below = !meetsMinimum(c.title ?? "", b.min_seniority);
 
   if (c.employment_status === "Former") excluded.push("Left the company");
   if (c.has_opted_out_of_email) excluded.push("Opted out of email");
@@ -117,33 +152,22 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
     const opp = s.opportunities.find((o) => o.id === r.opportunity_id && !o.is_closed);
     if (opp) labels.push({ text: `${r.role} on ${opp.name.split(" — ").pop()}`, color: "blue" });
   }
-  for (const m of s.campaign_members.filter((m) => m.contact_id === c.id && m.campaign_id !== b.campaign_id)) {
-    const campaign = s.campaigns.find((x) => x.id === m.campaign_id)!;
-    const gap = AS_OF.getTime() - Date.parse(campaign.start_date!);
-    if (gap >= 0 && gap <= SIXTY_DAYS) labels.push({ text: `Invited to ${campaign.name} in the last 60 days`, color: "amber" });
-  }
-
-  if (excluded.length) return { contact: c, status: "Excluded", ranked, labels: excluded.map((text) => ({ text, color: "red" })) };
-  return { contact: c, status: ranked && !labels.some((l) => l.color === "amber") ? "Qualified" : "Review", ranked, labels };
+  // Anyone not excluded qualifies; the labels carry anything worth a look (no stated rank, location, an open deal).
+  const warm = engagement(s, c, b.campaign_id).labels;
+  if (excluded.length) return { contact: c, status: "Excluded", ranked, labels: excluded.map((text) => ({ text, color: "red" })), engagement: warm };
+  return { contact: c, status: "Qualified", ranked, labels, engagement: warm };
 }
 
-const ORDER: Qualified["status"][] = ["Qualified", "Review", "Excluded"];
-// Signals shown per category, in this order: leadership changes, then AI initiatives.
-const SHOWN: Record<AccountSignal["category"], number> = { leadership: 4, initiative: 3 };
+const ORDER: Qualified["status"][] = ["Qualified", "Excluded"];
 
-// One account in one event: whether it fits the brief, its commercial context, its signals (by category, and within
-// each the event's themes first, then newest), its executives (seniority stated in the title first, then by status) and who has been selected to invite.
+// One account in one event: whether it fits the brief, its commercial context, its executives (seniority stated in the
+// title first, then by status) and who has been selected to invite.
 export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
-  const signals = s.account_signals
-    .filter((x) => x.account_id === a.id)
-    .filter((x, i, all) => all.findIndex((y) => y.account_id === a.id && y.source === x.source && y.title === x.title) === i) // no repeats
-    .sort((x, y) => Number(relevantTheme(y.theme, b)) - Number(relevantTheme(x.theme, b)) || y.signal_date.localeCompare(x.signal_date));
   const selected = new Set(s.candidates.filter((x) => x.campaign_id === b.campaign_id).map((x) => x.contact_id));
   return {
     account: a,
     excluded: accountGate(a, b) ?? openOpportunityGate(s, a),
     state: commercialState(s, a),
-    signals: (Object.keys(SHOWN) as AccountSignal["category"][]).flatMap((c) => signals.filter((x) => x.category === c).slice(0, SHOWN[c])),
     executives: s.contacts
       .filter((c) => c.account_id === a.id)
       .map((c) => ({ ...qualifyContact(s, c, b), selected: selected.has(c.id) }))
@@ -157,7 +181,7 @@ export function eventAccounts(s: Snapshot, b: EventBrief) {
   const plans = s.accounts.filter((a) => a.target_account && !isEnterpriseCustomer(s, a)).map((a) => accountPlan(s, a, b));
   const count = (p: (typeof plans)[number], status: string) => p.executives.filter((e) => e.status === status).length;
   return {
-    fits: plans.filter((p) => !p.excluded).sort((x, y) => count(y, "Qualified") - count(x, "Qualified") || count(y, "Review") - count(x, "Review")),
+    fits: plans.filter((p) => !p.excluded).sort((x, y) => count(y, "Qualified") - count(x, "Qualified")),
     excluded: plans.filter((p) => p.excluded),
   };
 }

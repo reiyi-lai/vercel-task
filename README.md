@@ -8,39 +8,35 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 | Stage | Problem | What our build solves |
 |---|---|---|
-| 1. Pick Accounts | Hard to quickly identify which target accounts from Vercel's TAM suit this event. | **Event Brief** page allows Marketing to define here: target personas, seniority, candidate location criteria, ideal outreach sequence (i.e. AE- or BDR- lead, with specified follow-up days) etc. <br> <br> **Accounts** filters Vercel's target accounts in Salesforce by event requirements and shows existing Vercel Pro usage. |
-| 2. Gather Context across Account / Contacts | Context on all our contacts and interaction history is spread across Salesforce, billing data etc, so invite quality is inconsistent and/or generic. | Each **Account** page shows Vercel Pro usage, past account interaction (Salesforce), event attendance (Salesforce campaign) – along with new leadership changes and relevant AI initiatives in specified category for event. |
-| **3. Identify the Right Executives** | Executives are scattered across the CRM with no view of who fits this event, and the right ones may be missing or have stale titles. | Under Account page, **Executives** consolidates executives across entire account with context on whether they align with this event, i.e. Qualified, Review or Excluded (e.g. matches persona, below seniority, outside location). <br> <br> **Signals** `LEADERSHIP CHANGE` category identifies most recent leaders in target personas along with their LinkedIn profile URL and allows users to add them to CRM and this page. <br> <br> **Find Executives** searches Sumble for that account's target personas, defined in Event Brief. ––> **Result**: List of real executives with LinkedIn profile URL that user can select to add to contacts and Executives list for that account. |
-| **4. Sequence Outreach** | Follow-ups slip. Nobody knows who owns which step. | **Candidates** shows list of selected candidates for that event across all accounts, and allows assigning of AEs/BDRs. Outreach sequence shows each step with drafts and has live Slack integration via Slack webhook (currently configured to Rachel's personal Slack workspace `vercel-trial`). |
-| 5. Track progress | No single view of how complete event preparation is. | **Overview** shows progress against the specified goals in Event Brief and a Kanban board tracking pipeline. |
+| 1. Pick Accounts | Hard to quickly identify which target accounts from Vercel's TAM suit this event. | **Event Brief** page allows Marketing to define here: target personas, seniority, candidate location criteria, ideal outreach sequence (i.e. AE- or BDR- lead, with specified follow-up days) etc. <br> <br> **Contacts** filters Vercel's target accounts in Salesforce by event requirements and shows existing Vercel Pro usage. |
+| 2. Gather Context across Account / Contacts | Context on all our contacts and interaction history is spread across Salesforce, billing data etc, so invite quality is inconsistent and/or generic. | **Contacts** lists every contact at each fitting account, under a quiet account line with its tier, vertical, Vercel Pro usage and AE. Each contact shows **Prior Engagement**, one amber dot per kind: **Prior event attendance** or **Prior event invite** in the last year (Salesforce campaigns), **Prior email reply**, **Prior meeting** (Salesforce activity), and **On Vercel plan** when they're a team's billing owner. A green **No prior engagement** when none apply. |
+| **3. Identify the Right Executives** | Executives are scattered across the CRM with no view of who fits this event, and the right ones may be missing or have stale titles. | On **Contacts**, each contact shows whether they fit this event, i.e. Qualified or Excluded, with why (e.g. matches seniority, below seniority, outside location). Filter by AE and engagement, or **Show Qualified Only**, tick executives and **Add Candidates**. <br> <br> **Find More Executives** searches Sumble for technical leaders new in their role in the last six months who pass the brief's seniority gate, then tops up to 5 with people in the account's target personas, defined in Event Brief. ––> **Result**: real executives with LinkedIn profile URL, each showing whether they match a target persona and whether they're **New in role**, to **Add to Contacts**. |
+| **4. Sequence Outreach** | Follow-ups slip. Nobody knows who owns which step. | **Invites** shows list of selected candidates for that event across all accounts, and allows assigning of AEs/BDRs. Outreach sequence shows each step with drafts and has live Slack integration via Slack webhook (currently configured to Rachel's personal Slack workspace `vercel-trial`). |
+| 5. Track progress | No single view of how complete event preparation is. | **Overview** shows progress against the specified goals in Event Brief and how many candidates are at each stage, each linking to its tab on **Invites**. |
 
 ## Who Uses It
 
 - **Head of Marketing:** **All Events** shows overview of statistics and dates for all events, clicking on each event card also reveals **Overview** of each event.
-- **Marketing:** Each event in the sidebar, in workflow order: **Brief**, **Accounts**, **Candidates** with root page showing progress for that event.
+- **Marketing:** Each event in the sidebar, in workflow order: **Brief**, **Contacts**, **Invites** with root page showing progress for that event.
 - **AEs/BDRs:** **For AE/BDR** lists their steps due across every event, one row per candidate (with the draft and Open in Outreach), and replies to answer. Slack pings them about the same steps daily at 9am.
 
 ## Sample Flow
 
 1. **Brief.** In the sidebar, open **Las Vegas GP**, then **Brief**. Check the target verticals, personas, seniority, location and guest target.
-2. **Accounts.** Find the account row for **Visa**. Click **Open Plan**.
-3. **Account plan: Signals.** Click either buttons. They can run at the same time, but will take a while till you can refresh.
-   - Clicking **Get Leadership Changes** loads technical leaders who started or were promoted in the last six months, from Sumble. You can 'Add to Contacts' the executives you deem relevant.
-   - Clicking **Research AI Initiatives** uses Claude to search the web for Visa's AI projects via three categories: Internal Software; Retail/Agentic Commerce; Financial Services.
-4. **Account plan: Executives.**
-   - Executives already in the CRM are checked against the brief, showing as **Qualified**, **Review** or **Excluded** with context.
-   - Clicking **Find Executives** allows you to find more people (in the target personas for this event) within this account via Sumble's /people API endpoint. Click **Add to Contacts** on any result to save into CRM and onto this account page.
-   - Select **Add Candidate** on the people to indicate as candidates for this event.
-5. **Candidates.**
-   - The candidates you've selected across all accounts for this event appear here.
-   - Clicking **Find Email** fetches a missing email for that candidate via Sumble if needed.
-   - **Push to Outreach** kickstarts the outreach sequence, which involves a message to the respective AE/BDR via Slack.
-6. **Invitation plan** (click **Invitation Plan →**).
+2. **Contacts.** Every contact at the accounts that fit the brief, grouped by account.
+   - Each contact shows a dot per check from the brief, e.g. **Matches VP and above** (green when it passes; red with the reason when they're excluded), and their **Prior Engagement**.
+   - Pick an AE or an engagement level from the dropdowns, or click **Show Qualified Only**. E.g. **Cold Contacts Only** with **Show Qualified Only** for net-new executives.
+   - Click **Find More Executives** on an account (e.g. **Visa**) to search Sumble for technical leaders new in their role who pass this event's seniority gate, topped up to 5 with people in its target personas. It takes up to a minute. Results show under the account's contacts with whether they match a persona and when they started; **Add to Contacts** saves them to the CRM, where you can tick them as candidates.
+   - Tick the executives to invite and click **Add Candidates**.
+3. **Invites.** One tab per stage: **Pending Approval**, **Pending Push to Outreach**, **In Sequence**, **Replied**, **Accepted**, **Declined**.
+   - **Pending Approval:** marketing clicks **Approve** (or **Approve Selected**) to give candidates their seats; the AE/BDR gets a Slack message that they're ready.
+   - **Pending Push to Outreach:** the AE/BDR checks the copy, then **Push to Outreach** kickstarts the outreach sequence, with a Slack card to the sender. Clicking **Find Email** fetches a missing email via Sumble if needed.
+4. **Invitation plan** (click **Invitation Plan →**).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.
    - Temporary setup: **Mark Sent** once it goes out. Candidate outcome can be updated via **Replied, Accepted or Declined**.
-7. **Overview.** View overview of invitation pipeline with shortlisted, invited and accepted counts against the targets. The pipeline board shows each candidate's stage and owner, and Recent Activity lists the Slack alerts.
-8. **For AE/BDR.** Pick who you're viewing as (an AE or BDR) to see their queue across all events.
+5. **Overview.** Shortlisted, invited and accepted counts against the targets, how many candidates are at each stage (click one to open its tab on Invites), and Recent Activity lists the Slack alerts.
+6. **For AE/BDR.** Pick who you're viewing as (an AE or BDR) to see their queue across all events.
 
 ## Architecture
 
@@ -50,9 +46,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
 
 | Button | Service | What it does | Endpoint / Webhook URL |
 |---|---|---|---|
-| Get Leadership Changes | Sumble | Technical leaders, VP and above, new in their role in the last six months. | `api.sumble.com/v9/organizations`, `/v9/people` |
-| Research AI Initiatives | Claude with web search, via Vercel AI Gateway | Up to 10 searches. Keeps one initiative per theme. | `ai-gateway.vercel.sh/v1/messages` |
-| Find Executives | Sumble | People matching the brief's personas (about 100 credits). | `api.sumble.com/v9/organizations`, `/v9/people` |
+| Find More Executives | Sumble | Up to 7 technical leaders new in role who pass the seniority gate; while under 5, persona matches from the 30 most senior tech people fill in (about 50–125 credits). | `api.sumble.com/v9/organizations`, `/v9/people` |
 | Add to Contacts | Sumble | The person's current title and location (about 4 credits). | `api.sumble.com/v9/people` |
 | Find Email | Sumble | Reveals a work email (10 credits). | `api.sumble.com/v9/people` |
 | Push to Outreach, Mark Sent, outcomes | Slack | Posts a card or alert to the team channel. | Incoming webhook: `hooks.slack.com/services/…` (set as `SLACK_WEBHOOK_URL`)<br>Seatbook posts a message to the webhook, which drops it into the channel. Clicking **Mark Sent** in Slack calls back to Seatbook at `/api/slack/interactions`. |

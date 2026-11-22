@@ -8,7 +8,6 @@ import { outreachVolume } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
 import { eventOverview, formatDate } from "@/lib/derive";
 import EventHeader from "./event-header";
-import Pipeline from "./pipeline";
 import { eventProgress } from "@/lib/sequence";
 
 type Props = PageProps<"/events/[eventId]">;
@@ -29,7 +28,7 @@ async function EventOverview({ params }: Pick<Props, "params">) {
   const o = eventOverview(s, eventId);
   const brief = o && s.events.find((b) => b.campaign_id === o.event.campaign_id);
   if (!o || !brief) notFound();
-  const { event, pipeline } = o;
+  const { event, stages } = o;
   const p = eventProgress(s, brief);
   const volume = outreachVolume(brief, p.confirmedInSalesforce);
   // The funnel left to right, each against the brief's attendance plan (targets work back from the guest target).
@@ -64,6 +63,7 @@ async function EventOverview({ params }: Pick<Props, "params">) {
             ))}
           </div>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-label-13">
+            <Status color={p.pushOverdue ? "red" : "gray"}>{p.pushOverdue} {p.pushOverdue === 1 ? "push" : "pushes"} to Outreach overdue</Status>
             <Status color={p.overdue ? "red" : "gray"}>{p.overdue} overdue {p.overdue === 1 ? "step" : "steps"}</Status>
             <Status color="amber">{p.awaiting} awaiting reply</Status>
             <Status color="blue">{p.replied} replied</Status>
@@ -71,7 +71,18 @@ async function EventOverview({ params }: Pick<Props, "params">) {
           </div>
         </Section>
 
-        <Pipeline columns={pipeline} bdrLed={brief.outreach_lead === "bdr"} />
+        <Section title="Invites" description="Where everyone selected stands. Open a stage to act on it.">
+          <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {stages.map((st) => (
+              <li key={st.key}>
+                <Link href={`${basePath}/invites?stage=${st.key}`} className="material-base block h-full space-y-2 p-4 hover:bg-gray-100">
+                  <Status color={st.color}><span className="text-label-13">{st.label}</span></Status>
+                  <p className="text-heading-24 tabular-nums">{st.count}</p>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Section>
 
         <Section title="Recent Activity" description={process.env.SLACK_WEBHOOK_URL ? "Alerts sent to AEs and BDRs, also posted to Slack." : "Alerts for AEs and BDRs. Add SLACK_WEBHOOK_URL to post them to Slack."}>
           {alerts.length ? (

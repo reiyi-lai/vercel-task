@@ -79,7 +79,7 @@ export const SENIORITY: Record<EventBrief["min_seniority"], string> = {
 
 
 // Who sends every step of an event's outreach, and the sender its steps carry. AE/BDR-led: the account's AE, or a BDR
-// (picked on the Candidates page) when the account has no AE.
+// (picked on the Invites page) when the account has no AE.
 export const OUTREACH_LEADS: Record<EventBrief["outreach_lead"], { label: string; detail: string }> = {
   exec: { label: "AE-led with Exec Sign-off", detail: "AE drafts each step with exec sign-off." },
   bdr: { label: "BDR-led only", detail: "BDR drafts & sends each step." },
@@ -100,12 +100,4 @@ export function outreachVolume(b: Pick<EventBrief, "target_guests" | "acceptance
   return { invites, expected: confirmed + Math.round((invites * b.acceptance_rate) / 100) };
 }
 
-// Whether a signal's theme bears on this event. Leadership signals carry campaign themes, which match
-// the brief's themes directly; web-research initiatives carry their own themes, which map to its themes or verticals.
-export function relevantTheme(theme: string | null, b: Pick<EventBrief, "themes" | "verticals">) {
-  if (theme === "Internal Software") return b.themes.includes("Apps & Agents") || b.themes.includes("Software Factories");
-  if (theme === "Retail/Agentic Commerce") return b.verticals.includes("Retail");
-  if (theme === "Financial Services") return b.verticals.includes("Financial Services");
-  return !!theme && b.themes.includes(theme);
-}
 

@@ -51,30 +51,29 @@ export type EventBrief = {
 };
 // A Seatbook event: its Salesforce campaign's display details plus its brief.
 export type EventRow = EventBrief & { slug: string; short_name: string; program: string | null; seats: number | null; host_user_ids: string[] };
-// Why an account matters now (lib/signals.ts fetches them). theme is one of the brief's campaign themes.
-export type AccountSignal = {
-  account_id: string; category: "leadership" | "initiative"; theme: string | null; title: string; detail: string | null;
-  signal_date: string; url: string | null; source: string; person_linkedin_url: string | null;
-};
-// An executive selected for an event, with their outreach: the BDR assigned (BDR-led events, or AE/BDR-led where the account has no AE), the exec signing
+// An executive selected for an event, with their outreach: when marketing approved them (null until then; the sequence
+// can't start before), the BDR assigned (BDR-led events, or AE/BDR-led where the account has no AE), the exec signing
 // off (exec-led events; typed, since execs aren't Salesforce users), when the sequence
 // started, the steps sent, and how they responded.
 export type Candidate = {
-  campaign_id: string; contact_id: string; bdr_id: string | null; exec_name: string | null; started_at: string | null;
+  campaign_id: string; contact_id: string; approved_at: string | null; bdr_id: string | null; exec_name: string | null; started_at: string | null;
   // drafts: edited copy saved per step before sending. sent: each step marked sent, with the copy that actually went out
   // and, from Slack, who marked it.
   drafts: Record<string, { subject: string; body: string }>;
   sent: { step: number; at: string; subject?: string; body?: string; by?: string }[]; outcome: "Replied" | "Accepted" | "Declined" | "Paused" | null; outcome_at: string | null;
 };
 export type SlackAlert = { id: number; campaign_id: string; contact_id: string | null; recipient: string; kind: string; text: string; posted: boolean; created_at: string };
-// Find Executives results: people at an account matching an event's target personas, not yet contacts.
+// Find More Executives results: people at an account, not yet contacts, who match an event's target personas or are
+// technical leaders new in role. persona: the one their title matches, or null. started: when their current role began
+// ("2026-03"), so new leaders stand out.
 export type FoundExecutive = {
-  campaign_id: string; account_id: string; name: string; title: string | null; location: string | null; linkedin_url: string; persona: string; found_at: string;
+  campaign_id: string; account_id: string; name: string; title: string | null; location: string | null; linkedin_url: string; persona: string | null;
+  started: string | null; found_at: string;
 };
 export type Snapshot = {
   users: User[]; accounts: Account[]; contacts: Contact[]; opportunities: Opportunity[]; opportunity_contact_roles: OpportunityContactRole[];
   activities: Activity[]; campaigns: Campaign[]; campaign_members: CampaignMember[]; vercel_teams: VercelTeam[]; events: EventRow[];
-  account_signals: AccountSignal[]; found_executives: FoundExecutive[]; candidates: Candidate[]; slack_alerts: SlackAlert[];
+  found_executives: FoundExecutive[]; candidates: Candidate[]; slack_alerts: SlackAlert[];
 };
 
 export { TABLES } from "./tables";

@@ -1,25 +1,18 @@
 import { expect, it } from "vitest";
 import { loadSampleSnapshot } from "./csv";
-import { accountInteractions, eventOverview, formatDates, vercelUsage } from "./derive";
+import { eventOverview, formatDates, vercelUsage } from "./derive";
 
 const s = loadSampleSnapshot();
 const LVGP = "701Sb0000000001AAA"; // Las Vegas GP campaign
 const contact = (n: number) => `003Sb00000${n}AAA`;
 const account = (n: number) => `001Sb00000${n}AAA`;
 
-it("Event overview: the pipeline follows selected executives and their outreach", () => {
-  const row = { campaign_id: LVGP, bdr_id: null, exec_name: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null };
-  const snap = { ...s, candidates: [{ ...row, contact_id: contact(90001) }, { ...row, contact_id: contact(90006), started_at: "2026-11-01T09:00:00Z", outcome: "Replied" as const }] };
+it("Event overview: candidates counted by stage", () => {
+  const row = { campaign_id: LVGP, approved_at: null, bdr_id: null, exec_name: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null };
+  const snap = { ...s, candidates: [{ ...row, contact_id: contact(90001) }, { ...row, contact_id: contact(90006), approved_at: "2026-11-01T08:00:00Z", started_at: "2026-11-01T09:00:00Z", outcome: "Replied" as const }] };
   const o = eventOverview(snap, "lvgp")!;
-  expect(o.pipeline.map((col) => [col.title, col.cards.map((c) => c.name)])).toEqual([
-    ["Selected", ["Owen Fischer"]], ["In Sequence", []], ["Replied", ["Julian Wright"]], ["Accepted", []], ["Declined", []],
-  ]);
-});
-
-it("Past account interactions: Marcus's thread with Sam", () => {
-  const rows = accountInteractions(s, s.contacts.find((c) => c.id === contact(90001))!);
-  expect(rows.map((r) => [r.name, r.status, r.lines.map((l) => l.text)])).toEqual([
-    ["Sam Ortiz", "Current", ["Salesforce (latest 06/16/2026): 1 email reply, 1 outbound email"]],
+  expect(o.stages.map((st) => [st.label, st.count])).toEqual([
+    ["Pending Approval", 1], ["Pending Push to Outreach", 0], ["In Sequence", 0], ["Replied", 1], ["Accepted", 0], ["Declined", 0],
   ]);
 });
 

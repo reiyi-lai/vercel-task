@@ -3,7 +3,7 @@
 import { useRef, useState, useTransition } from "react";
 import { useSelection } from "@/components/selection";
 import { Button, Modal } from "@/components/ui";
-import { removeCandidates } from "../accounts/[accountId]/actions";
+import { removeCandidates } from "../contacts/actions";
 
 // Remove Selected on the Candidates list confirms in a modal. Removing deletes their outreach too, so re-selecting
 // starts the sequence over.

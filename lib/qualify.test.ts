@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { loadSampleSnapshot } from "./csv";
-import { accountGate, holdsRank, inTechDepartment, matchPersona, qualifyContact, seniority } from "./qualify";
+import { accountGate, engagement, holdsRank, meetsMinimum, inTechDepartment, matchPersona, qualifyContact, seniority } from "./qualify";
 
 const s = loadSampleSnapshot();
 const brief = (slug: string) => s.events.find((b) => b.campaign_id === s.events.find((e) => e.slug === slug)!.campaign_id)!;
@@ -45,15 +45,28 @@ it("The same executive qualifies differently per event", () => {
   expect(holdsRank("Vice President - AI Research & Innovation", "svp")).toBe(false);
   expect(seniority("Vice President - AI Research & Innovation")).toBe("vp");
   expect(seniority("Senior Vice President, Engineering")).toBe("svp");
+  // The seniority gate: at or above the minimum.
+  expect(meetsMinimum("Vice President, Engineering", "vp")).toBe(true);
+  expect(meetsMinimum("Vice President, Engineering", "svp")).toBe(false);
+  expect(meetsMinimum("Director of Engineering", "vp")).toBe(false);
   // Hye-jin: Director of Platform Engineering, excluded by the AI dinner's VP+ minimum.
   expect(check("Hye-jin", "ai-builder-dinner")).toMatchObject({ status: "Excluded", labels: [{ text: "Below VP and above" }] });
   // Adaeze: VP Platform Engineering in San Francisco.
   expect(check("Adaeze", "ai-builder-dinner").status).toBe("Qualified");
 });
 
-it("Opted-out and former contacts are excluded; missing email or location needs review", () => {
+it("Opted-out and former contacts are excluded; caveats are flagged but still qualify", () => {
   expect(check("Isabel", "lvgp").labels[0].text).toBe("Opted out of email");
   expect(check("Ben", "lvgp").labels[0].text).toBe("Left the company");
-  expect(check("Lucas", "ai-builder-dinner")).toMatchObject({ status: "Review" });
+  expect(check("Lucas", "ai-builder-dinner")).toMatchObject({ status: "Qualified", labels: [{ text: "Seniority not in title" }, { text: "San Francisco" }] });
   expect(check("Rajat", "ai-builder-dinner").labels.map((l) => l.text)).toContain("Location unknown");
+});
+
+it("Engagement: one label per kind (events, replies, meetings, paying for Vercel); none is no prior engagement", () => {
+  const warm = (first: string) => engagement(s, contact(first), brief("lvgp").campaign_id).labels.map((l) => [l.text, l.detail]);
+  expect(warm("Grace")).toEqual([["No prior engagement", undefined]]);
+  expect(warm("Owen")).toEqual([["Prior email reply", "1 reply · Apr 2025"], ["Prior meeting", "1 meeting · Apr 2025"]]);
+  expect(warm("Mei")).toEqual([["On Vercel plan", "Pro · fenwick-web"]]);
+  expect(warm("Priyanka")).toEqual([["Prior event attendance", "Platform leaders roundtable · last 60 days"], ["Prior meeting", "2 meetings · latest Oct 2026"]]);
+  expect(warm("Kelly")).toEqual([["Prior event invite", "Agents in production roundtable · last 60 days"]]);
 });

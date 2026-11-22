@@ -1,20 +1,18 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Avatar, Badge, Chevron, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
+import { Avatar, Badge, Page, PageHeader, Section, Status, Tags } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { accountInteractions, vercelUsage } from "@/lib/derive";
+import { vercelUsage } from "@/lib/derive";
 import { draftCopy, execName, sender } from "@/lib/outreach";
-import { schedule, shortDate } from "@/lib/sequence";
-import AccountContext from "../../accounts/[accountId]/account-context";
+import { pushDeadline, schedule, shortDate } from "@/lib/sequence";
+import { engagement } from "@/lib/qualify";
 import Outreach from "../outreach";
 
-type Props = PageProps<"/events/[eventId]/candidates/[candidateId]">;
+type Props = PageProps<"/events/[eventId]/invites/[candidateId]">;
 
 const usd = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
-const interactionDot = { Current: "green", Former: "gray" } as const;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const id = (await params).candidateId;
@@ -55,13 +53,12 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
       status, due: day(due), sent: day(sent) && `${day(sent)}${done?.by ? ` by ${done.by} in Slack` : ""}`,
     };
   });
-  const interactions = accountInteractions(s, target);
   const base = `/events/${event.slug}`;
 
   return (
     <>
       <PageHeader
-        crumbs={[{ label: event.short_name, href: base }, { label: "Candidates", href: `${base}/candidates` }, { label: name }]}
+        crumbs={[{ label: event.short_name, href: base }, { label: "Invites", href: `${base}/invites` }, { label: name }]}
       >
         <div className="flex items-center gap-4">
           <Avatar name={name} size="lg" />
@@ -83,19 +80,34 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
           contactId={candidateId}
           outreach={outreach}
           steps={steps}
+          deadline={outreach && pushDeadline(outreach)}
           to={{ email: target.email, linkedinUrl: target.linkedin_url?.includes("linkedin.example") ? null : target.linkedin_url }}
         />
 
-        {/* The top of the account plan, collapsed until wanted while writing the outreach. */}
-        <details className="group">
-          <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
-            <h2 className="text-heading-20">Account Context</h2>
-            <Chevron open={false} className="text-gray-900 group-open:rotate-180" />
-          </summary>
-          <div className="mt-4 space-y-6">
-            <AccountContext s={s} account={account} brief={event} />
+        {/* What to know while writing the outreach: how warm they are, and the account's Vercel usage. */}
+        <Section title="Context">
+          <div className="material-base grid gap-4 p-5 text-copy-13 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <p className="text-label-12 text-gray-900">Prior Engagement</p>
+              <ul className="space-y-1">
+                {engagement(s, target, event.campaign_id).labels.map((l) => (
+                  <li key={l.text}>
+                    <Status color={l.color}>{l.text}</Status>
+                    {l.detail && <p className="pl-3.5 text-label-12 text-gray-900">{l.detail}</p>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-label-12 text-gray-900">Vercel Usage</p>
+              <p>
+                {usage.teams.length
+                  ? `${usage.teams.length} Pro ${usage.teams.length === 1 ? "team" : "teams"} · ${usage.activeUsers} active users · ${usd.format(usage.monthlySpend)}/mo`
+                  : "No Vercel teams on this domain."}
+              </p>
+            </div>
           </div>
-        </details>
+        </Section>
       </Page>
     </>
   );

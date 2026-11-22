@@ -57,7 +57,9 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
     vercel_teams: read("vercel/vercel_teams.csv").map((r) => ({
       id: r["Team ID"], name: r["Team Name"], account_id: r["Account ID"], plan: str(r.Plan), active_users_30d: num(r["Active Users 30d"]),
       monthly_spend: num(r["Monthly Spend USD"]), key_contact_email: str(r["Key Contact Email"]), key_contact_name: str(r["Key Contact Name"]),
-      key_contact_title: str(r["Key Contact Title"]), key_contact_id: contacts.find((c) => c.email === r["Key Contact Email"])?.id ?? null,
+      key_contact_title: str(r["Key Contact Title"]),
+      // The billing owner's Salesforce contact: by email, or by name when the team has no email on file.
+      key_contact_id: contacts.find((c) => (r["Key Contact Email"] ? c.email === r["Key Contact Email"] : `${c.first_name} ${c.last_name}` === r["Key Contact Name"]))?.id ?? null,
     })),
     // Each event's display details and its brief.
     events: read("seatbook/events.csv").map((r) => {
@@ -73,11 +75,6 @@ export function loadSampleSnapshot(root = join(process.cwd(), "data")): Snapshot
         exec_name: null, select_by: str(r["Select By"]), sequence: sequences[r["Campaign ID"]] ?? [],
       };
     }),
-    // Signals for the fictional accounts; real accounts fetch live ones on their account plan.
-    account_signals: read("seatbook/sample_signals.csv").map((r) => ({
-      account_id: r["Account ID"], category: r.Category as Snapshot["account_signals"][number]["category"], theme: str(r.Theme), title: r.Title,
-      detail: str(r.Detail), signal_date: r.Date, url: null, source: "Sample data", person_linkedin_url: str(r["Person LinkedIn URL"]),
-    })),
     found_executives: [], // found in the app
     candidates: [], // chosen and run in the app
     slack_alerts: [],

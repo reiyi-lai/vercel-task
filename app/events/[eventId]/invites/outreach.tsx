@@ -16,8 +16,10 @@ const OUTCOMES = ["Replied", "Accepted", "Declined", "Paused"] as const;
 
 // The candidate's outreach for this event: the event's sequence with each step's filled-in copy, due date and status. Outreach sends the steps and reports back what's sent; Open in Outreach goes to the prospect there.
 // to: where steps go. Email steps link a mailto with the step's copy filled in; LinkedIn steps link the profile.
-export default function Outreach({ campaignId, contactId, outreach, steps, to }: {
+// deadline: when an approved candidate must be pushed to Outreach by.
+export default function Outreach({ campaignId, contactId, outreach, steps, to, deadline }: {
   campaignId: string; contactId: string; outreach?: Candidate; steps: StepView[]; to: { email: string | null; linkedinUrl: string | null };
+  deadline?: { text: string; color: DotColor } | null;
 }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string>();
@@ -43,7 +45,17 @@ export default function Outreach({ campaignId, contactId, outreach, steps, to }:
   return (
     <Section
       title="Outreach Sequence"
-      aside={!started && <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Push to Outreach</Button>}
+      aside={
+        !started &&
+        (outreach?.approved_at ? (
+          <div className="flex flex-wrap items-center gap-3">
+            {deadline && <Status color={deadline.color}>{deadline.text}</Status>}
+            <Button variant="primary" disabled={pending || !steps.length} onClick={() => run(() => startSequence(campaignId, contactId))}>Push to Outreach</Button>
+          </div>
+        ) : (
+          <Status color="hollow">Pending marketing approval</Status>
+        ))
+      }
     >
       <div className="space-y-4">
         {error && <p className="text-label-13 text-red-900">{error}</p>}

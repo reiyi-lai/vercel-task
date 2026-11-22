@@ -1,11 +1,11 @@
 import { expect, it } from "vitest";
 import type { Candidate, SequenceStep } from "./data";
 import { loadSampleSnapshot } from "./csv";
-import { eventProgress, progress, render, schedule } from "./sequence";
+import { eventProgress, progress, pushDeadline, render, schedule } from "./sequence";
 
 const steps: SequenceStep[] = [0, 4, 9].map((day) => ({ day, channel: "Email", sender: "AE", subject: "", body: "" }));
 const candidate = (o: Partial<Candidate>): Candidate => ({
-  campaign_id: "c", contact_id: "k", bdr_id: null, exec_name: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null, ...o,
+  campaign_id: "c", contact_id: "k", approved_at: null, bdr_id: null, exec_name: null, started_at: null, drafts: {}, sent: [], outcome: null, outcome_at: null, ...o,
 });
 const now = new Date("2026-11-10T12:00:00Z");
 
@@ -20,6 +20,15 @@ it("Steps are due on their day after the start, overdue after that, and stop on 
   expect(progress(steps, started, now).text).toBe("Step 2 of 3 · overdue since Nov 6");
   expect(schedule(steps, { ...started, outcome: "Replied" }, now).map((x) => x.status)).toEqual(["Sent", "Stopped", "Stopped"]);
   expect(progress(steps, undefined, now).text).toBe("Not started");
+});
+
+it("An approved candidate is due to be pushed the day after approval, overdue after that", () => {
+  // now is Nov 10 in the business time zone.
+  expect(pushDeadline(candidate({ approved_at: "2026-11-09T18:00:00Z" }), now)).toMatchObject({ text: "Push by today", overdue: false });
+  expect(pushDeadline(candidate({ approved_at: "2026-11-10T18:00:00Z" }), now)).toMatchObject({ text: "Push by Nov 11", overdue: false });
+  expect(pushDeadline(candidate({ approved_at: "2026-11-06T18:00:00Z" }), now)).toMatchObject({ text: "Push overdue since Nov 7", overdue: true });
+  expect(pushDeadline(candidate({}), now)).toBeNull(); // not approved yet
+  expect(pushDeadline(candidate({ approved_at: "2026-11-06T18:00:00Z", started_at: "2026-11-07T09:00:00Z" }), now)).toBeNull(); // pushed
 });
 
 it("Event progress counts invites sent, responses and acceptances against the brief", () => {

@@ -3,8 +3,8 @@
 import { TABLES } from "@/lib/data";
 import { ok, write } from "@/lib/write";
 
-// A quick database write, so a Server Action is fine here; the slow Sumble and web-research work runs in
-// app/api/accounts so several can run at once.
+// Quick database writes, so Server Actions are fine here; the slow Sumble work runs in app/api/accounts so several
+// can run at once.
 // Assigns an unowned account to an AE; its contacts follow, since the AE sends their AE steps.
 export async function assignAe(accountId: string, userId: string | null) {
   return write(async (db) => {
@@ -20,11 +20,6 @@ export async function assignBdr(campaignId: string, contactId: string, userId: s
   );
 }
 
-export async function setSelected(campaignId: string, contactId: string, selected: boolean) {
-  if (!selected) return removeCandidates(campaignId, [contactId]);
-  return write(async (db) => ok(await db.from(TABLES.candidates).upsert({ campaign_id: campaignId, contact_id: contactId })));
-}
-
 // Adds executives as candidates for the event; any already added are left as they are.
 export async function addCandidates(campaignId: string, contactIds: string[]) {
   return write(async (db) =>
@@ -35,4 +30,9 @@ export async function addCandidates(campaignId: string, contactIds: string[]) {
 // Deselects candidates. Their outreach (start date, sends, drafts) goes with the row, so selecting them again starts fresh.
 export async function removeCandidates(campaignId: string, contactIds: string[]) {
   return write(async (db) => ok(await db.from(TABLES.candidates).delete().eq("campaign_id", campaignId).in("contact_id", contactIds)));
+}
+
+// Removes one Find More Executives result. A later search can find them again.
+export async function removeFound(campaignId: string, linkedinUrl: string) {
+  return write(async (db) => ok(await db.from(TABLES.found_executives).delete().eq("campaign_id", campaignId).eq("linkedin_url", linkedinUrl)));
 }
