@@ -76,7 +76,7 @@ export function AccountRows({ plan, executives = plan.executives, found, campaig
   const live = isLive(plan);
   const selected = plan.executives.filter((e) => e.selected).length;
   return (
-    <AccountGroup id={plan.account.id} className="scroll-mt-6 border-t border-gray-alpha-400 first-of-type:border-t-0">
+    <AccountGroup id={plan.account.id} selected={selected > 0} className="scroll-mt-6 border-t border-gray-alpha-400 first-of-type:border-t-0">
       {accountLine && (
         // The account line only groups its contacts: small, quiet, with the context that bears on who to pick.
         <tr>

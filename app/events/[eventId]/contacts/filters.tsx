@@ -6,7 +6,8 @@ import { Button } from "@/components/ui";
 
 // The Contacts filters, kept in the URL: ?ae= (an AE's accounts, or none: those with no AE, which BDRs work) and
 // ?engagement= (none or engaged), applied on the server; and, applied in the browser since they only hide what's already
-// listed, ?accounts= (ids picked in the search) and ?view=expanded (each account's contacts; by default, just the account
+// listed, ?accounts= (ids picked in the search), ?selected= (none: accounts with no candidates yet; some: those with)
+// and ?view=expanded (each account's contacts; by default, just the account
 // lines, to see which have candidates).
 const select = "h-8 rounded-lg bg-background-100 px-2.5 text-label-13 shadow-border";
 type Option = { id: string; name: string };
@@ -43,6 +44,12 @@ export default function Filters({ aes, accounts }: { aes: Option[]; accounts: Op
         <option value="">All Contacts</option>
         <option value="none">Cold Contacts Only</option>
         <option value="engaged">Warm Contacts Only</option>
+      </select>
+      {/* Only hides accounts already listed, so no server trip. */}
+      <select aria-label="Candidates selected" className={select} value={params.get("selected") ?? ""} onChange={(e) => window.history.replaceState(null, "", href("selected", e.target.value))}>
+        <option value="">All Accounts</option>
+        <option value="none">No Candidates Selected</option>
+        <option value="some">Candidates Selected</option>
       </select>
       <div className="ml-auto">
         {/* Collapsing only hides rows, so it changes the URL without a trip to the server. */}
@@ -137,10 +144,14 @@ function AccountSearch({ accounts }: { accounts: Option[] }) {
   );
 }
 
-// One account's rows (a tbody), hidden while the search has picked other accounts.
-export function AccountGroup({ id, className, children }: { id: string; className: string; children: ReactNode }) {
-  const picked = pickedIn(useSearchParams());
-  return <tbody id={id} className={className} hidden={picked.length > 0 && !picked.includes(id)}>{children}</tbody>;
+// One account's rows (a tbody), hidden while the search has picked other accounts, or ?selected= asks for accounts with
+// (or without) candidates and it isn't one (selected: whether it has any).
+export function AccountGroup({ id, selected, className, children }: { id: string; selected: boolean; className: string; children: ReactNode }) {
+  const params = useSearchParams();
+  const picked = pickedIn(params);
+  const want = params.get("selected");
+  const hidden = (picked.length > 0 && !picked.includes(id)) || (want === "none" && selected) || (want === "some" && !selected);
+  return <tbody id={id} className={className} hidden={hidden}>{children}</tbody>;
 }
 
 // Around the Contacts table: marks it collapsed unless ?view=expanded, which hides its contact rows (they carry
