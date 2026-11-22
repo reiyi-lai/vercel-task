@@ -27,10 +27,19 @@ export function FoundActions({ accountId, campaignId, linkedinUrl }: { accountId
   const [removing, startRemove] = useTransition();
   const [removeError, setRemoveError] = useState<string>();
   return (
-    <div className="flex flex-col items-end gap-1">
-      <div className="flex flex-wrap justify-end gap-2">
+    <div className="flex flex-col items-start gap-1">
+      <div className="flex items-center gap-1">
         <Button size="sm" disabled={pending || removing} onClick={() => post(`/api/accounts/${accountId}/contacts`, { linkedinUrl })}>{pending ? "Adding…" : "Add to Contacts"}</Button>
-        <Button size="sm" disabled={pending || removing} onClick={() => startRemove(async () => setRemoveError(await removeFound(campaignId, linkedinUrl)))}>{removing ? "Removing…" : "Remove"}</Button>
+        <button
+          type="button"
+          aria-label="Remove this result"
+          title="Remove"
+          disabled={pending || removing}
+          onClick={() => startRemove(async () => setRemoveError(await removeFound(campaignId, linkedinUrl)))}
+          className="grid size-7 cursor-pointer place-items-center rounded-lg text-heading-16 text-gray-900 hover:bg-gray-100 hover:text-gray-1000 disabled:pointer-events-none disabled:opacity-50"
+        >
+          ×
+        </button>
       </div>
       {(error || removeError) && <p className="text-label-12 text-red-900">{error ?? removeError}</p>}
     </div>

@@ -13,7 +13,8 @@ export function SelectionProvider({ children }: { children: ReactNode }) {
 
 export const useSelection = () => use(Selection)!;
 
-export function SelectCheckbox({ id, name }: { id: string; name: string }) {
+// size lg: where ticking is the page's main action.
+export function SelectCheckbox({ id, name, size = "md" }: { id: string; name: string; size?: "md" | "lg" }) {
   const { ids, toggle } = useSelection();
-  return <input type="checkbox" aria-label={`Select ${name}`} className="size-4 shrink-0 accent-gray-1000" checked={ids.has(id)} onChange={() => toggle(id)} />;
+  return <input type="checkbox" aria-label={`Select ${name}`} className={`${size === "lg" ? "size-5 cursor-pointer" : "size-4"} shrink-0 accent-gray-1000`} checked={ids.has(id)} onChange={() => toggle(id)} />;
 }

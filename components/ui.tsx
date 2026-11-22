@@ -14,9 +14,10 @@ const badgeStyles = {
 };
 export type BadgeVariant = keyof typeof badgeStyles;
 
-export function Badge({ children, variant = "gray" }: { children: ReactNode; variant?: BadgeVariant }) {
+// size md: a roomier pill, e.g. to label a group.
+export function Badge({ children, variant = "gray", size = "sm" }: { children: ReactNode; variant?: BadgeVariant; size?: "sm" | "md" }) {
   return (
-    <span className={`inline-flex h-5 items-center whitespace-nowrap rounded-full px-2 text-label-12 font-medium ${badgeStyles[variant]}`}>
+    <span className={`inline-flex items-center whitespace-nowrap rounded-full font-medium ${size === "md" ? "h-[22px] px-2.5 text-label-13" : "h-5 px-2 text-label-12"} ${badgeStyles[variant]}`}>
       {children}
     </span>
   );
@@ -98,25 +99,38 @@ export function Section({ title, description, aside, children }: { title: ReactN
   );
 }
 
-// Links styled as tabs or a segmented control; the active one carries aria-current. Items with onClick are buttons, for tabs inside a modal.
-export function TabLinks({ items, variant = "underline" }: { items: { label: ReactNode; href?: string; onClick?: () => void; active?: boolean }[]; variant?: "underline" | "segmented" }) {
+// Links styled as tabs or a segmented control; the active one carries aria-current. Items with onClick are buttons, for
+// tabs inside a modal. boxed: tabs above a rule, the active one a lit rectangle; count shows in a round chip.
+export function TabLinks({ items, variant = "underline" }: {
+  items: { label: ReactNode; count?: number; href?: string; onClick?: () => void; active?: boolean }[];
+  variant?: "underline" | "segmented" | "boxed";
+}) {
   const styles = {
     underline: { wrap: "flex gap-6", item: "-mb-px border-b-2 pb-3 text-label-14", on: "border-gray-1000", off: "border-transparent text-gray-900" },
     segmented: { wrap: "flex rounded-lg bg-gray-100 p-0.5", item: "flex h-7 items-center rounded-md px-3 text-label-13", on: "bg-background-100 shadow-border font-medium", off: "text-gray-900" },
+    boxed: { wrap: "flex gap-1 pb-2", item: "flex h-8 shrink-0 items-center gap-2 whitespace-nowrap rounded-md px-3 text-label-14", on: "bg-gray-200 font-medium", off: "text-gray-900 hover:bg-gray-100" },
   }[variant];
+  const content = (t: (typeof items)[number]) => (
+    <>
+      {t.label}
+      {t.count !== undefined && (
+        <span className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1.5 text-label-12 tabular-nums ${t.active ? "bg-gray-1000 text-background-100" : "bg-gray-300 text-gray-1000"}`}>{t.count}</span>
+      )}
+    </>
+  );
   return (
     <nav className={styles.wrap}>
       {items.map((t, i) =>
         t.href ? (
           <Link key={i} href={t.href} scroll={false} aria-current={t.active ? "page" : undefined} className={`${styles.item} ${t.active ? styles.on : `${styles.off} hover:text-gray-1000`}`}>
-            {t.label}
+            {content(t)}
           </Link>
         ) : t.onClick ? (
           <button key={i} type="button" onClick={t.onClick} aria-current={t.active ? "page" : undefined} className={`${styles.item} ${t.active ? styles.on : `${styles.off} hover:text-gray-1000`}`}>
-            {t.label}
+            {content(t)}
           </button>
         ) : (
-          <span key={i} aria-disabled className={`${styles.item} ${styles.off} cursor-not-allowed opacity-60`}>{t.label}</span>
+          <span key={i} aria-disabled className={`${styles.item} ${styles.off} cursor-not-allowed opacity-60`}>{content(t)}</span>
         )
       )}
     </nav>
