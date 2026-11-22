@@ -1,4 +1,5 @@
-import { daysUntil, STAGES, stageOf } from "./sequence";
+import { sentByBdr } from "./brief";
+import { daysUntil, progress, pushDeadline, STAGES, stageOf } from "./sequence";
 import type { Snapshot } from "./data";
 import { AS_OF } from "./rules";
 
@@ -44,10 +45,31 @@ export function eventDetails(s: Snapshot, slug: string) {
   };
 }
 
-// Event overview: the event's details and how many candidates are at each stage.
-export function eventOverview(s: Snapshot, slug: string) {
+// Event overview: the event's details and its candidates by stage, as cards for the board: who, where their invite
+// stands (red when overdue), and who sends it (null until assigned).
+export function eventOverview(s: Snapshot, slug: string, now = new Date()) {
   const ev = eventDetails(s, slug);
   if (!ev) return null;
-  const candidates = s.candidates.filter((x) => x.campaign_id === ev.campaign_id);
-  return { event: ev, stages: STAGES.map((st) => ({ ...st, count: candidates.filter((x) => stageOf(x) === st.key).length })) };
+  const name = (p: { first_name: string; last_name: string }) => `${p.first_name} ${p.last_name}`;
+  const cards = s.candidates
+    .filter((x) => x.campaign_id === ev.campaign_id)
+    .map((x) => {
+      const c = s.contacts.find((k) => k.id === x.contact_id)!;
+      const a = s.accounts.find((k) => k.id === c.account_id)!;
+      const owner = sentByBdr(ev.outreach_lead, c.owner_id) ? s.users.find((u) => u.id === x.bdr_id) : s.users.find((u) => u.id === c.owner_id);
+      const deadline = pushDeadline(x, now);
+      const p = progress(ev.sequence, x, now);
+      const status = !x.approved_at ? { text: "Waiting for marketing to approve", color: "gray" as const } : deadline ?? (x.outcome ? null : p);
+      return {
+        id: c.id, stage: stageOf(x), name: name(c), title: c.title ?? "", company: a.name, vertical: a.vertical ?? "Other", horizontals: a.horizontals,
+        owner: owner ? name(owner) : null, detail: status?.text ?? null, overdue: status?.color === "red",
+      };
+    });
+  return {
+    event: ev,
+    stages: STAGES.map((st) => {
+      const here = cards.filter((c) => c.stage === st.key);
+      return { ...st, cards: here, count: here.length };
+    }),
+  };
 }

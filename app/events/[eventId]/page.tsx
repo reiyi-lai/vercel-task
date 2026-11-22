@@ -7,6 +7,7 @@ import { Meter, Page, Section, Status } from "@/components/ui";
 import { outreachVolume } from "@/lib/brief";
 import { loadSnapshot } from "@/lib/data";
 import { eventOverview, formatDate } from "@/lib/derive";
+import Board from "./board";
 import EventHeader from "./event-header";
 import { eventProgress } from "@/lib/sequence";
 
@@ -47,7 +48,6 @@ async function EventOverview({ params }: Pick<Props, "params">) {
       <Page>
         <Section
           title="Progress"
-          description={<>Against the targets in the <Link href={`${basePath}/brief`} className="text-blue-900 hover:underline">brief</Link>.</>}
         >
           <div className="grid gap-3 sm:grid-cols-3">
             {bars.map((x) => (
@@ -71,20 +71,9 @@ async function EventOverview({ params }: Pick<Props, "params">) {
           </div>
         </Section>
 
-        <Section title="Invites" description="Where everyone selected stands. Open a stage to act on it.">
-          <ul className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {stages.map((st) => (
-              <li key={st.key}>
-                <Link href={`${basePath}/invites?stage=${st.key}`} className="material-base block h-full space-y-2 p-4 hover:bg-gray-100">
-                  <Status color={st.color}><span className="text-label-13">{st.label}</span></Status>
-                  <p className="text-heading-24 tabular-nums">{st.count}</p>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Section>
+        <Board stages={stages} basePath={basePath} bdrLed={brief.outreach_lead === "bdr"} />
 
-        <Section title="Recent Activity" description={process.env.SLACK_WEBHOOK_URL ? "Alerts sent to AEs and BDRs, also posted to Slack." : "Alerts for AEs and BDRs. Add SLACK_WEBHOOK_URL to post them to Slack."}>
+        <Section title="Slack Alert History">
           {alerts.length ? (
             <ul className="material-base divide-y divide-gray-alpha-400">
               {alerts.map((a) => (
