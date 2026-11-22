@@ -96,3 +96,16 @@ export async function loadSnapshot(): Promise<Snapshot> {
     })
   ) as Snapshot;
 }
+
+// One event's row alone, for a page that needs nothing else (New Event's template), so it doesn't wait on every table
+// when the snapshot has expired. Cached and expired with the snapshot.
+export async function loadEvent(slug: string): Promise<EventRow | undefined> {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("snapshot");
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return (await import("./csv")).loadSampleSnapshot().events.find((e) => e.slug === slug);
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+  const { data, error } = await supabase.from(TABLES.events).select("*").eq("slug", slug).maybeSingle();
+  if (error) throw new Error(`Loading event ${slug}: ${error.message}`);
+  return data ?? undefined;
+}

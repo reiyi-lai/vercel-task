@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { Page, PageHeader } from "@/components/ui";
 import { F1_DEFAULTS, FORMATS } from "@/lib/brief";
-import { loadSnapshot } from "@/lib/data";
+import { loadEvent } from "@/lib/data";
 import BriefForm from "../[eventId]/brief/brief-form";
 
 export const metadata: Metadata = { title: "New Event" };
@@ -19,7 +19,7 @@ export default function NewEventPage({ searchParams }: PageProps<"/events/new">)
 async function NewEvent({ searchParams }: Pick<PageProps<"/events/new">, "searchParams">) {
   const q = (await searchParams).format;
   const format: Format = typeof q === "string" && q in FORMATS ? (q as Format) : "f1";
-  const template = (await loadSnapshot()).events.find((e) => e.slug === FORMATS[format].from)!;
+  const template = (await loadEvent(FORMATS[format].from))!;
   const f1 = format === "f1" ? F1_DEFAULTS : null;
   const brief = { ...template, select_by: null, ...f1?.brief };
 
