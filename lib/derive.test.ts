@@ -12,7 +12,7 @@ it("Event overview: candidates counted by stage", () => {
   const snap = { ...s, candidates: [{ ...row, contact_id: contact(90001) }, { ...row, contact_id: contact(90006), approved_at: "2026-11-01T08:00:00Z", started_at: "2026-11-01T09:00:00Z", outcome: "Replied" as const }] };
   const o = eventOverview(snap, "lvgp")!;
   expect(o.stages.map((st) => [st.label, st.count])).toEqual([
-    ["Pending Approval", 1], ["Pending Push to Outreach", 0], ["In Sequence", 0], ["Replied", 1], ["Accepted", 0], ["Declined", 0],
+    ["For Marketing Approval", 1], ["Pending Push to Outreach", 0], ["In Sequence", 0], ["Replied", 1], ["Accepted", 0], ["Declined", 0],
   ]);
 });
 

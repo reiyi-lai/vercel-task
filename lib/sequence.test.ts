@@ -20,6 +20,12 @@ it("Steps are due on their day after the start, overdue after that, and stop on 
   expect(progress(steps, started, now).text).toBe("Step 2 of 3 · overdue since Nov 6");
   expect(schedule(steps, { ...started, outcome: "Replied" }, now).map((x) => x.status)).toEqual(["Sent", "Stopped", "Stopped"]);
   expect(progress(steps, undefined, now).text).toBe("Not started");
+  // Step 1 never sent: only it is overdue; the rest wait for it.
+  const stalled = candidate({ started_at: "2026-11-02T09:00:00Z" });
+  expect(schedule(steps, stalled, now).map((x) => x.status)).toEqual(["Overdue", "Upcoming", "Upcoming"]);
+  // Step 2 counts from when step 1 actually went out.
+  const late = candidate({ started_at: "2026-11-02T09:00:00Z", sent: [{ step: 0, at: "2026-11-08T10:00:00Z" }] });
+  expect(progress(steps, late, now).text).toBe("Step 2 of 3 · due Nov 12");
 });
 
 it("An approved candidate is due to be pushed the day after approval, overdue after that", () => {

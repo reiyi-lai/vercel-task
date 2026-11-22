@@ -25,29 +25,35 @@ export const OUTREACH_URL = "https://web.outreach.io";
 export const shortDate = (d: Date) => d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: TIMEZONE });
 export type StepStatus = "Sent" | "Due" | "Overdue" | "Upcoming" | "Stopped";
 
-// Each step's due date and status for one candidate. A step is due on its day after the sequence starts and overdue the
-// day after, by calendar day in the business time zone. Steps stop once the candidate replies, accepts, declines or is
-// paused.
+// Each step's due date and status for one candidate, by calendar day in the business time zone. The first step is due on
+// its day after the sequence starts; each later one comes due only once the step before it is sent, its gap in days after
+// that send. Until then it's Upcoming, dated as if the step before went out today (or on its own due date, if later). A
+// step is overdue the day after it's due. Steps stop once the candidate replies, accepts, declines or is paused.
 export function schedule(steps: SequenceStep[], o: Candidate | undefined, now = new Date()) {
   const today = dayOf(now);
-  return steps.map((step, i) => {
+  const rows: { step: SequenceStep; index: number; due: Date | null; sent: Date | null; status: StepStatus | null }[] = [];
+  steps.forEach((step, i) => {
     const sent = o?.sent.find((x) => x.step === i);
-    const due = o?.started_at ? new Date(Date.parse(o.started_at) + step.day * DAY) : null;
+    const prev = rows[i - 1];
+    const from = !o?.started_at ? null : !prev ? Date.parse(o.started_at) : prev.sent ? prev.sent.getTime() : Math.max(prev.due!.getTime(), now.getTime());
+    const due = from === null ? null : new Date(from + (step.day - (prev?.step.day ?? 0)) * DAY);
     const status: StepStatus | null =
       sent ? "Sent"
       : !due ? null
       : o?.outcome ? "Stopped"
+      : prev && !prev.sent ? "Upcoming"
       : dayOf(due) < today ? "Overdue"
       : dayOf(due) === today ? "Due"
       : "Upcoming";
-    return { step, index: i, due, sent: sent ? new Date(sent.at) : null, status };
+    rows.push({ step, index: i, due, sent: sent ? new Date(sent.at) : null, status });
   });
+  return rows;
 }
 
 // Where a candidate is, stage by stage: waiting for marketing's approval, approved and waiting for their AE or BDR to
 // push them to Outreach, in the sequence (paused included), then how they responded. The Invites page's tabs.
 export const STAGES = [
-  { key: "approval", label: "Pending Approval", color: "hollow" },
+  { key: "approval", label: "For Marketing Approval", color: "hollow" },
   { key: "push", label: "Pending Push to Outreach", color: "gray" },
   { key: "sequence", label: "In Sequence", color: "blue" },
   { key: "replied", label: "Replied", color: "amber" },
@@ -62,8 +68,8 @@ export function stageOf(o: Candidate): Stage {
 }
 
 // An approved candidate's deadline to be pushed to Outreach: the day after marketing approves them, by calendar day in the
-// business time zone; overdue from the day after that. null once pushed, or before approval. The follow-up steps still
-// count from the push, so a late push doesn't squeeze them together.
+// business time zone; overdue from the day after that. null once pushed, or before approval. The follow-up steps count
+// from the step before them, so a late push doesn't squeeze them together.
 export function pushDeadline(o: Candidate, now = new Date()) {
   if (!o.approved_at || o.started_at) return null;
   const due = new Date(Date.parse(o.approved_at) + DAY);

@@ -1,7 +1,8 @@
 "use server";
 
 import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
-import { execName, sender, stepCard } from "@/lib/outreach";
+import { draftCopy, execName, sender } from "@/lib/outreach";
+import { shortDate } from "@/lib/sequence";
 import { notify } from "@/lib/slack";
 import { ok, write } from "@/lib/write";
 
@@ -44,11 +45,16 @@ export async function startSequence(campaignId: string, contactId: string) {
   const missing = brief.sequence.find((step) => !sender(s, campaignId, step, c));
   if (missing) return `Assign ${missing.sender === "Exec" ? "an AE" : "a BDR"} first.`;
   if (brief.sequence.some((step) => step.sender === "Exec") && !execName(s, campaignId, c)) return "Add the exec signing off first.";
+  // Pushing hands the sequence to Outreach, which sends step 1 straight away: it's recorded as sent, with the copy that
+  // went out, and later steps fall due from today.
+  const now = new Date();
+  const by = sender(s, campaignId, first, c)!;
+  const next = brief.sequence[1];
   return write(async (db) => {
-    ok(await db.from(TABLES.candidates).update({ started_at: new Date().toISOString(), sent: [], outcome: null, outcome_at: null }).eq("campaign_id", campaignId).eq("contact_id", contactId));
-    // Step 1 is due now: its card, with the drafted copy and Mark Sent / Edit buttons, goes to its sender.
-    const card = stepCard(s, campaignId, c, 0);
-    await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: card.recipient, kind: "Pushed to Outreach", text: `${event} outreach to ${who} was pushed to Outreach. ${card.text}` }, card.blocks);
+    const sent = [{ step: 0, at: now.toISOString(), ...draftCopy(s, campaignId, c, 0) }];
+    ok(await db.from(TABLES.candidates).update({ started_at: now.toISOString(), sent, outcome: null, outcome_at: null }).eq("campaign_id", campaignId).eq("contact_id", contactId));
+    const then = next ? ` Step 2 (${next.channel}) is due ${shortDate(new Date(now.getTime() + next.day * 86_400_000))}.` : "";
+    await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: `${by.first_name} ${by.last_name}`, kind: "Pushed to Outreach", text: `${event} outreach to ${who} was pushed to Outreach and step 1 went out.${then}` });
   });
 }
 
