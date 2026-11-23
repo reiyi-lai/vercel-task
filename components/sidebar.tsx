@@ -43,7 +43,7 @@ function EventGroup({ event, path, open: initial }: { event: SidebarEvent; path:
   const base = `/events/${event.slug}`;
   const pages = [
     { label: "Brief", href: `${base}/brief`, active: path === `${base}/brief` },
-    { label: "Contacts", href: `${base}/contacts`, active: path.startsWith(`${base}/contacts`) },
+    { label: "Accounts", href: `${base}/contacts`, active: path.startsWith(`${base}/contacts`) },
     { label: "Invites", href: `${base}/invites`, active: path.startsWith(`${base}/invites`), count: event.candidates },
   ];
   return (

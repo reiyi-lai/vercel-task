@@ -160,8 +160,9 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
 
 const ORDER: Qualified["status"][] = ["Qualified", "Excluded"];
 
-// One account in one event: whether it fits the brief, its commercial context, its executives (seniority stated in the
-// title first, then by status) and who has been selected to invite.
+// One account in one event: whether it fits the brief, its commercial context, its executives (those already selected
+// first, so an account opens on who's covered; then seniority stated in the title, then by status) and who has been
+// selected to invite.
 export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
   const selected = new Set(s.candidates.filter((x) => x.campaign_id === b.campaign_id).map((x) => x.contact_id));
   return {
@@ -171,7 +172,7 @@ export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
     executives: s.contacts
       .filter((c) => c.account_id === a.id)
       .map((c) => ({ ...qualifyContact(s, c, b), selected: selected.has(c.id) }))
-      .sort((x, y) => Number(!x.ranked) - Number(!y.ranked) || ORDER.indexOf(x.status) - ORDER.indexOf(y.status)),
+      .sort((x, y) => Number(!x.selected) - Number(!y.selected) || Number(!x.ranked) - Number(!y.ranked) || ORDER.indexOf(x.status) - ORDER.indexOf(y.status)),
   };
 }
 

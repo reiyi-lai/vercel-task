@@ -1,19 +1,17 @@
 import type { ReactNode } from "react";
 import { SelectCheckbox } from "@/components/selection";
-import { Badge, Check, Status } from "@/components/ui";
+import { Check, Status } from "@/components/ui";
 import type { FoundExecutive, Snapshot } from "@/lib/data";
 import { SENIORITY } from "@/lib/brief";
 import { holdsRank, type accountPlan, type Label } from "@/lib/qualify";
 import { NEW_IN_ROLE_SINCE } from "@/lib/rules";
 import { profileKey } from "@/lib/sumble";
-import { FindExecutives, FoundActions } from "./controls";
-import { AccountGroup } from "./filters";
+import { FoundActions } from "./controls";
 
-// An account's executives for an event, as rows of a ContactsTable: on the Contacts page under a quiet account line, and
-// on the AE/BDR page when an account is opened (its own row is the header there, so no account line).
+// An account's executives for an event, as rows of a ContactsTable: in the Accounts page's panel for the chosen account,
+// and on the AE/BDR page when an account is opened. Both give the account its own header, with Find More Executives.
 
 type Plan = ReturnType<typeof accountPlan>;
-const CONTACT_ROW = "group-data-collapsed/contacts:hidden";
 const month = (ym: string) => new Date(`${ym}-01`).toLocaleDateString("en-US", { month: "short", year: "numeric", timeZone: "UTC" });
 
 // Whether the account is real, so Sumble can search it (sample accounts use .example websites).
@@ -43,18 +41,17 @@ const TABLE = "w-full table-fixed text-left";
 
 // The rows in a card, around one or more AccountRows, with the column titles as plain text above it (a table of their
 // own with the same columns, so they line up). bare: just the rows, no card or titles, for inside another card where the
-// rows speak for themselves. Inside ContactsArea, the titles and contact rows hide while it's collapsed (CONTACT_ROW),
-// leaving the account lines.
+// rows speak for themselves.
 export function ContactsTable({ children, bare = false }: { children: ReactNode; bare?: boolean }) {
   const rows = <table className={TABLE}>{COLUMNS}{children}</table>;
   return (
     // The scroll box clips what's outside it, so it leaves room for the card's border (a shadow) and takes it back in
     // margin, keeping the alignment.
     <div className="-m-0.5 overflow-x-auto p-0.5">
-      <div className="min-w-[880px]">
+      <div className="min-w-[720px]">
         {bare ? rows : (
           <>
-            <table className={`${CONTACT_ROW} ${TABLE}`}>
+            <table className={TABLE}>
               {COLUMNS}
               <thead className="text-label-12 text-gray-900">
                 <tr>
@@ -73,36 +70,15 @@ export function ContactsTable({ children, bare = false }: { children: ReactNode;
   );
 }
 
-// executives: the ones to show (the Contacts filters may narrow them); found: Sumble results to list under them.
-// accountLine: the account's pill line with Find More Executives, where the account has no row of its own.
-export function AccountRows({ plan, executives = plan.executives, found, campaignId, accountLine }: {
-  plan: Plan; executives?: Plan["executives"]; found: ReturnType<typeof foundFor>; campaignId: string; accountLine: boolean;
+// executives: the ones to show (the filters may narrow them); found: Sumble results to list under them.
+export function AccountRows({ plan, executives = plan.executives, found, campaignId }: {
+  plan: Plan; executives?: Plan["executives"]; found: ReturnType<typeof foundFor>; campaignId: string;
 }) {
   const live = isLive(plan);
-  const selected = plan.executives.filter((e) => e.selected).length;
   return (
-    <AccountGroup id={plan.account.id} selected={selected > 0} className="scroll-mt-6 border-t border-gray-alpha-400 first-of-type:border-t-0">
-      {accountLine && (
-        // The account line only groups its contacts: small, quiet, with the context that bears on who to pick.
-        <tr>
-          <td colSpan={3} className="px-4 pt-4 pb-1 text-label-13">
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-              <Badge variant="outline" size="md">{plan.account.name}</Badge>
-              <span className="text-gray-900">{[plan.account.icp_tier, plan.account.vertical].filter(Boolean).join(" · ")}</span>
-              {/* Whether anyone here has been picked yet, so the accounts still to cover stand out. */}
-              <Status color={selected ? "green" : "amber"}>
-                <span className="text-label-13">{selected ? `${selected} ${selected === 1 ? "candidate" : "candidates"} selected` : "No candidates selected"}</span>
-              </Status>
-            </div>
-          </td>
-          {/* Finding more is for when the contacts show, so it hides with them. */}
-          <td className={`${CONTACT_ROW} px-4 pt-4 pb-1`}>
-            {live && <FindExecutives accountId={plan.account.id} campaignId={campaignId} searched={found.length > 0} />}
-          </td>
-        </tr>
-      )}
+    <tbody>
       {!plan.executives.length && (
-        <tr className={CONTACT_ROW}>
+        <tr>
           <td colSpan={4} className="px-4 py-3 text-label-13 text-gray-900">
             No executives in the CRM yet.{live ? " Find More Executives searches Sumble for this event’s target personas." : ""}
           </td>
@@ -111,9 +87,8 @@ export function AccountRows({ plan, executives = plan.executives, found, campaig
       {executives.map((e) => {
         const name = `${e.contact.first_name} ${e.contact.last_name}`;
         return (
-          <tr key={e.contact.id} className={`${CONTACT_ROW} align-top text-label-13 ${e.status === "Excluded" ? "text-gray-900" : ""}`}>
-            {/* Contacts sit indented under their account. */}
-            <td className="py-2.5 pr-4 pl-8">
+          <tr key={e.contact.id} className={`align-top text-label-13 ${e.status === "Excluded" ? "text-gray-900" : ""}`}>
+            <td className="px-4 py-2.5">
               {e.contact.linkedin_url && !e.contact.linkedin_url.includes("linkedin.example") ? (
                 <a href={e.contact.linkedin_url} target="_blank" rel="noreferrer" className="block truncate text-label-14 font-medium hover:underline">{name} ↗</a>
               ) : (
@@ -151,8 +126,8 @@ export function AccountRows({ plan, executives = plan.executives, found, campaig
         );
       })}
       {found.map((x) => (
-        <tr key={x.linkedin_url} className={`${CONTACT_ROW} align-top text-label-13`}>
-          <td className="py-2.5 pr-4 pl-8">
+        <tr key={x.linkedin_url} className="align-top text-label-13">
+          <td className="px-4 py-2.5">
             <a href={x.linkedin_url} target="_blank" rel="noreferrer" className="block truncate text-label-14 font-medium hover:underline">{x.name} ↗</a>
             <p className="text-label-12 text-gray-900">{[x.title, x.location].filter(Boolean).join(" · ")}</p>
           </td>
@@ -178,6 +153,6 @@ export function AccountRows({ plan, executives = plan.executives, found, campaig
         </tr>
       ))}
       <tr aria-hidden><td colSpan={4} className="h-2" /></tr>
-    </AccountGroup>
+    </tbody>
   );
 }

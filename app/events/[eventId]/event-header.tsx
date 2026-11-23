@@ -4,7 +4,7 @@ import type { eventDetails } from "@/lib/derive";
 type Event = NonNullable<ReturnType<typeof eventDetails>>;
 
 // The event's header band. Its pages (Overview, Brief, Contacts, Invites) are in the sidebar.
-export default function EventHeader({ event, page }: { event: Event; page: "Overview" | "Brief" | "Contacts" | "Invites" }) {
+export default function EventHeader({ event, page }: { event: Event; page: "Overview" | "Brief" | "Accounts" | "Invites" }) {
   return (
     <PageHeader crumbs={[{ label: event.short_name, href: `/events/${event.slug}` }, { label: page }]}>
       <h1 className="text-heading-32">{event.name}</h1>

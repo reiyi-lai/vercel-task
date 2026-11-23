@@ -29,7 +29,8 @@ export async function saveBrief(brief: EventBrief, details: Details) {
 }
 
 // Creates an event from a filled-in brief: its Salesforce campaign (here a row in our copy; in production, created
-// through the Salesforce API) and the event, then opens its Overview. The slug comes from the short name.
+// through the Salesforce API) and the event, then opens its Contacts page, the next step: picking who to invite. The
+// slug comes from the short name.
 export async function createEvent(brief: EventBrief, details: Details, names: { name: string; shortName: string }) {
   const name = names.name.trim();
   const shortName = names.shortName.trim();
@@ -45,5 +46,5 @@ export async function createEvent(brief: EventBrief, details: Details, names: { 
     ok(await db.from(TABLES.events).insert({ ...brief, campaign_id: id, slug, short_name: shortName, program: null, seats: details.seats, host_user_ids: [] }));
   });
   if (error) return error;
-  redirect(`/events/${slug}`);
+  redirect(`/events/${slug}/contacts`);
 }

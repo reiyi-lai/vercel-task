@@ -89,7 +89,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                               aside={isLive(p) && <FindExecutives accountId={p.account.id} campaignId={e.campaign_id} searched={found.length > 0} />}
                             >
                               <ContactsTable bare>
-                                <AccountRows plan={p} found={found} campaignId={e.campaign_id} accountLine={false} />
+                                <AccountRows plan={p} found={found} campaignId={e.campaign_id} />
                               </ContactsTable>
                             </RowToggle>
                           );

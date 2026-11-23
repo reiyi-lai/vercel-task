@@ -98,7 +98,7 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
             </div>
             {!selected.length ? (
               <p className="rounded-xl border border-dashed border-gray-alpha-500 p-5 text-copy-14 text-gray-900">
-                No one selected yet. Select executives on <Link href={`/events/${event.slug}/contacts`} className="text-blue-900 hover:underline">Contacts</Link>.
+                No one selected yet. Select executives on <Link href={`/events/${event.slug}/contacts`} className="text-blue-900 hover:underline">Accounts</Link>.
               </p>
             ) : shown.length ? (
               <ul className="material-base divide-y divide-gray-alpha-400">
@@ -117,7 +117,7 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
                       </div>
                     </div>
                     <div className="text-label-13">
-                      <Link href={`/events/${event.slug}/contacts#${account.id}`} className="font-medium hover:underline">{account.name}</Link>
+                      <Link href={`/events/${event.slug}/contacts?account=${account.id}`} className="font-medium hover:underline">{account.name}</Link>
                     </div>
                     {brief.outreach_lead === "ae_bdr" ? (
                       // AE/BDR-led: the account's AE sends when it has one, otherwise a BDR picked here.

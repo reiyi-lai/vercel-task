@@ -1,19 +1,17 @@
 "use client";
 
-import { useId, useState, type ReactNode } from "react";
+import { useId, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui";
 
-// The Contacts filters, kept in the URL: ?ae= (an AE's accounts, or none: those with no AE, which BDRs work) and
-// ?engagement= (none or engaged), applied on the server; and, applied in the browser since they only hide what's already
-// listed, ?accounts= (ids picked in the search), ?selected= (none: accounts with no candidates yet; some: those with)
-// and ?view=expanded (each account's contacts; by default, just the account
-// lines, to see which have candidates).
+// The Accounts filters, kept in the URL: ?engagement= (none or engaged), applied on the server as it narrows the
+// executives; and, applied in the browser since they only narrow the accounts already listed (see AccountBrowser),
+// ?accounts= (ids picked in the search), ?selected= (none: accounts with no candidates yet; some: those with) and ?ae=
+// (an AE's accounts, or none: those with no AE, which BDRs work).
 const select = "h-8 rounded-lg bg-background-100 px-2.5 text-label-13 shadow-border";
 type Option = { id: string; name: string };
 
 // The URL with one parameter set (or removed when empty).
-function useHref() {
+export function useHref() {
   const path = usePathname();
   const params = useSearchParams();
   return (name: string, value: string) => {
@@ -24,18 +22,22 @@ function useHref() {
   };
 }
 
-const pickedIn = (params: URLSearchParams) => params.get("accounts")?.split(",").filter(Boolean) ?? [];
+export const pickedIn = (params: URLSearchParams) => params.get("accounts")?.split(",").filter(Boolean) ?? [];
 
 export default function Filters({ aes, accounts }: { aes: Option[]; accounts: Option[] }) {
   const router = useRouter();
   const params = useSearchParams();
   const href = useHref();
   const go = (name: string, value: string) => router.replace(href(name, value), { scroll: false });
-  const collapsed = params.get("view") !== "expanded";
   return (
     <div className="flex flex-wrap items-center gap-2">
       <AccountSearch accounts={accounts} />
-      <select aria-label="AE" className={select} value={params.get("ae") ?? ""} onChange={(e) => go("ae", e.target.value)}>
+      <select aria-label="Candidates selected" className={select} value={params.get("selected") ?? ""} onChange={(e) => window.history.replaceState(null, "", href("selected", e.target.value))}>
+        <option value="">All Accounts</option>
+        <option value="none">No Candidates Selected</option>
+        <option value="some">Candidates Selected</option>
+      </select>
+      <select aria-label="AE" className={select} value={params.get("ae") ?? ""} onChange={(e) => window.history.replaceState(null, "", href("ae", e.target.value))}>
         <option value="">All AEs</option>
         {aes.map((u) => <option key={u.id} value={u.id}>{u.name}</option>)}
         <option value="none">No AE (BDR accounts)</option>
@@ -45,16 +47,6 @@ export default function Filters({ aes, accounts }: { aes: Option[]; accounts: Op
         <option value="none">Cold Contacts Only</option>
         <option value="engaged">Warm Contacts Only</option>
       </select>
-      {/* Only hides accounts already listed, so no server trip. */}
-      <select aria-label="Candidates selected" className={select} value={params.get("selected") ?? ""} onChange={(e) => window.history.replaceState(null, "", href("selected", e.target.value))}>
-        <option value="">All Accounts</option>
-        <option value="none">No Candidates Selected</option>
-        <option value="some">Candidates Selected</option>
-      </select>
-      <div className="ml-auto">
-        {/* Collapsing only hides rows, so it changes the URL without a trip to the server. */}
-        <Button variant="secondary" onClick={() => window.history.replaceState(null, "", href("view", collapsed ? "expanded" : ""))}>{collapsed ? "Expand to Contacts" : "Collapse to Hide Contacts"}</Button>
-      </div>
     </div>
   );
 }
@@ -142,20 +134,4 @@ function AccountSearch({ accounts }: { accounts: Option[] }) {
       )}
     </div>
   );
-}
-
-// One account's rows (a tbody), hidden while the search has picked other accounts, or ?selected= asks for accounts with
-// (or without) candidates and it isn't one (selected: whether it has any).
-export function AccountGroup({ id, selected, className, children }: { id: string; selected: boolean; className: string; children: ReactNode }) {
-  const params = useSearchParams();
-  const picked = pickedIn(params);
-  const want = params.get("selected");
-  const hidden = (picked.length > 0 && !picked.includes(id)) || (want === "none" && selected) || (want === "some" && !selected);
-  return <tbody id={id} className={className} hidden={hidden}>{children}</tbody>;
-}
-
-// Around the Contacts table: marks it collapsed unless ?view=expanded, which hides its contact rows (they carry
-// group-data-collapsed/contacts:hidden).
-export function ContactsArea({ children }: { children: ReactNode }) {
-  return <div data-collapsed={useSearchParams().get("view") !== "expanded" || undefined} className="group/contacts">{children}</div>;
 }
