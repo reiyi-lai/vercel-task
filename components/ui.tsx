@@ -84,6 +84,7 @@ export function Button({ children, variant = "secondary", size = "md", href, onC
   const sizing = size === "sm" ? "h-7 px-2.5 text-label-13 font-medium" : "h-8 px-3 text-button-14";
   const classes = `inline-flex ${sizing} items-center justify-center whitespace-nowrap rounded-lg disabled:pointer-events-none disabled:opacity-50 ${buttonStyles[variant]} ${className}`;
   if (href?.startsWith("http")) return <a href={href} target="_blank" rel="noreferrer" className={classes}>{children}</a>; // external: new tab
+  if (href?.startsWith("#")) return <a href={href} className={classes}>{children}</a>; // on this page: the browser scrolls, and hashchange fires
   return href ? <Link href={href} className={classes}>{children}</Link> : <button type="button" onClick={onClick} disabled={disabled} className={classes}>{children}</button>;
 }
 

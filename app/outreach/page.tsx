@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { Suspense, type ReactNode } from "react";
 import { Avatar, Button, Page, PageHeader, Section, Status, TabLinks } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
-import { myQueue, stepViews } from "@/lib/outreach";
+import { myQueue, sendAnchor, stepViews } from "@/lib/outreach";
 import { formatDate } from "@/lib/derive";
 import { daysUntil, OUTREACH_URL, shortDate } from "@/lib/sequence";
 import { SelectionProvider } from "@/components/selection";
@@ -12,7 +12,6 @@ import { AccountRows, ContactsTable, foundFor, isLive } from "../events/[eventId
 import { AddCandidatesBar, FindExecutives } from "../events/[eventId]/contacts/controls";
 import Outreach from "../events/[eventId]/invites/outreach";
 import RowToggle from "./row-toggle";
-import { sendAnchor } from "@/lib/outreach";
 
 export const metadata: Metadata = { title: "For AE/BDR" };
 
@@ -20,8 +19,9 @@ export default function OutreachPage({ searchParams }: PageProps<"/outreach">) {
   return <Suspense fallback={<p className="p-10 text-copy-14 text-gray-900">Loading…</p>}><Queue searchParams={searchParams} /></Suspense>;
 }
 
-// The AE's or BDR's working list across every event, the same steps Slack pings them about. ?as=<user id> picks whose
-// queue; in production, it would be whoever is signed in.
+// The AE's or BDR's working list across every event. ?as=<user id> picks whose queue; in production, it would be whoever
+// is signed in. Due Now gathers what's due today or overdue from the sections below (selecting candidates by an event's
+// deadline, sending an approved candidate's invite, sequence steps), each linking to where it's done.
 async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParams">) {
   await connection(); // what's due depends on today's date
   const s = await loadSnapshot();
@@ -40,6 +40,52 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
       </span>
     </span>
   );
+  // A date-only deadline ("2026-11-05") as "Nov 5", read as the calendar day it names.
+  const day = (date: string) => new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
+  const overdue = (late: boolean, since: string) => (late ? `overdue since ${since}` : "due today");
+  const tasks: { key: string; when: number; what: ReactNode; status: ReactNode; action: ReactNode }[] = [
+    ...toSelect.flatMap(({ e, accounts }) => {
+      const left = e.select_by === null ? null : daysUntil(e.select_by);
+      if (left === null || left > 0) return [];
+      return [{
+        key: `select-${e.campaign_id}`, when: Date.parse(e.select_by!),
+        what: (
+          <span className="min-w-0">
+            <span className="block text-label-14 font-medium">Select candidates · {e.short_name}</span>
+            <span className="block text-label-12 text-gray-900">{accounts.length} {accounts.length === 1 ? "account" : "accounts"} with no one selected</span>
+          </span>
+        ),
+        status: <Status color={left < 0 ? "red" : "amber"}>Select by {day(e.select_by!)} · {left < 0 ? "deadline passed" : "today"}</Status>,
+        action: <Button href={`#select-${e.campaign_id}`}>Select Candidates</Button>,
+      }];
+    }),
+    ...toStart.flatMap((r) =>
+      r.deadline && r.deadline.color !== "gray"
+        ? [{
+            key: sendAnchor(r.x.campaign_id, r.c.id), when: r.deadline.due.getTime(), what: who(r),
+            status: <Status color={r.deadline.color}>Send invite · {overdue(r.deadline.overdue, shortDate(r.deadline.due))}</Status>,
+            action: <Button href={`#${sendAnchor(r.x.campaign_id, r.c.id)}`}>Review and Send</Button>,
+          }]
+        : []
+    ),
+    ...due.map((r) => ({
+      key: `${r.x.campaign_id}${r.c.id}${r.step.index}`, when: r.step.due!.getTime(), what: who(r),
+      status: (
+        <div className="space-y-1">
+          <Status color={r.step.status === "Overdue" ? "red" : "amber"}>
+            Step {r.step.index + 1} · {r.step.step.channel} · {overdue(r.step.status === "Overdue", shortDate(r.step.due!))}
+          </Status>
+          {r.more > 0 && <p className="pl-3.5 text-label-12 text-gray-900">+{r.more} more {r.more === 1 ? "step" : "steps"} due after this</p>}
+        </div>
+      ),
+      action: (
+        <div className="flex flex-wrap items-start justify-end gap-2">
+          <Link href={plan(r.e.slug, r.c.id, r.step.index)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">View Draft</Link>
+          <Button href={OUTREACH_URL}>Open in Outreach</Button>
+        </div>
+      ),
+    })),
+  ].sort((a, b) => a.when - b.when); // longest overdue first
 
   return (
     <>
@@ -54,14 +100,25 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
         <h1 className="text-heading-32">For AE/BDR</h1>
       </PageHeader>
       <Page>
+        <Section title="Due Now">
+          <List empty="Nothing due today or overdue. Slack pings you at 9am when something falls due.">
+            {tasks.map((t) => (
+              <Row key={t.key}>
+                {t.what}
+                {t.status}
+                <div className="justify-self-end">{t.action}</div>
+              </Row>
+            ))}
+          </List>
+        </Section>
 
-<Section title="Accounts to Select Candidates">
+        <Section title="Accounts to Select Candidates">
           {toSelect.length ? (
             <div className="space-y-6">
               {toSelect.map(({ e, accounts }) => {
                 const left = e.select_by === null ? null : daysUntil(e.select_by);
                 return (
-                  <div key={e.campaign_id} className="space-y-3">
+                  <div key={e.campaign_id} id={`select-${e.campaign_id}`} className="scroll-mt-6 space-y-3">
                     <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
                       <h3 className="text-label-14 font-medium">{e.short_name} · {accounts.length} {accounts.length === 1 ? "account" : "accounts"}</h3>
                       {left === null ? (
@@ -129,26 +186,6 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                   />
                 </div>
               </RowToggle>
-            ))}
-          </List>
-        </Section>
-
-        <Section title="Due Now">
-          <List empty="Nothing due. Slack pings you at 9am when a step falls due.">
-            {due.map((r) => (
-              <Row key={`${r.x.campaign_id}${r.c.id}${r.step.index}`}>
-                {who(r)}
-                <div className="space-y-1">
-                  <Status color={r.step.status === "Overdue" ? "red" : "amber"}>
-                    Step {r.step.index + 1} · {r.step.step.channel} · {r.step.status === "Overdue" ? `overdue since ${shortDate(r.step.due!)}` : "due today"}
-                  </Status>
-                  {r.more > 0 && <p className="pl-3.5 text-label-12 text-gray-900">+{r.more} more {r.more === 1 ? "step" : "steps"} due after this</p>}
-                </div>
-                <div className="flex flex-wrap items-start justify-end gap-2">
-                  <Link href={plan(r.e.slug, r.c.id, r.step.index)} className="flex h-8 items-center text-label-13 text-blue-900 hover:underline">View Draft</Link>
-                  <Button href={OUTREACH_URL}>Open in Outreach</Button>
-                </div>
-              </Row>
             ))}
           </List>
         </Section>
