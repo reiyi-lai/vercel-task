@@ -63,8 +63,7 @@ async function Contacts({ params, searchParams }: Pick<Props, "params" | "search
             title="Accounts"
             description={
               <>
-                The {fits.length} accounts that fit the <Link href={`${basePath}/brief`} className="text-blue-900 hover:underline">brief</Link>. Pick an account, tick the executives to invite and click Add Candidates; marketing then approves them on{" "}
-                <Link href={`${basePath}/invites`} className="text-blue-900 hover:underline">Invites</Link> ({selected} so far).
+                {fits.length} accounts fit the <Link href={`${basePath}/brief`} className="text-blue-900 hover:underline">brief</Link>. Filter for accounts and select executives to Add as Candidate.
               </>
             }
           >
