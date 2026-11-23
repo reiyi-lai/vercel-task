@@ -34,7 +34,7 @@ async function InvitationPlan({ params }: Pick<Props, "params">) {
   const target = s.contacts.find((c) => c.id === candidateId);
   if (!event || !target) notFound();
   const account = s.accounts.find((a) => a.id === target.account_id)!;
-  const ae = s.users.find((u) => u.id === target.owner_id);
+  const ae = s.users.find((u) => u.id === account.owner_id);
   const name = `${target.first_name} ${target.last_name}`;
   const usage = vercelUsage(s, account.id);
   const outreach = s.candidates.find((x) => x.campaign_id === event.campaign_id && x.contact_id === candidateId);

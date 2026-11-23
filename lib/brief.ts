@@ -1,4 +1,4 @@
-import type { EventBrief, SequenceStep } from "./data";
+import type { Contact, EventBrief, SequenceStep, Snapshot } from "./data";
 
 // Choices and labels for the Event Brief. Values are what the events table stores.
 
@@ -91,6 +91,10 @@ export const SENDER_LABEL: Record<SequenceStep["sender"], string> = { Exec: "Fro
 
 // Whether a candidate's outreach is sent by a BDR: always on BDR-led events, and on AE/BDR-led ones when the account
 // has no AE.
+// A contact's AE: their account's Salesforce owner. Contacts carry an owner too, but it can lag when an account changes
+// hands (moving contacts is optional in Salesforce), so the account decides.
+export const aeOf = (s: Snapshot, c: Contact) => s.accounts.find((a) => a.id === c.account_id)?.owner_id ?? null;
+
 export const sentByBdr = (lead: EventBrief["outreach_lead"], aeId: string | null) => lead === "bdr" || (lead === "ae_bdr" && !aeId);
 
 // Works back from the guest target: invitations needed at the expected acceptance rate. Guests already confirmed in

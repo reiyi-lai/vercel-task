@@ -56,7 +56,7 @@ export function eventOverview(s: Snapshot, slug: string, now = new Date()) {
     .map((x) => {
       const c = s.contacts.find((k) => k.id === x.contact_id)!;
       const a = s.accounts.find((k) => k.id === c.account_id)!;
-      const owner = sentByBdr(ev.outreach_lead, c.owner_id) ? s.users.find((u) => u.id === x.bdr_id) : s.users.find((u) => u.id === c.owner_id);
+      const owner = sentByBdr(ev.outreach_lead, a.owner_id) ? s.users.find((u) => u.id === x.bdr_id) : s.users.find((u) => u.id === a.owner_id);
       const deadline = pushDeadline(x, now);
       const p = progress(ev.sequence, x, now);
       const status = !x.approved_at ? { text: "Waiting for marketing to approve", color: "gray" as const } : deadline ?? (x.outcome ? null : p);

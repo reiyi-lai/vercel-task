@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { SelectionProvider } from "@/components/selection";
-import { Page, Section, Status } from "@/components/ui";
+import { Page, Section } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventDetails } from "@/lib/derive";
 import { eventAccounts } from "@/lib/qualify";
@@ -87,20 +87,17 @@ async function Contacts({ params, searchParams }: Pick<Props, "params" | "search
                   <AccountList />
                   <div className="min-w-0">
                     {groups.map((p) => {
-                      const picked = p.executives.filter((e) => e.selected).length;
                       const owner = aes.find((u) => u.id === p.account.owner_id);
                       return (
                         <AccountPanel key={p.account.id} id={p.account.id}>
-                          {/* The account's header: who it is and how covered, who owns it, and finding more people. */}
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div className="space-y-1">
-                              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                <h3 className="text-heading-20">{p.account.name}</h3>
-                                <Status color={picked ? "green" : "amber"}>{picked ? `${picked} ${picked === 1 ? "candidate" : "candidates"} selected` : "No candidates selected"}</Status>
-                              </div>
-                              <p className="text-label-13 text-gray-900">
+                          {/* The account's header, one line: who it is, who owns it, and finding more people. (How covered it is
+                              shows on its card in the list.) */}
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                              <h3 className="text-heading-20">{p.account.name}</h3>
+                              <span className="text-label-13 text-gray-900">
                                 {[p.account.icp_tier, p.account.vertical, owner ? `AE ${owner.first_name} ${owner.last_name}` : "No AE (BDR account)"].filter(Boolean).join(" · ")}
-                              </p>
+                              </span>
                             </div>
                             {isLive(p) && <FindExecutives accountId={p.account.id} campaignId={event.campaign_id} searched={p.found.length > 0} />}
                           </div>

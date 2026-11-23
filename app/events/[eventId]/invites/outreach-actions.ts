@@ -1,5 +1,6 @@
 "use server";
 
+import { aeOf } from "@/lib/brief";
 import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
 import { draftCopy, execName, sender } from "@/lib/outreach";
 import { shortDate } from "@/lib/sequence";
@@ -14,7 +15,7 @@ async function context(campaignId: string, contactId: string) {
   const c = s.contacts.find((x) => x.id === contactId)!;
   const brief = s.events.find((b) => b.campaign_id === campaignId)!;
   const o = s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === contactId);
-  const ae = s.users.find((u) => u.id === c.owner_id);
+  const ae = s.users.find((u) => u.id === aeOf(s, c));
   const who = `${c.first_name} ${c.last_name} (${s.accounts.find((a) => a.id === c.account_id)!.name})`;
   return { s, c, brief, o, ae: ae ? `${ae.first_name} ${ae.last_name}` : "Unassigned AE", who, event: s.campaigns.find((x) => x.id === campaignId)!.name };
 }

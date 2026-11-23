@@ -14,7 +14,7 @@ export default function Home() {
 // Every event at a glance, for the CMO and the head of experiential: when and where, and how close each is to its
 // guest target, with anything that needs attention.
 async function Events() {
-  await connection(); // overdue steps and days out depend on today's date
+  await connection(); // push deadlines and days out depend on today’s date
   const s = await loadSnapshot();
   const events = eventsByDate(s).map(({ e, days }) => {
     const p = eventProgress(s, e);
@@ -39,9 +39,9 @@ async function Events() {
                 <div className="space-y-3">
                   <div className="grid gap-4 sm:grid-cols-3">
                     {[
-                      { label: "Guests Accepted", n: p.accepted, of: e.target_guests, fill: "bg-green-700" },
-                      { label: "Invites Sent", n: p.invited, of: volume.invites, fill: "bg-blue-700" },
                       { label: "Shortlisted", n: p.shortlisted, of: volume.invites, fill: "bg-gray-1000" },
+                      { label: "Invites Sent", n: p.invited, of: volume.invites, fill: "bg-blue-700" },
+                      { label: "Guests Accepted", n: p.accepted, of: e.target_guests, fill: "bg-green-700" },
                     ].map((x) => (
                       <div key={x.label} className="space-y-1.5">
                         <p className="text-label-12 text-gray-900">{x.label}</p>
@@ -51,8 +51,8 @@ async function Events() {
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-x-5 gap-y-1">
-                    <Status color={p.overdue ? "red" : "gray"}>{p.overdue} overdue {p.overdue === 1 ? "step" : "steps"}</Status>
-                    <Status color="amber">{p.awaiting} awaiting reply</Status>
+                    <Status color="hollow">{p.pendingApproval} pending approval</Status>
+                    <Status color={p.pushOverdue ? "red" : "gray"}>{p.pendingSend} pending send</Status>
                     <Status color="blue">{p.replied} replied</Status>
                   </div>
                 </div>

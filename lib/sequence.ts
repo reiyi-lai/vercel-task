@@ -111,5 +111,8 @@ export function eventProgress(s: Snapshot, b: EventBrief, now = new Date()) {
     declined: outcome("Declined").length,
     overdue: outreach.flatMap((o) => schedule(b.sequence, o, now)).filter((x) => x.status === "Overdue").length,
     pushOverdue: outreach.filter((o) => pushDeadline(o, now)?.overdue).length,
+    // The first two stages, as counted on the Invites tabs.
+    pendingApproval: outreach.filter((o) => stageOf(o) === "approval").length,
+    pendingSend: outreach.filter((o) => stageOf(o) === "push").length,
   };
 }

@@ -1,5 +1,5 @@
 import { loadSnapshot, TABLES, type Candidate, type Contact, type EventBrief, type SequenceStep, type Snapshot } from "./data";
-import { sentByBdr } from "./brief";
+import { aeOf, sentByBdr } from "./brief";
 import { eventOverview, eventsByDate } from "./derive";
 import { eventAccounts } from "./qualify";
 import { gmailDraft, pushDeadline, render, schedule, shortDate } from "./sequence";
@@ -8,12 +8,13 @@ import { expireFromRoute, ok, write } from "./write";
 
 const fullName = (p: { first_name: string; last_name: string }) => `${p.first_name} ${p.last_name}`;
 
-// Who handles a step in Seatbook (drafts it, gets its Slack card, marks it sent): the AE is the account's owner (its
-// contacts share it), or a BDR on AE steps when it has none; the BDR is the one assigned to this candidate for the event. Exec steps are the AE's too, signed
+// Who handles a step in Seatbook (drafts it, gets its Slack card, marks it sent): the AE is the account's owner (aeOf),
+// or a BDR on AE steps when it has none; the BDR is the one assigned to this candidate for the event. Exec steps are the AE's too, signed
 // off and sent by the exec (execName). Undefined until they're assigned on the Invites page.
 export function sender(s: Snapshot, campaignId: string, step: SequenceStep, c: Contact) {
   const bdr = () => s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.bdr_id;
-  const id = step.sender === "BDR" ? bdr() : step.sender === "AE" ? c.owner_id ?? bdr() : c.owner_id;
+  const ae = aeOf(s, c);
+  const id = step.sender === "BDR" ? bdr() : step.sender === "AE" ? ae ?? bdr() : ae;
   return s.users.find((u) => u.id === id);
 }
 
@@ -37,7 +38,7 @@ export function messageVars(s: Snapshot, campaignId: string, c: Contact, step: S
     event: event.name,
     date: event.date,
     sender_name: (step.sender === "Exec" ? execName(s, campaignId, c) : by && fullName(by)) ?? "{sender_name}",
-    ae_first_name: s.users.find((u) => u.id === c.owner_id)?.first_name ?? "{ae_first_name}",
+    ae_first_name: s.users.find((u) => u.id === aeOf(s, c))?.first_name ?? "{ae_first_name}",
   };
 }
 
@@ -162,7 +163,7 @@ export function myQueue(s: Snapshot, userId: string, now = new Date()) {
   const rows = s.events.flatMap((e) =>
     s.candidates.filter((x) => x.campaign_id === e.campaign_id).map((x) => {
       const c = s.contacts.find((k) => k.id === x.contact_id)!;
-      return { e, x, c, account: s.accounts.find((a) => a.id === c.account_id)!.name, mine: c.owner_id === userId || x.bdr_id === userId };
+      return { e, x, c, account: s.accounts.find((a) => a.id === c.account_id)!.name, mine: aeOf(s, c) === userId || x.bdr_id === userId };
     })
   );
   const due = rows

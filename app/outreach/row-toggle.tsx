@@ -6,7 +6,8 @@ import { Chevron } from "@/components/ui";
 // A row on the AE/BDR page that opens on a click anywhere to show its work right here: an account's executives (the same
 // rows as the Contacts page, whose columns this row's match: summary over Event Fit, aside over Prior Engagement), or a
 // candidate's outreach sequence with its drafts. aside (e.g. Find More Executives) shows once it's open, with the chevron
-// after it. id: the row's anchor; a link to #id (e.g. Go to AE's Page on Invites) starts it open and scrolls to it.
+// after it. id: the row's anchor; a link to #id (e.g. Go to AE's Page on Invites) starts it open and scrolls to its
+// section, so the section's title shows above it.
 export default function RowToggle({ id, name, summary, aside, children }: { id?: string; name: ReactNode; summary: ReactNode; aside: ReactNode; children: ReactNode }) {
   // The URL's hash. Arriving by a client-side link, the page renders before Next writes the new URL and no hashchange
   // fires, so it's read again once mounted (the queued onChange).
@@ -23,7 +24,8 @@ export default function RowToggle({ id, name, summary, aside, children }: { id?:
   // Open when linked to, or not; a click flips it from that.
   const [flipped, setFlipped] = useState(false);
   const open = linked !== flipped;
-  // Scroll a linked row into view once: the page streams in, so it may not have existed when Next scrolled to the hash.
+  // Scroll a linked row's section into view once, its title just below the top: the page streams in, so the row may not
+  // have existed when Next or the browser scrolled to the hash, and they'd scroll to the row itself.
   const scrolled = useRef(false);
   return (
     <li
@@ -31,10 +33,10 @@ export default function RowToggle({ id, name, summary, aside, children }: { id?:
       ref={(el) => {
         if (el && linked && !scrolled.current) {
           scrolled.current = true;
-          el.scrollIntoView({ block: "start" });
+          const top = (el.closest("section") ?? el).getBoundingClientRect().top;
+          scrollTo({ top: scrollY + top - 24 });
         }
       }}
-      className="scroll-mt-6"
     >
       <div
         onClick={() => setFlipped(!flipped)}
