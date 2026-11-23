@@ -52,7 +52,6 @@ async function Contacts({ params, searchParams }: Pick<Props, "params" | "search
       found: foundFor(s, p, event.campaign_id),
     }))
     .filter((p) => !warmth || p.shown.length || p.found.length);
-  const selected = fits.reduce((n, p) => n + p.executives.filter((e) => e.selected).length, 0);
 
   return (
     <>

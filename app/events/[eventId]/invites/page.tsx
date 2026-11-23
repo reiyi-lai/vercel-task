@@ -8,7 +8,7 @@ import { loadSnapshot } from "@/lib/data";
 import { eventOverview } from "@/lib/derive";
 import { OUTREACH_LEADS, sentByBdr } from "@/lib/brief";
 import { qualifyContact } from "@/lib/qualify";
-import { sendAnchor, sender } from "@/lib/outreach";
+import { sender } from "@/lib/outreach";
 import { progress, pushDeadline, STAGES, stageOf } from "@/lib/sequence";
 import { assignAe, assignBdr } from "../contacts/actions";
 import EventHeader from "../event-header";
@@ -155,11 +155,11 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
                     </div>
                     <div className="flex flex-col items-start gap-2 xl:justify-self-end">
                       {stage.key === "push" ? (
-                        // Pushing is the AE's or BDR's job: the one action here takes you to this candidate on their page,
-                        // where they check the copy and push. Until a BDR is assigned there's no one to send to.
+                        // Pushing is the AE's or BDR's job: the one action here takes you to their page, where they check the
+                        // copy and push. Until a BDR is assigned there's no one to send to.
                         ((by) =>
                           by ? (
-                            <Button href={`/outreach?as=${by.id}#${sendAnchor(event.campaign_id, c.id)}`}>Go to {by.title === "BDR" ? "BDR" : "AE"}’s Page</Button>
+                            <Button href={`/outreach?as=${by.id}`}>Go to {by.title === "BDR" ? "BDR" : "AE"}’s Page</Button>
                           ) : (
                             <span className="text-label-12 text-gray-900">Assign a BDR first</span>
                           ))(brief.sequence[0] && sender(s, event.campaign_id, brief.sequence[0], c))
