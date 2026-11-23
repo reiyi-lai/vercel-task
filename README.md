@@ -28,9 +28,9 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
    - Search for accounts, or pick an AE, an engagement level or **No Candidates Selected** from the dropdowns. E.g. **No Candidates Selected** lists the accounts still to cover.
    - Click **Find More Executives** in an account's header (e.g. **Visa**) to search Sumble for technical leaders new in their role who pass this event's seniority gate, topped up to 5 with people in its target personas. It takes up to a minute. Results show under the account's contacts with whether they match a persona and when they started; **Add to Contacts** saves them to the CRM, where you can tick them as candidates.
    - Tick the executives to invite and click **Add Candidates**.
-3. **Invites.** One tab per stage: **Pending Marketing Approval**, **Pending Send (via Outreach)**, **Sent**, **Replied**, **Accepted**, **Declined**.
+3. **Invites.** One tab per stage: **Pending Marketing Approval**, **Pending Send (AE/BDR)**, **Sent**, **Replied**, **Accepted**, **Declined**.
    - **Pending Marketing Approval:** marketing clicks **Approve** (or **Approve Selected**) to give candidates their seats; the AE/BDR gets a Slack message that they're ready.
-   - **Pending Send (via Outreach):** the AE/BDR checks the copy, then **Push to Outreach** hands the sequence to Outreach, which sends step 1 right away (so **Sent** always means the first email is out), with a Slack message to the sender. Clicking **Find Email** fetches a missing email via Sumble if needed.
+   - **Pending Send (AE/BDR):** the AE/BDR checks the copy, then **Push to Outreach** hands the sequence to Outreach, which sends step 1 right away (so **Sent** always means the first email is out), with a Slack message to the sender. Clicking **Find Email** fetches a missing email via Sumble if needed.
 4. **Invitation plan** (click **Invitation Plan →**).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.
