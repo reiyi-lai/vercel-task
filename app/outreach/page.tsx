@@ -34,8 +34,8 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
     <span className="flex min-w-0 items-center gap-3">
       <Avatar name={`${r.c.first_name} ${r.c.last_name}`} />
       <span className="min-w-0">
-        <span className="block truncate text-label-14 font-medium">{r.c.first_name} {r.c.last_name}</span>
-        <span className="block truncate text-label-12 text-gray-900">{r.c.title} · {r.account} · {r.e.short_name}</span>
+        <span className="block text-label-14 font-medium">{r.c.first_name} {r.c.last_name}</span>
+        <span className="block text-label-12 text-gray-900">{r.c.title} · {r.account} · {r.e.short_name}</span>
       </span>
     </span>
   );
@@ -81,8 +81,8 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                               key={p.account.id}
                               name={
                                 <>
-                                  <span className="block truncate text-label-14 font-medium">{p.account.name}</span>
-                                  <span className="block truncate text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</span>
+                                  <span className="block text-label-14 font-medium">{p.account.name}</span>
+                                  <span className="block text-label-12 text-gray-900">{[p.account.icp_tier, p.account.vertical].filter(Boolean).join(" · ")}</span>
                                 </>
                               }
                               summary={<span className="text-label-13 text-gray-900">{((n) => `${n} qualified ${n === 1 ? "executive" : "executives"}`)(p.executives.filter((x) => x.status === "Qualified").length)}</span>}

@@ -43,7 +43,7 @@ export const F1_DEFAULTS = {
     sequence: [
       {
         day: 0, channel: "Email", sender: "Exec", subject: "{first_name}, a seat for you at the Miami Grand Prix",
-        body: "Hi {first_name},\n\nVercel is hosting a small group of technology leaders at the Miami Grand Prix on {date}. We have ten seats, and I'd like one of them to be yours.\n\nShall I hold a seat for you?\n\n{sender_name}",
+        body: "Hi {first_name},\n\nI'm Guillermo, the CEO of Vercel.\n\nWe're partnering with the Mercedes-AMG PETRONAS Formula One team, whose driver Kimi Antonelli just made history as the youngest F1 World Champion.\n\nTo celebrate, we’re hosting a handful of technology leaders who share that engineering drive at the {event} on {date}, and I'd love for you to join us.\n\nShall I hold a seat for you?\n\n{sender_name}",
       },
       {
         day: 9, channel: "Email", sender: "Exec", subject: "Re: {first_name}, a seat for you at the Miami Grand Prix",
