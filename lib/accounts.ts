@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { loadSnapshot, TABLES, type EventBrief } from "./data";
 import { geocode } from "./geocode";
-import { inTechDepartment, matchPersona, meetsMinimum } from "./qualify";
+import { meetsMinimum, targetPersona } from "./qualify";
 import { profileKey, sumble, sumbleOrgId, type SumblePerson } from "./sumble";
 import { NEW_IN_ROLE_SINCE } from "./rules";
 import { expireFromRoute, ok, write } from "./write";
@@ -68,7 +68,7 @@ export async function findExecutives(accountId: string, campaignId: string) {
     const known = new Set(s.contacts.filter((c) => c.account_id === a.id).map((c) => `${c.first_name} ${c.last_name}`.toLowerCase()));
     const inCrm = new Set(s.contacts.flatMap((c) => (c.linkedin_url ? [profileKey(c.linkedin_url)] : [])));
     const isNew = (p: SumblePerson) => !known.has(p.attributes?.name?.toLowerCase() ?? "") && !(p.attributes?.linkedin_url && inCrm.has(profileKey(p.attributes.linkedin_url)));
-    const persona = (title: string) => (inTechDepartment(title) ? matchPersona(title, brief.personas) ?? null : null);
+    const persona = (title: string) => targetPersona(title, brief.personas);
     const full = ["name", "job_title", "linkedin_url", "location", "current_employer"];
 
     // 1. New leaders.

@@ -3,7 +3,7 @@ import { SelectCheckbox } from "@/components/selection";
 import { Check, Status } from "@/components/ui";
 import type { FoundExecutive, Snapshot } from "@/lib/data";
 import { SENIORITY } from "@/lib/brief";
-import { holdsRank, type accountPlan, type Label } from "@/lib/qualify";
+import { holdsRank, personaLabel, type accountPlan, type Label } from "@/lib/qualify";
 import { NEW_IN_ROLE_SINCE } from "@/lib/rules";
 import { profileKey } from "@/lib/sumble";
 import { FoundActions } from "./controls";
@@ -132,16 +132,9 @@ export function AccountRows({ plan, executives = plan.executives, found, campaig
             <p className="text-label-12 text-gray-900">{[x.title, x.location].filter(Boolean).join(" · ")}</p>
           </td>
           <td className="px-4 py-2.5">
-            {/* Seniority first, as for contacts, then whether the role is one of the brief's personas. */}
+            {/* Seniority first, then whether the role is one of the brief's personas: the same labels as for contacts. */}
             <ul className="space-y-1">
-              <li><Status color={x.seniority.color}><span className="text-label-13">{x.seniority.text}</span></Status></li>
-              <li>
-                {x.persona ? (
-                  <Status color="green"><span className="text-label-13">Target persona match: {x.persona}</span></Status>
-                ) : (
-                  <Status color="gray"><span className="text-label-13">Not in target persona role</span></Status>
-                )}
-              </li>
+              {[x.seniority, personaLabel(x.persona)].map((l) => <li key={l.text}><Status color={l.color}><span className="text-label-13">{l.text}</span></Status></li>)}
             </ul>
           </td>
           <td className="px-4 py-2.5">

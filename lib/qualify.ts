@@ -86,6 +86,14 @@ export function matchPersona(title: string, personas: string[]) {
 const DEPARTMENTS = ["technology", "tech", "engineering", "digital", "commerce", "ecommerce", "information", "ai"];
 export const inTechDepartment = (title: string) => DEPARTMENTS.some((d) => titleWords(title).has(d));
 
+// The brief's target persona a title is, if any: a technology role whose title matches one. The same check for contacts
+// and for Find More Executives results.
+export const targetPersona = (title: string, personas: string[]) => (inTechDepartment(title) ? matchPersona(title, personas) ?? null : null);
+
+// The Event Fit label for that persona (or its absence), for contacts and Sumble results alike.
+export const personaLabel = (persona: string | null): Label =>
+  persona ? { text: `Target match: ${persona}`, color: "green" } : { text: "Not target persona", color: "gray" };
+
 // Whether the title states a rank at or above the brief's minimum seniority: C-level always; Senior/Executive Vice President from SVP down; Vice President from VP down; Director at Director.
 export function holdsRank(title: string, min: EventBrief["min_seniority"]) {
   const t = title.toLowerCase();
@@ -137,9 +145,10 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
   if (member) excluded.push(`Already on this event · ${member.invite_status}`);
   if (below) excluded.push(`Below ${SENIORITY[b.min_seniority]}`); // minimum seniority is a hard gate
 
-  // Target personas steer Find Executives; here the title only has to state the minimum seniority.
+  // Seniority, then whether the role is one of the brief's target personas (worth knowing, not a gate).
   const ranked = holdsRank(c.title ?? "", b.min_seniority);
   labels.push(ranked ? { text: `Matches ${SENIORITY[b.min_seniority]}`, color: "green" } : { text: "Seniority not in title", color: "gray" });
+  labels.push(personaLabel(targetPersona(c.title ?? "", b.personas)));
 
   // City-based: the contact's mailing city is one of the selected cities. (Conference attendance isn't checked yet.)
   if (b.geography === "city" && b.cities.length) {
@@ -161,8 +170,8 @@ export function qualifyContact(s: Snapshot, c: Contact, b: EventBrief): Qualifie
 const ORDER: Qualified["status"][] = ["Qualified", "Excluded"];
 
 // One account in one event: whether it fits the brief, its commercial context, its executives (those already selected
-// first, so an account opens on who's covered; then seniority stated in the title, then by status) and who has been
-// selected to invite.
+// first, so an account opens on who's covered; then seniority stated in the title, then a target persona match, so those
+// matching both come before those matching seniority alone; then by status) and who has been selected to invite.
 export function accountPlan(s: Snapshot, a: Account, b: EventBrief) {
   const selected = new Set(s.candidates.filter((x) => x.campaign_id === b.campaign_id).map((x) => x.contact_id));
   return {

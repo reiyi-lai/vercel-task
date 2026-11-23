@@ -58,7 +58,7 @@ it("The same executive qualifies differently per event", () => {
 it("Opted-out and former contacts are excluded; caveats are flagged but still qualify", () => {
   expect(check("Isabel", "lvgp").labels[0].text).toBe("Opted out of email");
   expect(check("Ben", "lvgp").labels[0].text).toBe("Left the company");
-  expect(check("Lucas", "ai-builder-dinner")).toMatchObject({ status: "Qualified", labels: [{ text: "Seniority not in title" }, { text: "San Francisco" }] });
+  expect(check("Lucas", "ai-builder-dinner")).toMatchObject({ status: "Qualified", labels: [{ text: "Seniority not in title" }, { text: "Target match: Head of AI" }, { text: "San Francisco" }] });
   expect(check("Rajat", "ai-builder-dinner").labels.map((l) => l.text)).toContain("Location unknown");
 });
 

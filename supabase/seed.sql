@@ -260,6 +260,7 @@ insert into vercel_teams (id, name, account_id, plan, active_users_30d, monthly_
   ('team_capone_portal', 'capitalone-dev-portal', '001Sb0000070021AAA', 'Pro', 4, 320, null, null, 'Senior Engineering Manager, Developer Experience', null),
   ('team_toast_marketing', 'toast-marketing', '001Sb0000070037AAA', 'Pro', 7, 560, null, null, 'Director of Marketing Technology', null),
   ('team_datadog_docs', 'datadog-docs', '001Sb0000070038AAA', 'Pro', 8, 640, null, null, 'Documentation Engineering Lead', null),
+  ('team_datadog_security', 'datadog-security-console', '001Sb0000070038AAA', 'Pro', 6, 480, null, 'Bianca Lankford', 'Vice President Engineering (Security, Sr E, Threat Detection & Trust)', '003Sb0000090083AAA'),
   ('team_crowdstrike_events', 'crowdstrike-events', '001Sb0000070036AAA', 'Pro', 3, 240, null, null, 'Web Team Lead, Events', null),
   ('team_visa_devx', 'visa-developer-experience', '001Sb0000070019AAA', 'Pro', 6, 480, null, null, 'Director, Developer Experience', null),
   ('team_visa_acceptance', 'visa-acceptance-demos', '001Sb0000070019AAA', 'Pro', 3, 240, null, null, 'Senior Solutions Engineer', null);
