@@ -39,7 +39,7 @@ export const F1_DEFAULTS = {
     format: "Formula 1 Executive Hospitality", location: "Miami, FL", target_guests: 10, acceptance_rate: 50,
     personas: ["CTO", "CIO", "SVP Engineering", "VP Engineering", "Executive Vice President", "Chief AI Officer", "Senior Vice President Engineering"],
     geography: "nationwide", cities: [], min_seniority: "vp", tiers: ["Tier 1"], outreach_lead: "exec",
-    exec_name: "Guillermo Rach (CEO)", select_by: "2026-11-18",
+    exec_name: "Guillermo Rauch", select_by: "2026-11-18",
     sequence: [
       {
         day: 0, channel: "Email", sender: "Exec", subject: "{first_name}, a seat for you at the Miami Grand Prix",
