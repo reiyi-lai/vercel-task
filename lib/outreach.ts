@@ -116,6 +116,15 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
   return { recipient: fullName(by), text, blocks };
 }
 
+// A Slack message about a candidate with an Open in Seatbook button to their invitation plan, where the outreach
+// sequence is: for approvals and overdue pushes, which the AE or BDR acts on there.
+export function seatbookCard(recipient: string, text: string, slug: string, contactId: string): Block[] {
+  return [
+    { type: "section", text: { type: "mrkdwn", text: `*For ${recipient}:* ${text}` } },
+    { type: "actions", elements: [{ type: "button", style: "primary", text: { type: "plain_text", text: "Open in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${slug}/invites/${contactId}` }] },
+  ];
+}
+
 // What the card becomes once the step is marked sent: the copy that went out, and by whom.
 export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: number, copy: { subject: string; body: string }, by: string): Block[] {
   const account = s.accounts.find((a) => a.id === c.account_id)!.name;
@@ -146,10 +155,8 @@ export async function sendReminders(campaignId: string) {
       const by = brief.sequence[0] && sender(s, campaignId, brief.sequence[0], c);
       const account = s.accounts.find((a) => a.id === c.account_id)!.name;
       const text = `Push ${fullName(c)} (${account}) to Outreach · ${event}. Approved ${shortDate(new Date(o.approved_at!))}, ${pushDeadline(o)!.text.toLowerCase()}.`;
-      await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient: by ? fullName(by) : "Unassigned BDR", kind: "Push Overdue", text }, [
-        { type: "section", text: { type: "mrkdwn", text: `*For ${by ? fullName(by) : "Unassigned BDR"}:* ${text}` } },
-        { type: "actions", elements: [{ type: "button", style: "primary", text: { type: "plain_text", text: "Open in Seatbook" }, action_id: "edit", url: `${siteUrl()}/events/${brief.slug}/invites/${c.id}` }] },
-      ]);
+      const recipient = by ? fullName(by) : "Unassigned BDR";
+      await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient, kind: "Push Overdue", text }, seatbookCard(recipient, text, brief.slug, c.id));
     }
   }, expireFromRoute);
   return { error, sent: due.length + unpushed.length };

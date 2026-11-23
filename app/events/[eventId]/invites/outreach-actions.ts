@@ -2,7 +2,7 @@
 
 import { aeOf } from "@/lib/brief";
 import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
-import { draftCopy, execName, sender } from "@/lib/outreach";
+import { draftCopy, execName, seatbookCard, sender } from "@/lib/outreach";
 import { shortDate } from "@/lib/sequence";
 import { notify } from "@/lib/slack";
 import { ok, write } from "@/lib/write";
@@ -33,7 +33,10 @@ export async function approveCandidates(campaignId: string, contactIds: string[]
       const c = s.contacts.find((k) => k.id === x.contact_id)!;
       const by = brief.sequence[0] && sender(s, campaignId, brief.sequence[0], c);
       const who = `${c.first_name} ${c.last_name} (${s.accounts.find((a) => a.id === c.account_id)!.name})`;
-      await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient: by ? `${by.first_name} ${by.last_name}` : "Unassigned AE", kind: "Approved", text: `Marketing approved ${who} for ${event}. Check the copy and push them to Outreach.` });
+      const recipient = by ? `${by.first_name} ${by.last_name}` : "Unassigned AE";
+      const text = `Marketing approved ${who} for ${event}. Check the copy and push them to Outreach.`;
+      // With a button straight to their invitation plan, where the copy is checked and pushed.
+      await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient, kind: "Approved", text }, seatbookCard(recipient, text, brief.slug, c.id));
     }
   });
 }
