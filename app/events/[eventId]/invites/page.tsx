@@ -3,19 +3,19 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { Avatar, Page, PersonName, Section, Status, TabLinks } from "@/components/ui";
+import { Avatar, Button, Page, PersonName, Section, Status, TabLinks } from "@/components/ui";
 import { loadSnapshot } from "@/lib/data";
 import { eventOverview } from "@/lib/derive";
 import { OUTREACH_LEADS, sentByBdr } from "@/lib/brief";
 import { qualifyContact } from "@/lib/qualify";
+import { sendAnchor, sender } from "@/lib/outreach";
 import { progress, pushDeadline, STAGES, stageOf } from "@/lib/sequence";
 import { assignAe, assignBdr } from "../contacts/actions";
 import EventHeader from "../event-header";
 import Assign from "./assign";
 import { SelectCheckbox, SelectionProvider } from "@/components/selection";
 import { RemoveSelected } from "./remove";
-import FindEmail from "./find-email";
-import StartSequence, { PushSelected } from "./start-sequence";
+import { PushSelected } from "./start-sequence";
 import { Approve, ApproveSelected } from "./approve";
 
 type Props = PageProps<"/events/[eventId]/invites">;
@@ -154,9 +154,21 @@ async function Invites({ params, searchParams }: Pick<Props, "params" | "searchP
                       )}
                     </div>
                     <div className="flex flex-col items-start gap-2 xl:justify-self-end">
-                      <Link href={`/events/${event.slug}/invites/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
-                      {stage.key === "push" && !c.email && c.linkedin_url && !c.linkedin_url.includes("linkedin.example") && <FindEmail contactId={c.id} />}
-                      {!approved ? <Approve campaignId={event.campaign_id} contactIds={[c.id]} /> : c.email && !started && <StartSequence campaignId={event.campaign_id} contactId={c.id} />}
+                      {stage.key === "push" ? (
+                        // Pushing is the AE's or BDR's job: the one action here takes you to this candidate on their page,
+                        // where they check the copy and push. Until a BDR is assigned there's no one to send to.
+                        ((by) =>
+                          by ? (
+                            <Button href={`/outreach?as=${by.id}#${sendAnchor(event.campaign_id, c.id)}`}>Go to {by.title === "BDR" ? "BDR" : "AE"}’s Page</Button>
+                          ) : (
+                            <span className="text-label-12 text-gray-900">Assign a BDR first</span>
+                          ))(brief.sequence[0] && sender(s, event.campaign_id, brief.sequence[0], c))
+                      ) : (
+                        <>
+                          <Link href={`/events/${event.slug}/invites/${c.id}`} className="whitespace-nowrap text-label-13 font-medium text-blue-900 hover:underline">Invitation Plan →</Link>
+                          {!approved && <Approve campaignId={event.campaign_id} contactIds={[c.id]} />}
+                        </>
+                      )}
                     </div>
                   </li>
                 ))}

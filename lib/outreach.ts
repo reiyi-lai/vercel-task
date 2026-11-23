@@ -17,6 +17,9 @@ export function sender(s: Snapshot, campaignId: string, step: SequenceStep, c: C
   return s.users.find((u) => u.id === id);
 }
 
+// A candidate's row under Candidates to Send Invites on the AE/BDR page, for links straight to it.
+export const sendAnchor = (campaignId: string, contactId: string) => `send-${campaignId}-${contactId}`;
+
 // The exec who signs off and sends a candidate's Exec steps: their own, typed on the Invites page, or else the event's,
 // set on the brief.
 export const execName = (s: Snapshot, campaignId: string, c: Contact) =>

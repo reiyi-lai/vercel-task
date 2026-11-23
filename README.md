@@ -30,7 +30,7 @@ Steps 3 & 4 are directly targeted at what's mentioned in the brief, on current B
    - Tick the executives to invite and click **Add Candidates**.
 3. **Invites.** One tab per stage: **Pending Marketing Approval**, **Pending Send (AE/BDR)**, **Sent**, **Replied**, **Accepted**, **Declined**.
    - **Pending Marketing Approval:** marketing clicks **Approve** (or **Approve Selected**) to give candidates their seats; the AE/BDR gets a Slack message that they're ready.
-   - **Pending Send (AE/BDR):** the AE/BDR checks the copy, then **Push to Outreach** hands the sequence to Outreach, which sends step 1 right away (so **Sent** always means the first email is out), with a Slack message to the sender. Clicking **Find Email** fetches a missing email via Sumble if needed.
+   - **Pending Send (AE/BDR):** each candidate's one action, **Go to AE’s Page** (or BDR’s), opens them on that seller's **For AE/BDR** page under **Candidates to Send Invites**, already expanded. There the AE/BDR checks the copy, then **Push to Outreach** hands the sequence to Outreach, which sends step 1 right away (so **Sent** always means the first email is out), with a Slack message to the sender. **Find Email** on the invitation plan fetches a missing email via Sumble if needed.
 4. **Invitation plan** (click **Invitation Plan →**).
    - Outreach Sequence shows entire timeline with steps and draft each. You can edit, open in Gmail, or copy it.
    - The ideal outcome is to sync this with Outreach's API and generate an Outreach sequence per event that syncs with the respective AE/BDR's inbox.

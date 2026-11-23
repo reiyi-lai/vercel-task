@@ -12,6 +12,7 @@ import { AccountRows, ContactsTable, foundFor, isLive } from "../events/[eventId
 import { AddCandidatesBar, FindExecutives } from "../events/[eventId]/contacts/controls";
 import Outreach from "../events/[eventId]/invites/outreach";
 import RowToggle from "./row-toggle";
+import { sendAnchor } from "@/lib/outreach";
 
 export const metadata: Metadata = { title: "For AE/BDR" };
 
@@ -112,6 +113,7 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
             {toStart.map((r) => (
               <RowToggle
                 key={`${r.x.campaign_id}${r.c.id}`}
+                id={sendAnchor(r.x.campaign_id, r.c.id)}
                 name={who(r)}
                 summary={r.deadline ? <Status color={r.deadline.color}>{r.deadline.text}</Status> : <Status color="hollow">Pending marketing approval</Status>}
                 aside={null}
