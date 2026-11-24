@@ -2,7 +2,7 @@ import { loadSnapshot, TABLES, type Candidate, type Contact, type EventBrief, ty
 import { aeOf, sentByBdr } from "./brief";
 import { eventOverview, eventsByDate } from "./derive";
 import { eventAccounts } from "./qualify";
-import { gmailDraft, pushDeadline, render, schedule, shortDate } from "./sequence";
+import { daysSince, gmailDraft, pushDeadline, render, schedule, shortDate } from "./sequence";
 import { notify, quote, type Block } from "./slack";
 import { expireFromRoute, ok, write } from "./write";
 
@@ -90,7 +90,7 @@ const siteUrl = () =>
 // The Slack card for a step that's due: who it's for, the drafted copy, and buttons to mark it sent as drafted, open a
 // Gmail draft of it (email steps, when the link fits Slack's 3,000-character limit), or edit it in Seatbook, which opens
 // that step on the candidate's invitation plan. Mark Sent carries "campaignId|contactId|step".
-export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false) {
+export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: number, overdue = false, due: Date | null = null) {
   const step = s.events.find((b) => b.campaign_id === campaignId)!.sequence[index];
   const by = sender(s, campaignId, step, c)!; // cards are only sent for started sequences, whose senders are assigned
   const account = s.accounts.find((a) => a.id === c.account_id)!.name;
@@ -99,8 +99,14 @@ export function stepCard(s: Snapshot, campaignId: string, c: Contact, index: num
   const value = `${campaignId}|${c.id}|${index}`;
   const copy = draftCopy(s, campaignId, c, index);
   const gmail = step.channel === "Email" ? gmailDraft(c.email, copy.subject, copy.body) : null;
-  const exec = step.sender === "Exec" && ` Get ${execName(s, campaignId, c)}’s sign-off; it goes from their email.`;
-  const text = `Step ${index + 1} (${step.channel}) to ${fullName(c)}, ${c.title} at ${account}, is ${overdue ? "overdue" : "due today"} · ${event}.${exec || ""}`;
+  const signer = step.sender === "Exec" && execName(s, campaignId, c);
+  const exec = signer && ` Get ${signer}’s sign-off; it goes from their email.`;
+  // Steps after the first are follow-ups, counted from the first touch (step 1, sent at the push).
+  const first = s.candidates.find((x) => x.campaign_id === campaignId && x.contact_id === c.id)?.sent.find((x) => x.step === 0);
+  const days = first && daysSince(first.at);
+  const what = `${index ? "reminder " : ""}${step.channel === "Email" ? "email" : "LinkedIn message"}`;
+  const since = days ? ` (${days} ${days === 1 ? "day" : "days"} since first touch)` : "";
+  const text = `Send ${what} to ${fullName(c)} @ ${account} for ${event}${since}.${overdue && due ? ` Overdue since ${shortDate(due)}.` : ""}${exec || ""}`;
   const blocks: Block[] = [
     { type: "section", text: { type: "mrkdwn", text: `*For ${fullName(by)}:* ${text}` } },
     { type: "section", text: { type: "mrkdwn", text: quote(copy) } },
@@ -135,11 +141,13 @@ export function sentCard(s: Snapshot, campaignId: string, c: Contact, index: num
 }
 
 // A Slack card to its sender for each unsent step in the event that's due or overdue, and for each approved candidate
-// not pushed to Outreach by their deadline (Vercel Cron, daily at 9am).
+// not pushed to Outreach by their deadline (Vercel Cron, daily at 9am). None once the event has happened, as the
+// For AE/BDR page drops it then too.
 export async function sendReminders(campaignId: string) {
   const s = await loadSnapshot();
   const brief = s.events.find((b) => b.campaign_id === campaignId);
   if (!brief) return { error: "No such event." };
+  if (eventsByDate(s).find((x) => x.e === brief)!.days < 0) return { sent: 0 };
   const due = s.candidates
     .filter((o) => o.campaign_id === campaignId)
     .flatMap((o) => schedule(brief.sequence, o).filter((x) => x.status === "Due" || x.status === "Overdue").map((x) => ({ o, x })));
@@ -147,14 +155,14 @@ export async function sendReminders(campaignId: string) {
   const event = s.campaigns.find((x) => x.id === campaignId)!.name;
   const error = await write(async (db) => {
     for (const { o, x } of due) {
-      const card = stepCard(s, campaignId, s.contacts.find((c) => c.id === o.contact_id)!, x.index, x.status === "Overdue");
+      const card = stepCard(s, campaignId, s.contacts.find((c) => c.id === o.contact_id)!, x.index, x.status === "Overdue", x.due);
       await notify(db, { campaign_id: campaignId, contact_id: o.contact_id, recipient: card.recipient, kind: "Due", text: card.text }, card.blocks);
     }
     for (const o of unpushed) {
       const c = s.contacts.find((k) => k.id === o.contact_id)!;
       const by = brief.sequence[0] && sender(s, campaignId, brief.sequence[0], c);
       const account = s.accounts.find((a) => a.id === c.account_id)!.name;
-      const text = `Push ${fullName(c)} (${account}) to Outreach · ${event}. Approved ${shortDate(new Date(o.approved_at!))}, ${pushDeadline(o)!.text.toLowerCase()}.`;
+      const text = `Send invite to ${fullName(c)} @ ${account} for ${event}. Overdue since ${shortDate(pushDeadline(o)!.due)}.`;
       const recipient = by ? fullName(by) : "Unassigned BDR";
       await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient, kind: "Push Overdue", text }, seatbookCard(recipient, text, brief.slug, c.id));
     }

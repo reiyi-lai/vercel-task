@@ -3,7 +3,6 @@
 import { aeOf } from "@/lib/brief";
 import { loadSnapshot, TABLES, type Candidate } from "@/lib/data";
 import { draftCopy, execName, seatbookCard, sender } from "@/lib/outreach";
-import { shortDate } from "@/lib/sequence";
 import { notify } from "@/lib/slack";
 import { ok, write } from "@/lib/write";
 
@@ -34,7 +33,7 @@ export async function approveCandidates(campaignId: string, contactIds: string[]
       const by = brief.sequence[0] && sender(s, campaignId, brief.sequence[0], c);
       const who = `${c.first_name} ${c.last_name} (${s.accounts.find((a) => a.id === c.account_id)!.name})`;
       const recipient = by ? `${by.first_name} ${by.last_name}` : "Unassigned AE";
-      const text = `Marketing approved ${who} for ${event}. Check the copy and push them to Outreach.`;
+      const text = `Marketing approved ${who} for ${event}. Check the copy and send via Outreach.`;
       // With a button straight to their invitation plan, where the copy is checked and pushed.
       await notify(db, { campaign_id: campaignId, contact_id: c.id, recipient, kind: "Approved", text }, seatbookCard(recipient, text, brief.slug, c.id));
     }
@@ -42,7 +41,7 @@ export async function approveCandidates(campaignId: string, contactIds: string[]
 }
 
 export async function startSequence(campaignId: string, contactId: string) {
-  const { s, c, brief, o, who, event } = await context(campaignId, contactId);
+  const { s, c, brief, o } = await context(campaignId, contactId);
   if (!o?.approved_at) return "Waiting for marketing to approve this candidate.";
   const first = brief.sequence[0];
   if (!first) return "This event has no sequence yet: add steps on the Brief.";
@@ -50,15 +49,11 @@ export async function startSequence(campaignId: string, contactId: string) {
   if (missing) return `Assign ${missing.sender === "Exec" ? "an AE" : "a BDR"} first.`;
   if (brief.sequence.some((step) => step.sender === "Exec") && !execName(s, campaignId, c)) return "Add the exec signing off first.";
   // Pushing hands the sequence to Outreach, which sends step 1 straight away: it's recorded as sent, with the copy that
-  // went out, and later steps fall due from today.
+  // went out, and later steps fall due from today. No Slack alert: the sender just did it; the next is when step 2 falls due.
   const now = new Date();
-  const by = sender(s, campaignId, first, c)!;
-  const next = brief.sequence[1];
   return write(async (db) => {
     const sent = [{ step: 0, at: now.toISOString(), ...draftCopy(s, campaignId, c, 0) }];
     ok(await db.from(TABLES.candidates).update({ started_at: now.toISOString(), sent, outcome: null, outcome_at: null }).eq("campaign_id", campaignId).eq("contact_id", contactId));
-    const then = next ? ` Step 2 (${next.channel}) is due ${shortDate(new Date(now.getTime() + next.day * 86_400_000))}.` : "";
-    await notify(db, { campaign_id: campaignId, contact_id: contactId, recipient: `${by.first_name} ${by.last_name}`, kind: "Pushed to Outreach", text: `${event} outreach to ${who} was pushed to Outreach and step 1 went out.${then}` });
   });
 }
 

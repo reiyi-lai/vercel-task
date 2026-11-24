@@ -217,8 +217,8 @@ insert into salesforce_activities (id, kind, subtype, occurred_at, direction, ow
   ('00USb0000001025AAA', 'event', 'Meeting', '2026-07-14T15:00:00.000Z', null, '005Sb0000050002AAA', '003Sb0000090056AAA', '001Sb0000070031AAA', 'Gong');
 
 insert into salesforce_campaigns (id, name, type, start_date, end_date, status) values
-  ('701Sb0000000001AAA', 'Las Vegas Grand Prix — Executive Suite', 'F1 hospitality', '2026-11-27', '2026-11-29', 'Planned'),
-  ('701Sb0000000002AAA', 'Miami Grand Prix — Executive Suite', 'F1 hospitality', '2026-05-02', null, 'Completed'),
+  ('701Sb0000000001AAA', 'Las Vegas Grand Prix', 'F1 hospitality', '2026-11-27', '2026-11-29', 'Planned'),
+  ('701Sb0000000002AAA', 'Miami Grand Prix', 'F1 hospitality', '2026-05-02', null, 'Completed'),
   ('701Sb0000000003AAA', 'FSI CTO dinner — New York', 'Dinner', '2026-12-09', null, 'Planned'),
   ('701Sb0000000004AAA', 'Retail roundtable — Chicago', 'Roundtable', '2027-01-27', null, 'Planned'),
   ('701Sb0000000005AAA', 'Agents in production roundtable', 'Roundtable', '2026-09-17', null, 'Completed'),

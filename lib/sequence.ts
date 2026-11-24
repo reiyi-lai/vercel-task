@@ -18,6 +18,8 @@ const DAY = 86_400_000;
 const dayOf = (d: Date) => Date.parse(d.toLocaleDateString("en-CA", { timeZone: TIMEZONE })) / DAY;
 // Calendar days from today until a date ("2026-11-19"), counted in the business time zone; negative once it's past.
 export const daysUntil = (date: string, now = new Date()) => Date.parse(date) / DAY - dayOf(now);
+// Calendar days from a moment (an ISO timestamp) until today, the same way.
+export const daysSince = (at: string, now = new Date()) => dayOf(now) - dayOf(new Date(at));
 // Outreach (outreach.ai) sends the steps: automatic ones itself, manual ones from the rep's task list, and reports back
 // what's sent. In production, links go to the prospect's task by its Outreach ID; there's no Outreach connection yet.
 export const OUTREACH_URL = "https://web.outreach.io";

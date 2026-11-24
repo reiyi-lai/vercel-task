@@ -86,6 +86,12 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
       ),
     })),
   ].sort((a, b) => a.when - b.when); // longest overdue first
+  // Their own Slack alerts, across every event, newest first.
+  const alerts = s.slack_alerts
+    .filter((a) => a.recipient === `${me.first_name} ${me.last_name}`)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .slice(0, 10)
+    .map((a) => ({ ...a, event: s.events.find((e) => e.campaign_id === a.campaign_id)?.short_name }));
 
   return (
     <>
@@ -198,6 +204,18 @@ async function Queue({ searchParams }: Pick<PageProps<"/outreach">, "searchParam
                 <Status color="blue">Replied</Status>
                 <Link href={plan(r.e.slug, r.c.id)} className="justify-self-end text-label-13 font-medium text-blue-900 hover:underline">Open Plan →</Link>
               </Row>
+            ))}
+          </List>
+        </Section>
+
+        <Section title="Slack Alert History" description="Your latest 10 alerts across every event.">
+          <List empty="No Slack alerts yet. They arrive when marketing approves a candidate, a step falls due, or a candidate replies.">
+            {alerts.map((a) => (
+              <li key={a.id} className="grid gap-1 px-5 py-3 sm:grid-cols-[160px_1fr_auto] sm:gap-6">
+                <p className="text-label-13 font-medium">{a.event ?? a.kind}</p>
+                <p className="text-copy-13">{a.text}</p>
+                <p className="text-label-12 text-gray-900">{formatDate(a.created_at)}{a.posted && " · Slack"}</p>
+              </li>
             ))}
           </List>
         </Section>

@@ -71,7 +71,7 @@ export default function BriefForm({ brief, event, confirmed, create }: Props) {
           {create && (
             <>
               <Detail label="Event Name">
-                <input required placeholder="e.g. Las Vegas Grand Prix — Executive Suite" className={control} value={name} onChange={(e) => setName(e.target.value)} />
+                <input required placeholder="e.g. Las Vegas Grand Prix" className={control} value={name} onChange={(e) => setName(e.target.value)} />
               </Detail>
               <Detail label="Short Name">
                 <input required placeholder="e.g. Las Vegas GP" className={control} value={shortName} onChange={(e) => setShortName(e.target.value)} />
